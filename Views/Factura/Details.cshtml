@@ -1,0 +1,110 @@
+﻿@model SGC.Models.Factura
+@using SGC.Models
+@{
+    ViewBag.Title = "Detalles Factura";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    DateTime? fechaEstado = Model.estados.LastOrDefault().fechaEstado;
+    string fechaFormateada = fechaEstado.HasValue ? fechaEstado.Value.ToString("dd-MM-yyyy") : "Sin Fecha";
+}
+
+<h2 class="page-title">Detalles</h2>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="portlet light bordered">
+            <div class="portlet-title">
+                <div class="caption">
+                    Factura
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.numero, htmlAttributes: new { @class = "control-label" })
+                            @Html.EditorFor(model => model.numero, new { htmlAttributes = new { @class = "form-control ver", @readonly = "readonly" } })
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.costo, htmlAttributes: new { @class = "control-label" })
+                            <div class="form-control ver">
+                                @Html.DisplayFor(model => model.costo)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.tipo, htmlAttributes: new { @class = "control-label" })
+                            @Html.EditorFor(model => model.tipo, new { htmlAttributes = new { @class = "form-control ver", @readonly = "readonly" } })
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.estados.LastOrDefault().estado, "Estado", htmlAttributes: new { @class = "control-label" })
+                            @Html.EditorFor(model => model.estados.LastOrDefault().estado, new { htmlAttributes = new { @class = "form-control ver", @readonly = "readonly" } })
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.estados.LastOrDefault().fechaEstado, "Fecha del Estado", htmlAttributes: new { @class = "control-label" })
+                            @Html.EditorFor(model => fechaFormateada, new { htmlAttributes = new { @class = "form-control ver", @readonly = "readonly" } })
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.estados.LastOrDefault().Observacion, "Observaciones del Estado", htmlAttributes: new { @class = "control-label" })
+                            @Html.EditorFor(model => model.estados.LastOrDefault().Observacion, new { htmlAttributes = new { @class = "form-control ver", @readonly = "readonly" } })
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.fechaFacturacion, "Fecha de la Facturación", htmlAttributes: new { @class = "control-label" })
+                            @Html.EditorFor(model => model.fechaFacturacion, new { htmlAttributes = new { @class = "form-control ver", @readonly = "readonly" } })
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        @Html.Label("", "Archivos", htmlAttributes: new { @class = "control-label" })
+                    </div>
+                    <div class="col-md-12">
+
+
+                        @if (ViewBag.files != null && ((List<Storage>)ViewBag.files).Count() > 0)
+                        {
+                            foreach (Storage file in ViewBag.files)
+                            {
+                                <div class="col-md-12">
+                                    <i class="fa fa-download"></i>
+                                    @Html.ActionLink(file.nombreArchivo, "Descargar", new { id = file.idStorage }, new { })
+                                </div>
+                            }
+
+
+
+                        }
+                        else
+                        {
+                            <i class="fa fa-download"></i>
+                            <label>No hay ficheros cargados</label>
+                        }
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group" style="padding-top: 15px">
+                            @Html.LabelFor(model => model.observacion, "Observaciones de la Factura", htmlAttributes: new { @class = "control-label" })
+                            @Html.EditorFor(model => model.observacion, new { htmlAttributes = new { @class = "form-control ver", @readonly = "readonly" } })
+                        </div>
+                    </div>
+                </div>
+                    <hr />
+                    <div class="row">
+                        <div class="form-group">
+                            <div class="col-md-6">
+                                <button type="button" class="btn btn-default" onclick="javascript:history.back()">Volver</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>

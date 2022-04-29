@@ -1,0 +1,258 @@
+﻿@model SGC.Models.ViewModelEvaluacionParticipante
+
+@{
+    ViewBag.Title = "Encuesta de Reacción";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="page-title" style="margin-bottom: 0">
+    <div class="row">
+        <div class="col-md-12">
+            Administrar Participantes
+        </div>
+        <div class="col-md-4">
+            <small>Curso: @Model.participante.comercializacion.cotizacion.curso.nombreCurso</small>
+        </div>
+        <div class="col-md-4">
+            <small>Comercialización: @Model.participante.comercializacion.cotizacion.codigoCotizacion</small>
+        </div>
+        <div class="col-md-4">
+            <small>Participante: @Model.participante.contacto.nombreCompleto</small>
+        </div>
+    </div>
+</div>
+
+@using (Html.BeginForm("RevisarEvaluacion", "Evaluacion", FormMethod.Post, new { @id = "form" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="portlet light bordered">
+                <div class="portlet-title">
+                    <div class="caption">
+                        @Model.evaluacion.nombre
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    <div id="error" class="validation-summary-errors text-danger" hidden>
+                        <ul>
+                            <li>Se deben responder todas las preguntas con *</li>
+                        </ul>
+                    </div>
+                    <input type="hidden" name="idEvaluacion" value="@Model.evaluacion.idEvaluacion" />
+                    <input type="hidden" name="idParticipante" value="@Model.participante.idParticipante" />
+                    @foreach (var pregunta in Model.evaluacion.formulario.preguntasFormularios.OrderBy(p => p.orden))
+                    {
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    @if (pregunta.obligatoria)
+                                    {
+                                        <label class="control-label">@pregunta.pregunta *</label>
+                                    }
+                                    else
+                                    {
+                                        <label class="control-label">@pregunta.pregunta</label>
+                                    }
+                                    @if (pregunta.tipo == SGC.Models.TipoPregunta.Abierta)
+                                    {
+                                        if (Model.participante.notas.Where(n => n.evaluacion.idEvaluacion == Model.evaluacion.idEvaluacion).FirstOrDefault() != null)
+                                        {
+                                            if (Model.participante.notas.Where(n => n.evaluacion.idEvaluacion == Model.evaluacion.idEvaluacion).FirstOrDefault().respuestas.Where(r => r.pregunta.idPreguntasFormulario == pregunta.idPreguntasFormulario).FirstOrDefault() != null)
+                                            {
+                                                <textarea class="form-control" disabled>@Model.participante.notas.Where(n => n.evaluacion.idEvaluacion == Model.evaluacion.idEvaluacion).FirstOrDefault().respuestas.Where(r => r.pregunta.idPreguntasFormulario == pregunta.idPreguntasFormulario).FirstOrDefault().respuesta</textarea>
+                                            }
+                                            else
+                                            {
+                                                <textarea class="form-control" disabled></textarea>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <textarea class="form-control" disabled></textarea>
+                                        }
+                                    }
+                                    @if (pregunta.tipo == SGC.Models.TipoPregunta.Corta)
+                                    {
+                                        if (Model.participante.notas.Where(n => n.evaluacion.idEvaluacion == Model.evaluacion.idEvaluacion).FirstOrDefault() != null)
+                                        {
+                                            if (Model.participante.notas.Where(n => n.evaluacion.idEvaluacion == Model.evaluacion.idEvaluacion).FirstOrDefault().respuestas.Where(r => r.pregunta.idPreguntasFormulario == pregunta.idPreguntasFormulario).FirstOrDefault() != null)
+                                            {
+                                                <input class="form-control" value="@Model.participante.notas.Where(n => n.evaluacion.idEvaluacion == Model.evaluacion.idEvaluacion).FirstOrDefault().respuestas.Where(r => r.pregunta.idPreguntasFormulario == pregunta.idPreguntasFormulario).FirstOrDefault().respuesta" disabled>
+                                            }
+                                            else
+                                            {
+                                                <input class="form-control" value="" disabled>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <input class="form-control" value="" disabled>
+                                        }
+                                    }
+                                    @if (pregunta.tipo == SGC.Models.TipoPregunta.Alternativa)
+                                    {
+                                            <div class="form-group">
+                                                @foreach (var respuesta in pregunta.respuestaFormulario)
+                                                {
+                                                    if (Model.participante.notas.Where(n => n.evaluacion.idEvaluacion == Model.evaluacion.idEvaluacion).FirstOrDefault() != null)
+                                                    {
+                                                        if (Model.participante.notas.Where(n => n.evaluacion.idEvaluacion == Model.evaluacion.idEvaluacion).FirstOrDefault().respuestas.Where(r => r.pregunta.idPreguntasFormulario == pregunta.idPreguntasFormulario).FirstOrDefault() != null)
+                                                        {
+                                                            if (Model.participante.notas.Where(n => n.evaluacion.idEvaluacion == Model.evaluacion.idEvaluacion).FirstOrDefault().respuestas.Where(r => r.pregunta.idPreguntasFormulario == pregunta.idPreguntasFormulario).FirstOrDefault().respuestaFormulario.idRespuestasFormulario == respuesta.idRespuestasFormulario)
+                                                            {
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label">
+                                                                        <input class="form-check-input" checked type="radio" value="" disabled />
+                                                                        @respuesta.respuesta @if (respuesta.puntaje == 100)
+                                                                        {
+                                                                            <label> - Correcta</label>
+                                                                        }
+                                                                    </label>
+                                                                </div>
+                                                            }
+                                                            else
+                                                            {
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label">
+                                                                        <input class="form-check-input" type="radio" value="" disabled />
+                                                                        @respuesta.respuesta @if (respuesta.puntaje == 100)
+                                                                        {
+                                                                            <label> - Correcta</label>
+                                                                        }
+                                                                    </label>
+                                                                </div>
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            <div class="form-check">
+                                                                <label class="form-check-label">
+                                                                    <input class="form-check-input" type="radio" value="" disabled />
+                                                                    @respuesta.respuesta @if (respuesta.puntaje == 100)
+                                                                    {
+                                                                        <label> - Correcta</label>
+                                                                    }
+                                                                </label>
+                                                            </div>
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="form-check">
+                                                            <label class="form-check-label">
+                                                                <input class="form-check-input" type="radio" value="" disabled />
+                                                                @respuesta.respuesta @if (respuesta.puntaje == 100)
+                                                                {
+                                                                    <label> - Correcta</label>
+                                                                }
+                                                            </label>
+                                                        </div>
+                                                    }
+                                                }
+                                            </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-offset-8 col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Puntaje:</label>
+                                    @if (Model.participante.notas.Where(n => n.evaluacion.idEvaluacion == Model.evaluacion.idEvaluacion).FirstOrDefault() != null)
+                                    {
+                                        if (Model.participante.notas.Where(n => n.evaluacion.idEvaluacion == Model.evaluacion.idEvaluacion).FirstOrDefault().respuestas.Where(r => r.pregunta.idPreguntasFormulario == pregunta.idPreguntasFormulario).FirstOrDefault() != null)
+                                        {
+                                            <input name="@pregunta.idPreguntasFormulario" onchange="ValidarPuntaje($(this), '@pregunta.idPreguntasFormulario')" type="text" class="form-control" value="@Model.participante.notas.Where(n => n.evaluacion.idEvaluacion == Model.evaluacion.idEvaluacion).FirstOrDefault().respuestas.Where(r => r.pregunta.idPreguntasFormulario == pregunta.idPreguntasFormulario).FirstOrDefault().puntaje" />
+                                            <span id="errorPuntaje-@pregunta.idPreguntasFormulario" class="field-validation-error text-danger" hidden>El puntaje debe se un número entre 0 y 100</span>
+                                        }
+                                        else
+                                        {
+                                            <input name="@pregunta.idPreguntasFormulario" onchange="ValidarPuntaje($(this))" type="text" class="form-control" value="" />
+                                            <span id="errorPuntaje" class="field-validation-error text-danger" hidden>El puntaje debe se un número entre 0 y 100</span>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <input name="@pregunta.idPreguntasFormulario" onchange="ValidarPuntaje($(this))" type="text" class="form-control" value="" />
+                                        <span id="errorPuntaje" class="field-validation-error text-danger" hidden>El puntaje debe se un número entre 0 y 100</span>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    <hr />
+                    <div class="row">
+                        <div class="col-md-6">
+                            @Html.ActionLink("Volver", "EvaluacionesParticipante", "Evaluacion", new { id = Model.participante.idParticipante, id2 = Model.participante.comercializacion.idComercializacion }, new { @class = "btn btn-default" })
+                        </div>
+                        <div class="col-md-6">
+                            <button class="btn btn-primary pull-right" id="btnMostrar" type="button">Guardar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+<div id="modalConfirmar" class="modal fade draggable-modal modalx" tabindex="-1" role="alertdialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div id="modal-content" class="modal-content">
+            <div class="modal-header">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4 class="modal-title">Confirmar</h4>
+                    </div>
+                    <div class="col-md-6">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body text-center">
+                <p>¿Esta seguro que desea enviar sus respuestas?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btnEnviar" class="btn btn-primary">Enviar</button>
+                <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $('#btnMostrar').click(function () {
+                $('#modalConfirmar').modal({ keyboard: true }, 'show');
+            });
+            $('#btnEnviar').click(function () {
+                $('#modalConfirmar').modal('hide');
+                $('#form').submit();
+            });
+        });
+        function ValidarPuntaje(puntaje, id) {
+            re = /^[0-9]?[0-9]?[0-9]$/;
+            if (!re.test(String(puntaje.val()))) {
+                $('#errorPuntaje-' + id).show()
+                return false;
+            }
+            if (puntaje.val() < 0) {
+                $('#errorPuntaje-' + id).show()
+                return false;
+            }
+            if (puntaje.val() > 100) {
+                $('#errorPuntaje-' + id).show();
+                return false;
+            }
+            $('#errorPuntaje-' + id).hide();
+            return true;
+        }
+    </script>
+}

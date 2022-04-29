@@ -1,0 +1,80 @@
+﻿@model SGC.Models.R51
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>R51</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.idCurso)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.idCurso)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.nombreDiploma)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.nombreDiploma)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.cuidad)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.cuidad)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.estado)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.estado)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.observacion)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.observacion)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.userEstado)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.userEstado)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.fechaEstado)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.fechaEstado)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Eliminar" class="btn btn-default" /> |
+             @Html.ActionLink("Volver", "Index",new { },new {@class= "btn btn-default" })
+        </div>
+    }
+</div>

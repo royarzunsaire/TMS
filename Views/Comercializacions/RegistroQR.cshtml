@@ -1,0 +1,56 @@
+﻿@model SGC.Models.Comercializacion
+@{
+    ViewBag.Title = "Registro Curso QR";
+    Layout = "~/Views/Shared/_LayoutNotAut.cshtml";
+}
+
+<style>
+    input {
+        text-transform: capitalize;
+    }
+
+    body {
+        max-width: 100% !important;
+    }
+
+    .form-container {
+        width: 100%;
+        max-width: 500px;
+        margin: 20px auto;
+        height: 100%;
+    }
+
+    .page-bar {
+        display: none;
+    }
+
+    .page-content-white .page-bar, .page-container-bg-solid .page-bar {
+        margin: 0;
+    }
+
+    .form-container h2 {
+        text-align: center;
+    }
+
+    .col-md-2 {
+        float: none;
+        width: 100%;
+    }
+
+    .col-md-10 {
+        float: none;
+    }
+
+    img {
+        width: 100%;
+    }
+</style>
+
+<div class="form-container">
+    <div class="descripcion-container">
+        <h2 style="margin-bottom: 1rem; font-size: 40px; font-weight: bold; margin: 32px 0">@Model.cotizacion.curso.nombreCurso</h2>
+    </div>
+    <div>
+        <img src="@Url.Content(ViewBag.qr)" alt="Image" />
+    </div>
+</div>

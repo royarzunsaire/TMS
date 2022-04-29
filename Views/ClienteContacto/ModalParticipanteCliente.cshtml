@@ -1,0 +1,162 @@
+﻿@using SGC.Helpers
+@model SGC.Models.Comercializacion
+
+
+@if (Model != null)
+{
+
+<thead id="participantesHead-@Model.idComercializacion">
+    <tr>
+        <th>
+            @Html.DisplayName("Nombre")
+        </th>
+        <th>
+            @Html.DisplayName("RUT")
+        </th>
+        <th>
+            @Html.DisplayName("Asistencia")
+        </th>
+        @if (Model.evaluaciones.Where(x => x.categoria == SGC.Models.CategoriaEvaluacion.Diagnostico).Count() > 0)
+        {
+            <th>
+                @Html.DisplayName("Nota Diagnóstico")
+            </th>
+        }
+        @if (Model.evaluaciones.Where(x => x.categoria == SGC.Models.CategoriaEvaluacion.Teorico).Count() > 0)
+        {
+            <th>
+                @Html.DisplayName("Nota Teórico")
+            </th>
+        }
+        @if (Model.evaluaciones.Where(x => x.categoria == SGC.Models.CategoriaEvaluacion.Practico).Count() > 0)
+        {
+            <th>
+                @Html.DisplayName("Nota Práctico")
+            </th>
+        }
+    </tr>
+</thead>
+<tbody id="participantes-@Model.idComercializacion">
+    @foreach (var participante in Model.participantes)
+    {
+        var notaDiagnostico = 0.0;
+        var contDiagnostico = 0;
+        foreach (var evaluacion in Model.evaluaciones)
+        {
+            if (evaluacion.categoria == SGC.Models.CategoriaEvaluacion.Diagnostico)
+            {
+                if (participante.notas.Where(n => n.evaluacion.idEvaluacion == evaluacion.idEvaluacion).FirstOrDefault() != null)
+                {
+                    if (participante.notas.Where(n => n.evaluacion.idEvaluacion == evaluacion.idEvaluacion).FirstOrDefault().nota != ""
+                        && participante.notas.Where(n => n.evaluacion.idEvaluacion == evaluacion.idEvaluacion).FirstOrDefault().nota != "-")
+                    {
+                        notaDiagnostico += double.Parse(participante.notas.Where(n => n.evaluacion.idEvaluacion == evaluacion.idEvaluacion).FirstOrDefault().nota);
+                    }
+                }
+                contDiagnostico++;
+            }
+        }
+        if (contDiagnostico > 0)
+        {
+            notaDiagnostico = notaDiagnostico / contDiagnostico;
+        }
+        if (notaDiagnostico == 0)
+        {
+            notaDiagnostico = 1;
+        }
+        var notaTeorica = 0.0;
+        var contTeorica = 0;
+        foreach (var evaluacion in Model.evaluaciones)
+        {
+            if (evaluacion.categoria == SGC.Models.CategoriaEvaluacion.Teorico)
+            {
+                if (participante.notas.Where(n => n.evaluacion.idEvaluacion == evaluacion.idEvaluacion).FirstOrDefault() != null)
+                {
+                    if (participante.notas.Where(n => n.evaluacion.idEvaluacion == evaluacion.idEvaluacion).FirstOrDefault().nota != ""
+                        && participante.notas.Where(n => n.evaluacion.idEvaluacion == evaluacion.idEvaluacion).FirstOrDefault().nota != "-")
+                    {
+                        notaTeorica += double.Parse(participante.notas.Where(n => n.evaluacion.idEvaluacion == evaluacion.idEvaluacion).FirstOrDefault().nota);
+                    }
+                }
+                contTeorica++;
+            }
+        }
+        if (contTeorica > 0)
+        {
+            notaTeorica = notaTeorica / contTeorica;
+        }
+        if (notaTeorica == 0)
+        {
+            notaTeorica = 1;
+        }
+        var notaPractica = 0.0;
+        var contPractica = 0;
+        foreach (var evaluacion in Model.evaluaciones)
+        {
+            if (evaluacion.categoria == SGC.Models.CategoriaEvaluacion.Practico)
+            {
+                if (participante.notas.Where(n => n.evaluacion.idEvaluacion == evaluacion.idEvaluacion).FirstOrDefault() != null)
+                {
+                    if (participante.notas.Where(n => n.evaluacion.idEvaluacion == evaluacion.idEvaluacion).FirstOrDefault().nota != ""
+                        && participante.notas.Where(n => n.evaluacion.idEvaluacion == evaluacion.idEvaluacion).FirstOrDefault().nota != "-")
+                    {
+                        notaPractica += double.Parse(participante.notas.Where(n => n.evaluacion.idEvaluacion == evaluacion.idEvaluacion).FirstOrDefault().nota);
+                    }
+                }
+                contPractica++;
+            }
+        }
+        if (contPractica > 0)
+        {
+            notaPractica = notaPractica / contPractica;
+        }
+        if (notaPractica == 0)
+        {
+            notaPractica = 1;
+        }
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => participante.contacto.nombreCompleto)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => participante.contacto.run)
+            </td>
+            <td class="text-right">
+                @{
+                    var asistencia = 0;
+                    var cantBloques = Model.bloques.Count();
+                    var cantAsistencias = participante.asistencia.Where(x => x.asistio).Count();
+                    if (cantBloques > 0)
+                    {
+                        asistencia = cantAsistencias * 100 / cantBloques;
+                    }
+                }
+                @asistencia %
+            </td>
+            @if (Model.evaluaciones.Where(x => x.categoria == SGC.Models.CategoriaEvaluacion.Diagnostico).Count() > 0)
+            {
+                <td class="text-right">
+                    @String.Format("{0:N1}", notaDiagnostico)
+                </td>
+            }
+            @if (Model.evaluaciones.Where(x => x.categoria == SGC.Models.CategoriaEvaluacion.Teorico).Count() > 0)
+            {
+                <td class="text-right">
+                    @String.Format("{0:N1}", notaTeorica)
+                </td>
+            }
+            @if (Model.evaluaciones.Where(x => x.categoria == SGC.Models.CategoriaEvaluacion.Practico).Count() > 0)
+            {
+                <td class="text-right">
+                    @String.Format("{0:N1}", notaPractica)
+                </td>
+            }
+
+        </tr>
+                    }
+</tbody>
+
+                    }
+                    else {
+                       <div><strong> Se produjo un error al intentar obtener las calificaciones de la plataforma Moodle </strong></div>
+                    }

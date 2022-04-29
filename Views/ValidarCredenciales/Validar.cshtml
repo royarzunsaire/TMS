@@ -1,0 +1,97 @@
+﻿@model SGC.Models.Participante
+
+@{
+    ViewBag.Title = "Validar Credenciales";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h2 class="page-title">Validar Credenciales</h2>
+
+<div class="row">
+    <div class="col-md-4 col-sm-6">
+        @using (Html.BeginForm("Validar", "ValidarCredenciales", FormMethod.Get, new { }))
+        {
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="portlet light bordered">
+                        <div class="portlet-body">
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        @Html.Label("RUT", htmlAttributes: new { @class = "control-label" })
+                                        <input type="text" name="id2" class="form-control" value="@Model.contacto.run" />
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        @Html.Label("Código", htmlAttributes: new { @class = "control-label" })
+                                        <input type="text" name="id" class="form-control" value="@Model.comercializacion.cotizacion.codigoCotizacion" />
+                                    </div>
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="row">
+                                <div class="form-group">
+                                    <div class="col-md-12 text-right">
+                                        <input type="submit" value="Validar" class="btn btn-primary" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    <div class="col-md-8 col-sm-6">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="portlet light bordered">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            Validación Alumno
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        @*<label class="control-label">Nombre</label>*@
+                                        <h4>@Model.contacto.nombreCompleto</h4>
+                                    </div>
+                                    <div class="col-md-12">
+                                        @*<label class="control-label">RUT</label>*@
+                                        <h4>R.U.T  @Model.contacto.run</h4>
+                                    </div>
+                                </div>
+                            </div>
+                            @if (@Model.credenciales != null)
+                            {
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <img src="~/Files/@Model.credenciales.nombreArchivo" class="pull-right" style="max-width:150px; max-height:150px;border:1px solid grey" />
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            <div class="col-md-12">
+                                <h5>
+                                    Alumno(a) <strong>@Model.contacto.nombreCompleto</strong>, rut <strong>@Model.contacto.run</strong> aprobo el curso <strong>@Model.comercializacion.cotizacion.nombreDiploma</strong> con Insecap.
+                                </h5>
+                            </div>
+                            <div class="col-md-12">
+                                <h5>
+                                    El curso tiene vigencia hasta el <strong>@Model.comercializacion.fechaTermino.AddMonths(Model.comercializacion.vigenciaCredenciales).ToString("dd'/'MM'/'yyyy")</strong>.
+                                </h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

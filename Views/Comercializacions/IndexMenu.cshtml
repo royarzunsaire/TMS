@@ -1,0 +1,324 @@
+﻿@model SGC.Models.Comercializacion
+
+
+@{
+    bool coordinador = @ViewBag.coordinador;
+}
+
+
+
+
+
+@using (Html.BeginForm("Delete", "Comercializacions", FormMethod.Post, new { @id = "notificationForm_" + @Model.idComercializacion }))
+{
+    <div class="input-group-btn" + colorSence>
+
+
+
+        @if (Model.cotizacion.tipoCurso != "Duplicado Credencial" && Model.cotizacion.tipoCurso != "Arriendo de Sala" && Model.cotizacion.tipoCurso != "Tramitación Licencia")
+        {
+            if (Model.cotizacion.codigoSence != null && Model.cotizacion.codigoSence != "" && Model.cotizacion.tieneCodigoSence != "on")
+            {
+                @Html.Label(" ", htmlAttributes: new { @class = "btn btn-info btn-sm glyphicon glyphicon glyphicon-ok-circle sence", @datatoggle = "tooltip", @title = "SENCE" })
+
+            }
+            else
+            {
+                @Html.Label(" ", htmlAttributes: new { @class = "btn btn-info btn-sm glyphicon glyphicon glyphicon glyphicon-ok-circle no_sence", @datatoggle = "tooltip", @title = "NO SENCE" })
+
+            }
+        }
+        else
+        {
+            @Html.Label(" ", htmlAttributes: new { @class = "btn btn-info btn-sm glyphicon glyphicon glyphicon glyphicon-home arriendo", @datatoggle = "tooltip", @title = "Arriendo" })
+
+        }
+
+
+
+
+        @if (Model.cotizacion.tipoCurso != "Duplicado Credencial" && Model.cotizacion.tipoCurso != "Arriendo de Sala" && Model.cotizacion.tipoCurso != "Tramitación Licencia")
+        {
+            if (!coordinador)
+            {
+                <div class="btn-group">
+
+                    <button id="btnGroupVerticalDrop2" type="button" class="btn btn-default btn-sm dropdown-toggle glyphicon glyphicon-file" data-toggle="dropdown" aria-expanded="false" style="margin-right: 0px;" title="Documentos"></button>
+                    <ul class="dropdown-menu" role="menu" aria-labelledby="btnGroupVerticalDrop4" style="min-width:0px;">
+
+
+                        <li>
+                            <a href="javascript:mostrarR17('@Model.idComercializacion', '@(new System.Web.Script.Serialization.JavaScriptSerializer().Serialize(new SelectList(Model.relatoresCursos.Select(r => new SelectListItem
+                                                        {
+                                                            Text = "[" + r.relator.contacto.run + "] " + r.relator.contacto.nombres + " " + r.relator.contacto.apellidoPaterno + " " + r.relator.contacto.apellidoMaterno,
+                                                            Value = r.idRelator.ToString()
+                                                        }).ToList(), "Value", "Text")))')" title="R17">R17</a>
+                        </li>
+                        <li>
+                            @Html.ActionLink("R18", "GenerarR18", new { id = Model.idComercializacion }, htmlAttributes: new { @datatoggle = "tooltip", @title = "R18" })
+                        </li>
+                        <li>
+                            @Html.ActionLink("R22", "GenerarPdfR22", new { id = Model.idComercializacion }, htmlAttributes: new { @datatoggle = "tooltip", @title = "R22" })
+                        </li>
+                        <li>
+                            <a href="javascript:mostrarModalDiploma('@Model.idComercializacion', '@Model.cotizacion.curso.tipoEjecucion', '@(new System.Web.Script.Serialization.JavaScriptSerializer().Serialize(new SelectList(Model.relatoresCursos.Select(r => new SelectListItem
+                                                        {
+                                                            Text = "[" + r.relator.contacto.run + "] " + r.relator.contacto.nombres + " " + r.relator.contacto.apellidoPaterno + " " + r.relator.contacto.apellidoMaterno,
+                                                            Value = r.idRelator.ToString()
+                                                        }).ToList(), "Value", "Text")))', '@(new System.Web.Script.Serialization.JavaScriptSerializer().Serialize(new SelectList(Model.participantes.Select(p => new SelectListItem
+                                                        {
+                                                            Text = "[" + p.contacto.run + "] " + p.contacto.nombres + " " + p.contacto.apellidoPaterno + " " + p.contacto.apellidoMaterno,
+                                                            Value = p.idParticipante.ToString()
+                                                        }).ToList(), "Value", "Text")))')" title="R23">R23</a>
+                        </li>
+                        <li>
+                            <a href="javascript:mostrarR24('@Model.idComercializacion')" title="R24">R24</a>
+                        </li>
+                        <li>
+                            <a href="javascript:mostrarR50('@Model.idComercializacion', '@(new System.Web.Script.Serialization.JavaScriptSerializer().Serialize(ViewBag.templatesR50))')" title="R50">R50</a>
+                        </li>
+                        <li>
+                            @Html.ActionLink("Credenciales", "GenerarPdfCredenciales", new { id = Model.idComercializacion }, htmlAttributes: new { @datatoggle = "tooltip", @title = "Credenciales" })
+                        </li>
+                        <li>
+                            @Html.ActionLink("Lista Credenciales", "ExcelCredenciales", new { id = Model.idComercializacion }, htmlAttributes: new { @datatoggle = "tooltip", @title = "Lista Credenciales" })
+                        </li>
+                        @if (Model.participantes.Any())
+                        {
+                            <li>
+                                @Html.ActionLink("QR", "GenerarReporteQR", new { id = Model.idComercializacion }, htmlAttributes: new { @datatoggle = "tooltip", @title = "QR" })
+                            </li>
+                        }
+                    </ul>
+                </div>
+
+
+            }
+
+
+
+
+
+
+
+
+
+
+            <div class="btn-group">
+                <button id="btnGroupVerticalDrop4" type="button" class="btn btn-default btn-sm dropdown-toggle glyphicon glyphicon-cog" data-toggle="dropdown" aria-expanded="false" style="margin-right: 0px;" title="Opciones"></button>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="btnGroupVerticalDrop4" style="min-width:0px;">
+
+                    <li>
+                        <a datatoggle="tooltip" href="javascript:Clipboard('clipboard_@Model.idComercializacion')" title="Copiar Datos">
+
+                            <i class="fa fa-clipboard" aria-hidden="true"></i>   Copiar Datos
+
+                        </a>
+                    </li>
+                    <li>
+                        <a datatoggle="tooltip" target="_blank" href="@ViewBag.link" title="Videollamada">
+                            <i class="fa fa-external-link " aria-hidden="true"></i>   Videollamada
+                        </a>
+                    </li>
+                    @if (Model.cotizacion.curso.tipoEjecucion == SGC.Models.TipoEjecucion.Presencial || Model.cotizacion.curso.tipoEjecucion == SGC.Models.TipoEjecucion.Recertificacion)
+                    {
+                        <li>
+                            <a datatoggle="tooltip" target="_blank" href="@Url.Action("RegistroQR", "Comercializacions",new { id = Model.idComercializacion })" title="Generar QR">
+                                <i class="fa fa-qrcode" aria-hidden="true"></i>   Generar QR
+                            </a>
+                        </li>
+                    }
+
+                    <li>
+                        @Html.ActionLink("Quiz Aprendizaje", "GetQuizAprendizaje", "Participante", new { id = Model.idComercializacion }, htmlAttributes: new { @datatoggle = "tooltip", @title = "Quiz Aprendizaje" })
+                    </li>
+                    <li>
+                        @Html.ActionLink("Participantes", "List", "Participante", new { id = Model.idComercializacion }, htmlAttributes: new { @datatoggle = "tooltip", @title = "Participantes" })
+                    </li>
+                    <li>
+                        @Html.ActionLink("Encuesta", "Encuesta", "Participante", new { id = Model.idComercializacion }, htmlAttributes: new { @datatoggle = "tooltip", @title = "Encuesta" })
+                    </li>
+                    <li>
+                        @Html.ActionLink("Post Curso", "PostCurso", "Comercializacions", new { id = Model.idComercializacion }, htmlAttributes: new { @datatoggle = "tooltip", @title = "Participantes" })
+                    </li>
+
+                    <li>
+                        @Html.ActionLink("Relatores (R52)", "Relatores", "R52", new { id = Model.idComercializacion }, htmlAttributes: new { @datatoggle = "tooltip", @title = "R52" })
+                    </li>
+                    @if (Model.comercializacionEstadoComercializacion.LastOrDefault().EstadoComercializacion != SGC.Models.EstadoComercializacion.Terminada
+                        && Model.comercializacionEstadoComercializacion.LastOrDefault().EstadoComercializacion != SGC.Models.EstadoComercializacion.Cancelada
+                        && Model.comercializacionEstadoComercializacion.LastOrDefault().EstadoComercializacion != SGC.Models.EstadoComercializacion.Deshabilitada)
+                    {
+                        <li>
+                            @Html.ActionLink("Bloques", "List", "Bloques", new { id = Model.idComercializacion }, htmlAttributes: new { @datatoggle = "tooltip", @title = "Bloques" })
+                        </li>
+                    }
+                    @if (!coordinador)
+                    {
+                        <li>
+                            @Html.ActionLink("Comentarios R50", "ComentariosR50", "Comercializacions", new { id = Model.idComercializacion }, htmlAttributes: new { @datatoggle = "tooltip", @title = "Comentarios R50" })
+                        </li>
+                        <li>
+                            @Html.ActionLink("Ingresar R24", "IngresarR24", "Comercializacions", new { id = Model.idComercializacion }, htmlAttributes: new { @datatoggle = "tooltip", @title = "Ingresar R24" })
+                        </li>
+                        <li>
+                            @Html.ActionLink("Ingresar R23", "IngresarR23", "Comercializacions", new { id = Model.idComercializacion }, htmlAttributes: new { @datatoggle = "tooltip", @title = "Ingresar R23" })
+                        </li>
+                        <li>
+                            @Html.ActionLink("Ingresar Credenciales", "IngresarCredenciales", "Comercializacions", new { id = Model.idComercializacion }, htmlAttributes: new { @datatoggle = "tooltip", @title = "Ingresar Credenciales" })
+                        </li>
+                        <li>
+                            @Html.ActionLink("R53", "R53", "Relator", new { id = Model.idComercializacion }, htmlAttributes: new { @datatoggle = "tooltip", @title = "R53" })
+                        </li>
+                    }
+
+
+                </ul>
+            </div>
+            if (!coordinador)
+            {
+
+                <div class="btn-group">
+                    <button id="btnGroupVerticalDrop4" type="button" class="btn btn-default btn-sm dropdown-toggle glyphicon glyphicon-ok" data-toggle="dropdown" aria-expanded="false" style="margin-right: 0px;" title="Cambiar Estados"></button>
+                    @if (Model.comercializacionEstadoComercializacion.LastOrDefault().EstadoComercializacion != SGC.Models.EstadoComercializacion.Terminada
+                        && Model.comercializacionEstadoComercializacion.LastOrDefault().EstadoComercializacion != SGC.Models.EstadoComercializacion.Cancelada
+                        && Model.comercializacionEstadoComercializacion.LastOrDefault().EstadoComercializacion != SGC.Models.EstadoComercializacion.Deshabilitada)
+                    {
+                        <ul class="dropdown-menu" role="menu" aria-labelledby="btnGroupVerticalDrop4" style="min-width:0px;">
+                            @if (Model.comercializacionEstadoComercializacion.LastOrDefault().EstadoComercializacion != SGC.Models.EstadoComercializacion.Terminada
+                                && Model.comercializacionEstadoComercializacion.LastOrDefault().EstadoComercializacion != SGC.Models.EstadoComercializacion.Cancelada
+                                && Model.comercializacionEstadoComercializacion.LastOrDefault().EstadoComercializacion != SGC.Models.EstadoComercializacion.Deshabilitada)
+                            {
+                                <li>
+                                    <a href="javascript:ShowModalCancelar('@Model.idComercializacion')" title="Cancelado">Cancelado</a>
+                                </li>
+                            }
+                            @if (Model.comercializacionEstadoComercializacion.LastOrDefault().EstadoComercializacion != SGC.Models.EstadoComercializacion.Terminada
+                                && Model.comercializacionEstadoComercializacion.LastOrDefault().EstadoComercializacion != SGC.Models.EstadoComercializacion.Terminada_SENCE
+                                && Model.comercializacionEstadoComercializacion.LastOrDefault().EstadoComercializacion != SGC.Models.EstadoComercializacion.Cancelada
+                                && Model.comercializacionEstadoComercializacion.LastOrDefault().EstadoComercializacion != SGC.Models.EstadoComercializacion.Deshabilitada)
+                            {
+                                if (Model.cotizacion.codigoSence != null && Model.cotizacion.codigoSence != "" && Model.cotizacion.tieneCodigoSence != "on")
+                                {
+                                    <li>
+                                        <a href="javascript:ShowModalTerminarSence('@Model.idComercializacion')" title="Terminado SENCE">Terminado SENCE</a>
+                                    </li>
+                                }
+                            }
+                            @if (Model.comercializacionEstadoComercializacion.LastOrDefault().EstadoComercializacion != SGC.Models.EstadoComercializacion.Terminada
+                                && Model.comercializacionEstadoComercializacion.LastOrDefault().EstadoComercializacion != SGC.Models.EstadoComercializacion.Cancelada
+                                && Model.comercializacionEstadoComercializacion.LastOrDefault().EstadoComercializacion != SGC.Models.EstadoComercializacion.Deshabilitada)
+                            {
+                                <li>
+                                    <a href="javascript:ShowModalTerminar('@Model.idComercializacion')" title="Terminado">Terminado</a>
+                                </li>
+                            }
+                        </ul>
+                    }
+                </div>
+                if (Model.idGrupoMoodle != null)
+                {
+                    @Html.ActionLink(" ", "EliminarGrupoMoodle", new { id = Model.idComercializacion }, htmlAttributes: new { @class = "btn btn-success btn-sm glyphicon glyphicon-link", @datatoggle = "tooltip", @title = "Eliminar Grupo a Moodle" })
+
+                }
+                else
+                {
+                    @Html.ActionLink(" ", "AgregarGrupoMoodle", new { id = Model.idComercializacion }, htmlAttributes: new { @class = "btn btn-default btn-sm glyphicon glyphicon-link", @datatoggle = "tooltip", @title = "Agregar Grupo a Moodle" })
+                }
+
+            }
+
+
+
+        }
+        else
+        {
+            <div class="btn-group">
+                <button id="btnGroupVerticalDrop4" type="button" class="btn btn-default btn-sm dropdown-toggle glyphicon glyphicon-ok" data-toggle="dropdown" aria-expanded="false" style="margin-right: 0px;" title="Cambiar Estados"></button>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="btnGroupVerticalDrop4" style="min-width:0px;">
+                    @if (Model.comercializacionEstadoComercializacion.LastOrDefault().EstadoComercializacion != SGC.Models.EstadoComercializacion.Terminada
+                        && Model.comercializacionEstadoComercializacion.LastOrDefault().EstadoComercializacion != SGC.Models.EstadoComercializacion.Cancelada
+                        && Model.comercializacionEstadoComercializacion.LastOrDefault().EstadoComercializacion != SGC.Models.EstadoComercializacion.Deshabilitada)
+                    {
+                        <li>
+                            <a href="javascript:ShowModalCancelar('@Model.idComercializacion')" title="Cancelado">Cancelado</a>
+                        </li>
+                    }
+                    @if (Model.comercializacionEstadoComercializacion.LastOrDefault().EstadoComercializacion != SGC.Models.EstadoComercializacion.Terminada
+                        && Model.comercializacionEstadoComercializacion.LastOrDefault().EstadoComercializacion != SGC.Models.EstadoComercializacion.Cancelada
+                        && Model.comercializacionEstadoComercializacion.LastOrDefault().EstadoComercializacion != SGC.Models.EstadoComercializacion.Deshabilitada)
+                    {
+                        <li>
+                            <a href="javascript:ShowModalTerminar('@Model.idComercializacion')" title="Terminado">Terminado</a>
+                        </li>
+                    }
+
+                </ul>
+            </div>
+            <div class="btn-group">
+                <button id="btnGroupVerticalDrop4" type="button" class="btn btn-default btn-sm dropdown-toggle glyphicon glyphicon-cog" data-toggle="dropdown" aria-expanded="false" style="margin-right: 0px;" title="Opciones"></button>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="btnGroupVerticalDrop4" style="min-width:0px;">
+
+
+                    @if (Model.comercializacionEstadoComercializacion.LastOrDefault().EstadoComercializacion != SGC.Models.EstadoComercializacion.Terminada
+                        && Model.comercializacionEstadoComercializacion.LastOrDefault().EstadoComercializacion != SGC.Models.EstadoComercializacion.Cancelada
+                        && Model.comercializacionEstadoComercializacion.LastOrDefault().EstadoComercializacion != SGC.Models.EstadoComercializacion.Deshabilitada)
+                    {
+                        <li>
+                            @Html.ActionLink("Bloques", "List", "Bloques", new { id = Model.idComercializacion }, htmlAttributes: new { @datatoggle = "tooltip", @title = "Bloques" })
+                        </li>
+                    }
+                    @if (!coordinador)
+                    {
+
+                        <li>
+                            @Html.ActionLink("Ingresar R24", "IngresarR24", "Comercializacions", new { id = Model.idComercializacion }, htmlAttributes: new { @datatoggle = "tooltip", @title = "Ingresar R24" })
+                        </li>
+
+                    }
+
+
+                </ul>
+            </div>
+        }
+
+        @if (!coordinador)
+        {
+            if (Model.comercializacionEstadoComercializacion.LastOrDefault().EstadoComercializacion != SGC.Models.EstadoComercializacion.Terminada
+                      && Model.comercializacionEstadoComercializacion.LastOrDefault().EstadoComercializacion != SGC.Models.EstadoComercializacion.Cancelada
+                      && Model.comercializacionEstadoComercializacion.LastOrDefault().EstadoComercializacion != SGC.Models.EstadoComercializacion.Deshabilitada)
+            {
+                @Html.ActionLink(" ", "Edit", new { id = Model.idComercializacion }, htmlAttributes: new { @class = "btn btn-warning btn-sm  glyphicon glyphicon-edit", @datatoggle = "tooltip", @title = "Editar" })
+            }
+            @Html.ActionLink(" ", "Details", new { id = Model.idComercializacion }, htmlAttributes: new { @class = "btn btn-info btn-sm glyphicon glyphicon-list", @datatoggle = "tooltip", @title = "Ver" })
+            @Html.AntiForgeryToken()
+
+            if (Model.comercializacionEstadoComercializacion.LastOrDefault().EstadoComercializacion != SGC.Models.EstadoComercializacion.Terminada
+                && Model.comercializacionEstadoComercializacion.LastOrDefault().EstadoComercializacion != SGC.Models.EstadoComercializacion.Cancelada
+                && Model.comercializacionEstadoComercializacion.LastOrDefault().EstadoComercializacion != SGC.Models.EstadoComercializacion.Deshabilitada)
+            {
+                <a class="btn btn-danger btn-sm glyphicon glyphicon-trash" href="javascript:confirmDelete('Delete','@(Model.idComercializacion)','Comercializacions')" title="Eliminar"></a>
+            }
+
+
+
+        }
+
+
+
+
+
+
+    </div>
+}
+
+
+
+@*Datos del clipboard*@
+<div hidden id="clipboard_@Model.idComercializacion">
+    @foreach (string line in @ViewBag.clipboard.Split('&'))
+    {
+        @line<br>
+    }
+
+</div>

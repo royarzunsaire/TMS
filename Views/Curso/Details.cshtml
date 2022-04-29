@@ -1,0 +1,43 @@
+﻿@model SGC.Models.Curso
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Detalle Curso</h2>
+
+<div>
+    
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.codigoCurso)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.codigoCurso)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.nombreCurso)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.nombreCurso)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.softDelete)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.softDelete)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Editar", "Edit", new { id = Model.idCurso },new {@class= "btn btn-info" }) 
+    @Html.ActionLink("Volver", "Index",new {@class= "btn btn-default" })
+</p>

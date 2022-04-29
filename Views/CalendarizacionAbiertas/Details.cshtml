@@ -1,0 +1,57 @@
+﻿@model SGC.Models.CalendarizacionAbierta
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Detalle CalendarizacionAbierta</h2>
+
+<div>
+    
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.curso.nombreCurso)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.curso.nombreCurso)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.fechaInicio)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.fechaInicio)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.fechaTermino)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.fechaTermino)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.descripcion)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.descripcion)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.estado)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.estado)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Eliminar", "Delete", new { id = Model.idCalendarizacionAbierta },new {@class= "btn btn-info" })
+</p>

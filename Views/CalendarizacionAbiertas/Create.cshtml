@@ -1,0 +1,94 @@
+﻿@model SGC.Models.CalendarizacionAbierta
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="portlet light bordered">
+        <div class="portlet-title">
+            <h4>Programación Anual</h4>
+        </div>
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="portlet-body form form-horizontal">
+            <div class="form-group">
+                @Html.LabelFor(model => model.curso, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-4">
+                    @Html.DropDownListFor(model => model.curso.idCurso, (SelectList)ViewBag.Cursos, "Seleccionar", htmlAttributes: new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.estado, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-4">
+                    @Html.EnumDropDownListFor(model => model.estado, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.estado, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.fechaInicio, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-4">
+                    @Html.EditorFor(model => model.fechaInicio, new { htmlAttributes = new { @class = "form-control datepicker datetimepicker" } })
+                    @Html.ValidationMessageFor(model => model.fechaInicio, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.fechaTermino, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-4">
+                    @Html.EditorFor(model => model.fechaTermino, new { htmlAttributes = new { @class = "form-control datepicker datetimepicker" } })
+                    @Html.ValidationMessageFor(model => model.fechaTermino, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.descripcion, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-4">
+                    @Html.EditorFor(model => model.descripcion, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.descripcion, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.colorEvento, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-4">
+                    @*<button type="button" id="azul" class="btn btn-circle btn-sm blue" style="width:24%" value="0"></button>
+                        <button type="button" id="rojo" class="btn btn-circle btn-sm red" style="width:24%" value="1"></button>
+                        <button type="button" id="naranjo" class="btn btn-circle btn-sm yellow-gold" style="width:24%" value="2"></button>
+                        <button type="button" id="verde" class="btn btn-circle btn-sm green-seagreen" style="width:24%" value="3"></button>
+                        @Html.HiddenFor(model => model.colorEvento)*@
+                    @Html.EnumDropDownListFor(model => model.colorEvento, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.colorEvento, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-actions">
+                <input type="submit" value="Crear Evento" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Volver", "Index", new { }, new { @class = "btn btn-default" })
+</div>
+
+@section Scripts {
+    <script>
+        $("#azul").click(function () {
+            $("#colorEvento").val($("#azul").val());
+            $("#azul").attr("class", "btn btn-circle btn-lg blue");
+        });
+        $("#rojo").click(function () {
+            $("#colorEvento").val($("#rojo").val());
+            $("#rojo").attr("class", "btn btn-circle btn-lg red");
+        });
+        $("#naranjo").click(function () {
+            $("#colorEvento").val($("#naranjo").val());
+            $("#naranjo").attr("class", "btn btn-circle btn-lg yellow-gold");
+        });
+        $("#verde").click(function () {
+            $("#colorEvento").val($("#verde").val());
+            $("#verde").attr("class", "btn btn-circle btn-lg green-seagreen");
+        });
+    </script>
+}

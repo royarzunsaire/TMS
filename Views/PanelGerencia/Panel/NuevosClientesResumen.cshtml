@@ -1,0 +1,124 @@
+﻿@model SGC.Models.ViewModelPanelGerencia
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet light ">
+            <div class="portlet-title">
+                <div class="caption caption-md">
+                    <i class="icon-bar-chart font-dark hide"></i>
+                    <span class="caption-subject bold uppercase">Nuevos Clientes</span>
+                </div>
+                <div class="actions">
+                    <ul class="nav nav-tabs" style="padding-bottom:0">
+                        <li class="active">
+                            <a href="#tab_nuevos_clientes_mes" data-toggle="tab"> Mensual </a>
+                        </li>
+                        <li>
+                            <a href="#tab_nuevos_clientes_anio" data-toggle="tab"> Anual </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="tab-content">
+                    <div class="tab-pane active" id="tab_nuevos_clientes_mes">
+                        <div class="table-scrollable table-scrollable-borderless">
+                            <div class="scroll">
+                                <div id="table-wrapper">
+                                    <div id="table-scroll">
+                                        <table class="table table-hover table-light">
+                                            <thead>
+                                                <tr class="uppercase">
+                                                    <th> Sucursal </th>
+                                                    <th class="text-center"> Porcentaje </th>
+                                                    <th class="text-right"> Meta </th>
+                                                    <th class="text-right"> Clientes Nuevos </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var item in Model.clientesNuevosSucursal)
+                                                {
+                                                    <tr>
+                                                        <td> @item.nombre </td>
+                                                        <td>
+                                                            @{
+                                                                double porcentaje = 0.0;
+                                                                if (item.metaMensual > 0)
+                                                                {
+                                                                    porcentaje = (long)item.cantidadMensual * 100 / item.metaMensual;
+                                                                    if (porcentaje > 100)
+                                                                    {
+                                                                        porcentaje = 100;
+                                                                    }
+                                                                }
+                                                            }
+                                                            <div class="progress-info">
+                                                                <div class="progress" style="margin-bottom:0;" title="@String.Format("{0:N0}", porcentaje) %">
+                                                                    <span style="width: @String.Format("{0:N0}", porcentaje)%;" class="progress-bar progress-bar-success green-sharp"></span>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td class="text-right"> @String.Format("{0:N0}", item.metaMensual) </td>
+                                                        <td class="text-right"> @String.Format("{0:N0}", item.cantidadMensual) </td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tab_nuevos_clientes_anio">
+                        <div class="table-scrollable table-scrollable-borderless">
+                            <div class="scroll">
+                                <div id="table-wrapper">
+                                    <div id="table-scroll">
+                                        <table class="table table-hover table-light">
+                                            <thead>
+                                                <tr class="uppercase">
+                                                    <th> Sucursal </th>
+                                                    <th class="text-center"> Porcentaje </th>
+                                                    <th class="text-right"> Meta </th>
+                                                    <th class="text-right"> Clientes Nuevos </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var item in Model.clientesNuevosSucursal)
+                                                {
+                                                    <tr>
+                                                        <td> @item.nombre </td>
+                                                        <td>
+                                                            @{
+                                                                double porcentaje = 0.0;
+                                                                if (item.metaAnual > 0)
+                                                                {
+                                                                    porcentaje = (long)item.cantidadAnual * 100 / item.metaAnual;
+                                                                    if (porcentaje > 100)
+                                                                    {
+                                                                        porcentaje = 100;
+                                                                    }
+                                                                }
+                                                            }
+                                                            <div class="progress-info">
+                                                                <div class="progress" style="margin-bottom:0;" title="@String.Format("{0:N0}", porcentaje) %">
+                                                                    <span style="width: @String.Format("{0:N0}", porcentaje)%;" class="progress-bar progress-bar-success green-sharp"></span>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td class="text-right"> @String.Format("{0:N0}", item.metaAnual) </td>
+                                                        <td class="text-right"> @String.Format("{0:N0}", item.cantidadAnual) </td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>  </div>

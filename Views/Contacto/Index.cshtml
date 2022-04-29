@@ -1,0 +1,94 @@
+﻿@model List<SGC.Models.ViewModelContacto>
+
+@{
+    ViewBag.Title = "Administrar Contactos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2 class="page-title">Administrar Contactos</h2>
+
+<div class="portlet box blue-dark">
+    <div class="portlet-title">
+        <div class="caption">
+            Contactos
+        </div>
+        <div class="tools">
+            <a href="javascript:;" class="collapse"> </a>
+            <a href="javascript:;" class="fullscreen"> </a>
+        </div>
+        <div class="actions">
+            <div class="inputs pull-right">
+                <a href="@Url.Action("Create") " class="btn btn-circle btn-sm btn-default btn-group-lg" style="margin-right:10px; margin-left:10px;">
+                    <i class="fa fa-plus-circle"></i> Nuevo
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="portlet-body">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <table class="table table-striped table-bordered table-hover dt-responsive dataTable" id="sys-table" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model[0]._contacto.nombreCompleto)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model[0]._contacto.run)
+                    </th>
+                    @*<th>
+                        @Html.DisplayNameFor(model => model[0]._contacto.tipoContacto)
+                    </th>*@
+                    <th>
+                        @Html.DisplayName("Empresa")
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item._contacto.nombreCompleto)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item._contacto.run)
+                        </td>
+                        @*<td>
+                            @Html.DisplayFor(modelItem => item._contacto.tipoContacto)
+                        </td>*@
+                        <td>
+                            @Html.DisplayFor(modelItem => item._cliente.nombreEmpresa)
+                        </td>
+                        <td class="text-center">
+                            @using (Html.BeginForm("Delete", "Contacto", FormMethod.Post, new { @id = "notificationForm_" + @item._contacto.idContacto }))
+                            {
+                            <div class="input-group-btn">
+                                @if (item._contacto.tipoContacto == SGC.Models.TipoContacto.Participante)
+                                {
+                                    if (item._contacto.idUsuarioMoodle != null)
+                                    {
+                                        @Html.ActionLink(" ", "ActualizarUsuarioMoodle", new { id = item._contacto.idContacto }, htmlAttributes: new { @class = "btn btn-success btn-sm glyphicon glyphicon-link", @datatoggle = "tooltip", @title = "Actualizar Usuario Moodle" })
+                                    }
+                                    else
+                                    {
+                                        @Html.ActionLink(" ", "AgregarUsuarioMoodle", new { id = item._contacto.idContacto }, htmlAttributes: new { @class = "btn btn-default btn-sm glyphicon glyphicon-link", @datatoggle = "tooltip", @title = "Agregar Usuario a Moodle" })
+                                    }
+                                }
+                                @Html.ActionLink(" ", "Edit", new { id = item._contacto.idContacto }, htmlAttributes: new { @class = "btn btn-warning btn-sm glyphicon glyphicon-edit", @datatoggle = "tooltip", @title = "Editar" })
+                                @Html.ActionLink(" ", "Details", new { id = item._contacto.idContacto }, htmlAttributes: new { @class = "btn btn-info btn-sm glyphicon glyphicon-list", @datatoggle = "tooltip", @title = "Ver" })
+                                @Html.AntiForgeryToken()
+                                <a class="btn btn-danger btn-sm glyphicon glyphicon-trash" href="javascript:confirmDelete('Delete','@item._contacto.idContacto','Contacto')" title="Eliminar"></a>
+                            </div>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section topLevel{
+    @{Html.RenderPartial("_RenderConfirm.Modal"); }
+}

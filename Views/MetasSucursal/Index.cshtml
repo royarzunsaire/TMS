@@ -1,0 +1,90 @@
+﻿@model SGC.Models.MetasSucursal
+
+@{
+    ViewBag.Title = "Metas";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="page-title" style="margin-bottom: 0">
+    <div class="row">
+        <div class="col-md-12">
+            Administrar Metas de Nuevos Clientes
+        </div>
+        <div class="col-md-12">
+            <small>Sucursal: @Model.sucursal.nombre</small>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-dark">
+            <div class="portlet-title">
+                <div class="caption">
+                    Metas
+                </div>
+                <div class="tools">
+                    <a href="javascript:;" class="collapse"> </a>
+                    <a href="javascript:;" class="fullscreen"> </a>
+                </div>
+                <div class="actions">
+                    <a href="@Url.Action("Create", "MetasSucursal", new { id = Model.sucursal.idSucursal }) " class="btn btn-circle btn-sm btn-default btn-group-lg" style="margin-right:10px; margin-left:10px;">
+                        <i class="fa fa-plus-circle"></i> Nuevo
+                    </a>
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <table class="table table-striped table-bordered table-hover dt-responsive dataTable" id="sys-table" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        @Html.DisplayName("Mes")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("Cantidad")
+                                    </th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.metas)
+                                {
+                                    <tr>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.mes)
+                                        </td>
+                                        <td>
+                                            @item.monto
+                                        </td>
+                                        <td class="text-center">
+                                            @using (Html.BeginForm("Delete", "MetasSucursal", FormMethod.Post, new { @id = "notificationForm_" + @item.idMeta }))
+                                            {
+                                                <div class="input-group-btn">
+                                                    @Html.AntiForgeryToken()
+                                                    <a class="btn btn-danger btn-sm glyphicon glyphicon-trash" href="javascript:confirmDelete('Delete','@(item.idMeta)','MetasSucursal')" title="Eliminar"></a>
+                                                </div>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <hr />
+                <div class="row">
+                    <div class="col-md-6">
+                        @Html.ActionLink("Volver", "Sucursales", "", new { @class = "btn btn-default" })
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section topLevel{
+    @{Html.RenderPartial("_RenderConfirm.Modal"); }
+}

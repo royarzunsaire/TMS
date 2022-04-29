@@ -1,0 +1,134 @@
+﻿@using SGC.Helpers
+@model IEnumerable<SGC.Models.Cotizacion_R13>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    ViewBag.Title = "Index";
+}
+
+
+<h3 class="page-title">
+    Administracion Cotizaciones R13
+</h3>
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-folder"></i>Cotizaciones Creadas
+                </div>
+                <div class="tools">
+                    <a href="javascript:;" class="collapse"> </a>
+                    <a href="javascript:;" class="fullscreen"> </a>
+                </div>
+                <div class="actions">
+                    <div class="inputs pull-right">
+                        <a href="/ClienteContacto/CrearAutoCotizacion" class="btn btn-circle btn-default btn-group-lg" style="margin-right:10px; margin-left:10px;">
+                            <i class="fa fa-plus-circle"></i> Nuevo
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+            <div class="portlet-body">
+                @if (ViewBag.PosseComercializacion != null)
+                {
+                    <div class="alert alert-danger" role="alert">
+                        @ViewBag.PosseComercializacion
+                    </div>
+                }
+                <table class="table table-striped table-bordered table-hover dt-responsive dataTable" id="sys-table" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.fechaCreacion)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.codigoCotizacion)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.curso.nombreCurso)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.nombreEmpresa)
+                            </th>
+                            <th>
+                                Costo Total
+                            </th>
+                            <th>Eliminar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td data-sort="@item.fechaCreacion.ToString("MM/dd/yyyy")">
+                                    @Html.DisplayFor(modelItem => item.fechaCreacion)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.codigoCotizacion)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.curso.nombreCurso)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.nombreEmpresa)
+                                </td>
+                                <td>
+                                    @*@if (item.tipoCurso == "Recertificación (Sin Detalle)")
+                                    {
+                                        @item.valorUnico
+                                    }
+                                    else
+                                    {
+                                        if (item.costo.Count() == 0)
+                                        {
+                                            <p>0</p>
+                                        }
+                                        else
+                                        {
+                                            @item.costo.Where(x => x.idCotizacion == item.idCotizacion_R13).Select(y => y.total).Sum()
+
+                                        }
+                                    }*@
+                                    @if (item.costo.Count() == 0)
+                                    {
+                                        <p>0</p>
+                                    }
+                                    else
+                                    {
+                                        @item.costo.Where(x => x.idCotizacion == item.idCotizacion_R13).Select(y => y.total).Sum()
+                                    }
+                                </td>
+                                <td>
+                                    @using (Html.BeginForm("Delete", "Cotizacion_R13", FormMethod.Post, new { @id = "notificationForm_" + @item.idCotizacion_R13 }))
+                                    {
+                                    <div class="input-group-btn">
+                                        @Html.AntiForgeryToken()
+                                        @Html.NoEncodeActionLink("<span class='glyphicon glyphicon-edit'></span>", "Editar", "EditarAutoCotizacion", "ClienteContacto", routeValues: new { id = @item.idCotizacion_R13 }, htmlAttributes: new { @class = "btn btn-warning btn-sm" })
+                                        <a class="btn btn-danger btn-sm" href="javascript:confirmDelete('Delete','@item.idCotizacion_R13','Cotizacion_R13')"><span class='glyphicon glyphicon-trash'></span></a>
+
+                                    </div>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts{
+
+    @*<script src="/Content/plugins/datatables/datatables.js" type="text/javascript"></script>
+    <script src="/Content/plugins/datatables/datatables.min.js" type="text/javascript"></script>
+    <script src="/Content/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js" type="text/javascript"></script>*@
+
+
+}
+@section topLevel{
+    @{Html.RenderPartial("_RenderConfirm.Modal"); }
+}

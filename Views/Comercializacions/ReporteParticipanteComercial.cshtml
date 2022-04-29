@@ -1,0 +1,135 @@
+﻿@model  SGC.Models.Comercializacion
+
+<style>
+    #table-wrapper {
+        position: relative;
+    }
+
+    #table-scroll {
+        overflow: auto;
+    }
+
+    #table-wrapper table {
+        width: 100%;
+    }
+
+    #table-wrapper td {
+        white-space: nowrap;
+    }
+
+    #table-wrapper th {
+        white-space: nowrap;
+    }
+
+    th {
+        background-color: yellow;
+    }
+</style>
+
+<div id="table-wrapper">
+    <div id="table-scroll">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayName("Participante")
+                    </th>
+                
+                    <th>
+                        @Html.DisplayName("RUT")
+                    </th>
+                 
+                    @foreach (var item in Model.evaluaciones)
+                    {
+                        <th title="@Html.DisplayFor(modelItem => item.nombre)">
+                            @Html.DisplayFor(modelItem => item.nombre)
+                        </th>
+                        if (item.nombre.Contains("FINAL"))
+                        {
+                            <th>
+                                @Html.DisplayName("Fecha de Realización".ToUpper())
+                            </th>
+                        }
+                    }
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.participantes)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.contacto.nombreCompleto)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.contacto.run)
+                        </td>
+
+                        @foreach (var nota in Model.evaluaciones)
+                        {
+
+                            <td class="text-center">
+                                @if (item.notas.Where(p => p.evaluacion.idEvaluacion == nota.idEvaluacion).FirstOrDefault() != null)
+                                {
+                                    @item.notas.Where(p => p.evaluacion.idEvaluacion == nota.idEvaluacion).FirstOrDefault().nota
+                                }
+                                else
+                                {
+                                    <label>-</label>
+                                }
+                            </td>
+                            if (nota.nombre.Contains("FINAL"))
+                            {
+                                if (@item.notas.Count() > 0)
+                                {
+
+                                    if (DateTime.Compare(@item.notas.Where(p => p.evaluacion.idEvaluacion == nota.idEvaluacion).FirstOrDefault().fechaRealizacion, new DateTime(1990, 1, 1)) <= 0)
+                                    {
+                                        <td>
+                                            <label>Sin fecha de realización</label>
+                                        </td>
+                                    }
+                                    else if (@item.notas.Where(p => p.evaluacion.idEvaluacion == nota.idEvaluacion).FirstOrDefault().nota.Equals("-"))
+                                    {
+                                        <td>
+                                            <label style="color:red;"> Realizada el  </label>
+                                            <label style="color:red;">  @item.notas.Where(p => p.evaluacion.idEvaluacion == nota.idEvaluacion).FirstOrDefault().fechaRealizacion </label>
+
+                                        </td>
+                                    }
+                                    else
+                                    {
+                                        <td>
+                                            @item.notas.Where(p => p.evaluacion.idEvaluacion == nota.idEvaluacion).FirstOrDefault().fechaRealizacion
+                                        </td>
+
+                                    }
+
+                                }
+                                else
+                                {
+                                    <td>
+                                        <label>Sin fecha de realización</label>
+                                    </td>
+
+                                }
+
+
+                            }
+
+
+
+                        }
+             
+                    </tr>
+                }
+
+
+            
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+

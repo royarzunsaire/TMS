@@ -1,0 +1,122 @@
+﻿@model List<SGC.Models.QuizAprendizajeParticipantesResultados>
+@{
+    ViewBag.Title = "Quiz Aprendizaje";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var tipoAprendizaje = "";
+}
+
+<div class="page-title" style="margin-bottom: 0">
+    <div class="row">
+        <div class="col-md-12">
+            Quiz Aprendizaje
+        </div>
+        <div class="col-md-4">
+            <small>Curso: @ViewBag.nombreCurso</small>
+        </div>
+        <div class="col-md-4">
+            <small>Comercialización: @ViewBag.codigoCotizacion</small>
+        </div>
+    </div>
+</div>
+
+<div class="portlet light bordered col-md-12">
+    <div class="portlet-title">
+        <div class="caption">
+            Resultados Generales
+            <a href="@Url.Action("GetQuizAprendizaje", new { id = ViewBag.idComercializacion }) " class="btn btn-circle btn-sm btn-default ">
+                Actualizar datos
+            </a>
+        </div>
+        <div class="tools">
+            <a href="javascript:;" class="collapse"> </a>
+            <a href="javascript:;" class="fullscreen"> </a>
+        </div>
+    </div>
+
+    <div class="portlet-body ">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="scrollmenu">
+            Respuestas enviadas: <strong>@Model.Count()</strong> <br />
+            @*Preguntas: <strong>@Model.itemscount</strong> <br />*@
+            <table class="table table-striped table-bordered table-hover dt-responsive " cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.DisplayName("Tipo Aprendizaje")
+                        </th>
+                        <th>
+                            @Html.DisplayName("Cantidad")
+                        </th>
+                        <th>
+                            @Html.DisplayName("Porcentaje")
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var participantes in Model.OrderBy(x => x.quizAprendizajeResultados.tipoAprendizaje))
+                    {
+                        if (tipoAprendizaje != participantes.quizAprendizajeResultados.tipoAprendizaje)
+                        {
+                            int cantTiposAprendizaje = @Model.Where(x => x.quizAprendizajeResultados.tipoAprendizaje == participantes.quizAprendizajeResultados.tipoAprendizaje).Count();
+                            int porcentaje = (int)Math.Round((double)(100 * cantTiposAprendizaje) / Model.Count());
+                            <tr>
+                                <td>@participantes.quizAprendizajeResultados.tipoAprendizaje</td>
+                                <td>@cantTiposAprendizaje</td>
+                                <td>@porcentaje%</td>
+                            </tr>
+                        }
+                        tipoAprendizaje = participantes.quizAprendizajeResultados.tipoAprendizaje;
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="portlet light bordered col-md-12">
+    <div class="portlet-title">
+        <div class="caption">
+            Resultados por Participante
+        </div>
+        <div class="tools">
+            <a href="javascript:;" class="collapse"> </a>
+            <a href="javascript:;" class="fullscreen"> </a>
+        </div>
+    </div>
+
+    <div class="portlet-body ">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="scrollmenu">
+            Respuestas enviadas: <strong>@Model.Count()</strong> <br />
+            @*Preguntas: <strong>@Model.itemscount</strong> <br />*@
+            <table class="table table-striped table-bordered table-hover dt-responsive " cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.DisplayName("Participante")
+                        </th>
+                        <th>
+                            @Html.DisplayName("Resultado")
+                        </th>
+                        <th>
+                            @Html.DisplayName("Tipo Aprendizaje")
+                        </th>
+                        @*<th>
+                                @Html.DisplayName("Descripción")
+                            </th>*@
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var participantes in Model)
+                    {
+                        <tr>
+                            <td>@participantes.participante.contacto.nombreCompleto</td>
+                            <td>@participantes.quizAprendizajeResultados.resultado</td>
+                            <td>@participantes.quizAprendizajeResultados.tipoAprendizaje</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

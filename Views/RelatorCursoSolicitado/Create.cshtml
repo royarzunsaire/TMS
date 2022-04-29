@@ -1,0 +1,190 @@
+﻿@model SGC.Models.RelatorCursoSolicitado
+
+@{
+                /**/
+
+                ViewBag.Title = "Create";
+                Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Cursos Disponibles</h2>
+
+<table class="table table-striped table-bordered table-hover dt-responsive dataTable no-footer" id="sys-table">
+    <thead>
+        <tr>
+            <th>Curso</th>
+            <th>Tipo de Ejecución</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in ViewBag.cursos)
+        {
+            <tr>
+                @using (Html.BeginForm("Create", "RelatorCursoSolicitado"))
+                {
+                    @Html.AntiForgeryToken()
+                    <td>
+                        @item.nombreCurso
+                        <input type="hidden" name="idCurso" id="idCurso" value="@item.idCurso" />
+                        @Html.HiddenFor(model => model.idRelator)
+                    </td>
+                    <td>
+                        @item.tipoEjecucion
+                    </td>
+                    <td class="text-center">
+                        <button type="button" onclick="mostrarDetallesCurso(@item.idCurso)" class="btn btn-info">Información del Curso</button>
+                        <input type="submit" value="Solicitar" class="btn btn-primary" />
+                    </td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>
+@Html.ActionLink("Volver", "SolicitarCursos", new { id = Model.idRelator }, new { @class = "btn btn-default" })
+
+
+
+<div id="modal-datos-curso" class="modal fade draggable-modal modalx" tabindex="-1" data-backdrop="static" data-keyboard="false" role="alertdialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div id="modal-content" class="modal-content">
+            <div class="modal-header">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4 class="modal-title">Datos del Curso</h4>
+                    </div>
+                    <div class="col-md-6">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body" id="modal-body-2" hidden>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="control-label">No hay información del curso disponible.</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="control-label">Nombre Curso</label>
+                            <input type="text" id="nombre" value="" class="form-control" readonly style="border: 0px" />
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <h4>Descripción de Contenido</h4>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="control-label">Fundamentación Técnica</label>
+                            <textarea type="text" id="fundamentacionTecnica" class="form-control" readonly style="border: 0px"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="control-label">Objetivo General</label>
+                            <textarea type="text" id="objetivoGeneral" class="form-control" readonly style="border: 0px"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="control-label">Población Objetivo</label>
+                            <textarea type="text" id="poblacionObjetivos" class="form-control" readonly style="border: 0px"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="control-label">Técnicas Metodológicas</label>
+                            <textarea type="text" id="tecnicasMetodologicas" class="form-control" readonly style="border: 0px"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="control-label">Requisitos Técnicos</label>
+                            <textarea type="text" id="requisitosTecnicos" class="form-control" readonly style="border: 0px"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="control-label">Requisitos Técnicos de Relatores</label>
+                            <textarea type="text" id="requisitosTecnicosRelatores" class="form-control" readonly style="border: 0px"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label">Cantidad de Personas</label>
+                            <input type="text" id="cantidadPersonas" value="" class="form-control" readonly style="border: 0px" />
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label">Horas Teóricas</label>
+                            <input type="text" id="HorasTeoricas" value="" class="form-control" readonly style="border: 0px" />
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label">Horas Practicas</label>
+                            <input type="text" id="horasPracticas" value="" class="form-control" readonly style="border: 0px" />
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="control-label">Codigo Sence</label>
+                            <input type="text" id="codigoSence" value="" class="form-control" readonly style="border: 0px" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+
+        $(document).ready(function () {
+            @*datosCursos = "@ViewBag.datosCursos";
+            datosCursos = datosCursos.replace(/&quot;/g, '"');
+            datosCursos = JSON.parse(datosCursos);*@
+            datosCursos = eval('@Html.Raw(ViewBag.datosCursos)'.replace(/(\r\n|\n|\r)/gm, ""));
+            @*datosCursos = JSON.parse('@Html.Raw(ViewBag.datosCursos)'.replace(/(\r\n|\n|\r)/gm, ""));*@
+        });
+        function mostrarDetallesCurso(idCurso) {
+            tieneR11 = false;
+            datosCursos.forEach(function (item) {
+                if (item.idCurso === idCurso) {
+                    tieneR11 = true;
+                    $('#nombre').val(item.nombreCurso);
+                    $('#fundamentacionTecnica').val(item.fundamentacionTecnica);
+                    $('#objetivoGeneral').val(item.objetivoGeneral);
+                    $('#poblacionObjetivos').val(item.poblacionObjetivo);
+                    $('#tecnicasMetodologicas').val(item.tecnicaMetodologica);
+                    $('#cantidadPersonas').val(item.cantPersona);
+                    $('#HorasTeoricas').val(item.horasTeoricas);
+                    $('#horasPracticas').val(item.horasPracticas);
+                    $('#codigoSence').val(item.codigoSence);
+                    $('#requisitosTecnicos').val(item.requisitosTecnicos);
+                    $('#requisitosTecnicosRelatores').val(item.requisitosTecnicosRelatores);
+                }
+            });
+            if (tieneR11 === false) {
+                $('#modal-body').hide();
+                $('#modal-body-2').show();
+            } else {
+                $('#modal-body-2').hide();
+                $('#modal-body').show();
+            }
+            $('#modal-datos-curso').modal({ keyboard: true }, 'show');
+        }
+    </script>
+}

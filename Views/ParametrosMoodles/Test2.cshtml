@@ -1,0 +1,55 @@
+﻿@model SGC.Models.ParametrosMoodle
+
+@{
+    ViewBag.Title = "Test";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Parámetros Moodle</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.username)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.username)
+        </dd>
+
+
+        <dt>
+            @Html.DisplayNameFor(model => model.password)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.password)
+        </dd>
+
+
+        <dt>
+            @Html.DisplayNameFor(model => model.urlMoodle)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.urlMoodle)
+        </dd>
+
+
+        <dt>
+            @Html.DisplayNameFor(model => model.service)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.service)
+        </dd>
+
+    </dl>
+    <hr />
+    <div class="row">
+        <div class="col-sm-3">Token Login</div>
+        <div class="col-sm-9">@ViewBag.usersResponse</div>
+    </div>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

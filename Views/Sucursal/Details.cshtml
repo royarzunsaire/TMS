@@ -1,0 +1,35 @@
+﻿@model SGC.Models.Sucursal
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Detalle Sucursal</h2>
+
+<div>
+    
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.nombre)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.nombre)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.prefijoCodigo)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.prefijoCodigo)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Editar", "Edit", new { id = Model.idSucursal },new {@class= "btn btn-info" }) 
+    @Html.ActionLink("Volver", "Index",new {@class= "btn btn-default" })
+</p>

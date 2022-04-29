@@ -1,0 +1,47 @@
+﻿@model IEnumerable<SGC.Models.Faena>
+
+@{
+    ViewBag.Title = "Listado Factura";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<h2>Faenas</h2>
+
+<p>
+    @Html.ActionLink("Nueva Faena", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.nombre)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.descripcion)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.softDelete)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+<tr>
+    <td>
+        @Html.DisplayFor(modelItem => item.nombre)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.descripcion)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.softDelete)
+    </td>
+    <td>
+        @Html.ActionLink("Editar", "Edit", new { id = item.idFaena }) |
+        @Html.ActionLink("Eliminar", "Delete", new { id = item.idFaena })
+    </td>
+</tr>
+    }
+
+</table>

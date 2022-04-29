@@ -1,0 +1,92 @@
+﻿@model SGC.Models.Curso
+
+@{ 
+
+    var r11 = ViewBag.r11;
+    var r12 = ViewBag.r12;
+    var color = "white";
+    var sence = "SENCE";
+    if (r11 != null) {
+        if (r11.codigoSence == null)
+        {
+            color = "#9B59B6";
+            sence = "NO SENCE";
+        }
+        else {
+            color = "#add8e6";
+        }
+    }
+}
+
+
+
+
+@using (Html.BeginForm("Delete", "Curso", FormMethod.Post, new { @id = "notificationForm_" + @Model.idCurso }))
+{
+<div class="input-group-btn">
+    <a href="@Url.Action("R51Curso", "R51", new { id = Model.idCurso }) " class="btn btn-default btn-sm">
+        <span class='glyphicon glyphicon-check'></span> R51
+    </a>
+    @if (r11 != null)
+    {
+        <a href="@Url.Action("R11Curso", "R11", new { id = Model.idCurso }) " class="btn btn-default btn-sm" style="background-color: @color;" title="@sence">
+            <span class='glyphicon glyphicon-check'></span><strong> R11</strong>
+        </a>
+    }
+    else
+    {
+        <a href="@Url.Action("R11Curso", "R11", new { id = Model.idCurso }) " class="btn btn-default btn-sm">
+            <span class='glyphicon glyphicon-unchecked'></span> R11
+        </a>
+    }
+    @if (r12 != null)
+    {
+        <a href="@Url.Action("R12Curso", "CostoParticularCurso", new { id = Model.idCurso }) " class="btn btn-default btn-sm">
+            <span class='glyphicon glyphicon-check'></span> R12
+        </a>
+    }
+    else
+    {
+        <a href="@Url.Action("R12Curso", "CostoParticularCurso", new { id = Model.idCurso }) " class="btn btn-default btn-sm">
+            <span class='glyphicon glyphicon-unchecked'></span> R12
+        </a>
+    }
+    <a href="@Url.Action("EvaluacionesCurso", "Evaluacion", new { id = Model.idCurso }) " class="btn btn-default btn-sm" title="Evaluaciones">
+        <span class='glyphicon glyphicon-list'></span>
+    </a>
+    <a href="@Url.Action("AdjuntarMaterial", new { id = Model.idCurso }) " class="btn btn-default btn-sm" title="Adjuntar Material">
+        <span class='glyphicon glyphicon-folder-open'></span>
+    </a>
+    <button type="button" class="btn btn-default btn-sm" onclick="mostrarModalIdMoodle('@Model.idCurso')" title="Modificar Id Enlace Moodle">
+        <span class="glyphicon glyphicon-edit"></span>
+    </button>
+    @if (r12 != null && r11 != null)
+    {
+        if (Model.idCursoMoodle != null)
+        {
+            <a href="@Url.Action("ActualizarCursoMoodle", new { id = Model.idCurso }) " class="btn btn-success btn-sm" title="Actualizar Curso Moodle">
+                <span class='glyphicon glyphicon-link'></span>
+            </a>
+        }
+        else
+        {
+            <a href="@Url.Action("AgregarCursoMoodle", new { id = Model.idCurso }) " class="btn btn-default btn-sm" title="Agregar Curso a Moodle">
+                <span class='glyphicon glyphicon-link'></span>
+            </a>
+        }
+    }
+    else
+    {
+        <button type="button" class="btn btn-default btn-sm" title="Agregar Curso a Moodle" disabled>
+            <span class='glyphicon glyphicon-link'></span>
+        </button>
+    }
+    @Html.AntiForgeryToken()
+    <a href="javascript:confirmDelete('Delete','@(Model.idCurso)','Curso')" class="btn btn-danger btn-sm" title="Borrar">
+        <span class='glyphicon glyphicon-trash'></span>
+    </a>
+</div>
+}
+
+
+

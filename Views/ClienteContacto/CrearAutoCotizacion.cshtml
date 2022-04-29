@@ -1,0 +1,694 @@
+﻿@model SGC.Models.ViewModelCotizacion
+
+<style>
+    textarea {
+        resize: none;
+    }
+
+    .modal {
+        text-align: center;
+        padding: 0 !important;
+    }
+
+        .modal:before {
+            content: '';
+            display: inline-block;
+            height: 100%;
+            vertical-align: middle;
+            margin-right: -4px;
+        }
+
+    .modal-dialog {
+        display: inline-block;
+        text-align: left;
+        vertical-align: middle;
+    }
+</style>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    ViewBag.Title = "Cotización";
+
+}
+
+<h2 class="page-title">Auto-Cotización</h2>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="portlet light bordered">
+                <div class="portlet-title">
+                    <div class="caption">
+                        Cotización
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <div class="col-md-6">
+                                @Html.LabelFor(model => model.cotizacion.sucursal.idSucursal, "Sucursal", htmlAttributes: new { @class = "control-label" })
+                                @Html.DropDownListFor(model => model.cotizacion.sucursal.idSucursal, (SelectList)ViewBag.sucursales, "Seleccionar", htmlAttributes: new { @class = "form-control", @id = "idSucursal" })
+                                @Html.ValidationMessageFor(model => model.cotizacion.sucursal.idSucursal, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-12" style="display:none">
+                                <label class="control-label">RUT</label>
+                                <select class="form-control" id="idSelectRut" name="cotizacion.idCliente" readonly>
+                                    @foreach (var itemCliente in Model.clientes)
+                                    {
+                                        if (Model.cotizacion != null)
+                                        {
+                                            if (Model.cotizacion.idCliente == itemCliente.idCliente)
+                                            {
+                                                <option data-tokens="@itemCliente.rut" value="@itemCliente.idCliente" selected> @itemCliente.rut | @itemCliente.nombreEmpresa</option>
+                                            }
+                                            else
+                                            {
+                                                <option data-tokens="@itemCliente.rut" value="@itemCliente.idCliente"> @itemCliente.rut | @itemCliente.nombreEmpresa</option>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <option data-tokens="@itemCliente.rut" value="@itemCliente.idCliente"> @itemCliente.rut | @itemCliente.nombreEmpresa</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                @Html.EditorFor(model => model.cotizacion.nombreEmpresa, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", @style = "display:none" } })
+                            </div>
+                            <div class="col-md-12">
+                                @Html.EditorFor(model => model.cotizacion.razonSocial, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", @style = "display:none" } })
+                            </div>
+                            <div class="col-md-6">
+                                @Html.EditorFor(model => model.cotizacion.telefonoCorporativo, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", @style = "display:none" } })
+                            </div>
+                            <div class="col-md-6">
+                                @Html.EditorFor(model => model.cotizacion.direccion, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", @style = "display:none" } })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-6">
+                                <select class="form-control" data-live-search="true" id="idSelectModalidadCurso" name="cotizacion.Modalidad" style="display: none;">
+                                    <option selected>Cerrado</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <select class="form-control" id="idSelectTipoCurso" data-live-search="true" name="cotizacion.tipoCurso" style="display: none;">
+                                    <option selected>Curso</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="control-label">Cursos</label>
+                                <select class="form-control" id="idSelectCursos" data-live-search="true" name="cotizacion.idCurso"></select>
+                                @Html.ValidationMessageFor(model => model.cotizacion.idCurso, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col-md-12">
+                                @Html.EditorFor(model => model.cotizacion.nombreDiploma, new { htmlAttributes = new { @class = "form-control", @style = "display:none" } })
+                            </div>
+                            <div class="col-md-12"><h2>SENCE </h2></div>
+                            <div class="col-md-6">
+                                <label class="control-label">Código SENCE:</label>
+                                <input class="form-control" id="idCodigoSENCE" name="cotizacion.codigoSence" readonly />
+                            </div>
+                            <div class="col-md-6">
+                                <input id="idCheckBoxCodigoSENCE" name="cotizacion.tieneCodigoSence" type="checkbox" class="form-control" /> <label style="margin-top:26px" class="control-label">Sin Código SENCE:</label><br />
+                            </div>
+                            <div class="col-md-12">
+                                @Html.LabelFor(model => model.cotizacion.lugarRealizacion)
+                                @Html.EditorFor(model => model.cotizacion.lugarRealizacion, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.cotizacion.lugarRealizacion, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-12"><h2>Fechas </h2></div>
+                            <div class="col-md-6">
+                                <label class="control-label">Fecha Inicio</label>
+                                @Html.EditorFor(model => model.cotizacion.fechaInicio, new { htmlAttributes = new { @class = "form-control datepicker" } })
+                                @Html.ValidationMessageFor(model => model.cotizacion.fechaInicio, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col-md-6">
+                                <label class="control-label">Fecha Término</label>
+                                @Html.EditorFor(model => model.cotizacion.fechaTermino, new { htmlAttributes = new { @class = "form-control datepicker" } })
+                                @Html.ValidationMessageFor(model => model.cotizacion.fechaTermino, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-12"><h2>Costos </h2></div>
+                            <div id="idCostosCursoDiv" hidden>
+                                <div class="col-md-6">
+                                    <label class="control-label">Cantidad Participantes</label>
+                                    @Html.EditorFor(model => model.cotizacion.cantidadParticipante, new { htmlAttributes = new { @class = "form-control", @id = "cantParticipantes" } })
+                                    @Html.ValidationMessageFor(model => model.cotizacion.cantidadParticipante, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="control-label">Condiciones de Pago</label>
+                                    <select class="form-control" data-live-search="true" name="cotizacion.condicionesDePago">
+                                        <option disabled data-tokens="" selected> Seleccionar </option>
+                                        @if (Model.cotizacion != null)
+                                        {
+                                            if (Model.cotizacion.condicionesDePago == "Contado")
+                                            {
+                                                <option selected>Contado</option>
+                                                <option>Transferencia</option>
+                                                <option>OC</option>
+                                            }
+                                            else if (Model.cotizacion.condicionesDePago == "Transferencia")
+                                            {
+                                                <option>Contado</option>
+                                                <option selected>Transferencia</option>
+                                                <option>OC</option>
+                                            }
+                                            else if (Model.cotizacion.condicionesDePago == "OC")
+                                            {
+                                                <option>Contado</option>
+                                                <option>Transferencia</option>
+                                                <option selected>OC</option>
+                                            }
+                                            else
+                                            {
+                                                <option>Contado</option>
+                                                <option>Transferencia</option>
+                                                <option>OC</option>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <option>Contado</option>
+                                            <option>Transferencia</option>
+                                            <option>OC</option>
+                                        }
+                                        @Html.ValidationMessageFor(model => model.cotizacion.condicionesDePago, "", new { @class = "text-danger" })
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="control-label">Tipo Menú</label>
+                                    <select class="form-control" data-live-search="true" name="cotizacion.tipoMenu">
+                                        <option disabled data-tokens="" selected> Seleccionar </option>
+                                        @if (Model.cotizacion != null)
+                                        {
+                                            if (Model.cotizacion.tipoMenu == "Colación")
+                                            {
+                                                <option selected>Colación</option>
+                                                <option>Colación Aumentada</option>
+                                                <option>Almuerzo</option>
+                                            }
+                                            else if (Model.cotizacion.tipoMenu == "Colación Aumentada")
+                                            {
+                                                <option>Colación</option>
+                                                <option selected>Colación Aumentada</option>
+                                                <option>Almuerzo</option>
+                                            }
+                                            else if (Model.cotizacion.tipoMenu == "Almuerzo")
+                                            {
+                                                <option>Colación</option>
+                                                <option>Colación Aumentada</option>
+                                                <option selected>Almuerzo</option>
+                                            }
+                                            else
+                                            {
+                                                <option>Colación</option>
+                                                <option>Colación Aumentada</option>
+                                                <option>Almuerzo</option>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <option>Colación</option>
+                                            <option>Colación Aumentada</option>
+                                            <option>Almuerzo</option>
+                                        }
+                                        @Html.ValidationMessageFor(model => model.cotizacion.tipoMenu, "", new { @class = "text-danger" })
+                                    </select>
+                                </div>
+
+
+                                <div class="col-md-12" style="margin-top: 20px; display: none">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th class="col-md-6">
+                                                    Detalle
+                                                </th>
+                                                <th class="col-md-2">
+                                                    Cantidad
+                                                </th>
+                                                <th class="col-md-2">
+                                                    Valor
+                                                </th>
+                                                <th class="col-md-2">
+                                                    Total
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="idTableCostoDatos"></tbody>
+                                    </table>
+                                </div>
+                                <h2 id="idTotalTotal" style="float:right"></h2>
+                            </div>
+
+                            <div id="idCostosCursoDivCorto" hidden>
+                                <div class="col-md-6">
+
+                                    <label class="control-label">Valor Unico</label>
+                                    <input class="form-control" type="number" name="cotizacion.valorUnico" />
+                                    <input class="form-control" value="true" name="cotizacion.isValorUnico" style="display: none;" />
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="row">
+                        <div class="form-group">
+                            <div class="col-md-6">
+                                @Html.ActionLink("Volver", "LandingPage", "ClienteContacto", new { }, new { @class = "btn btn-default" })
+                            </div>
+                            <div class="col-md-6 text-right">
+                                <button class="btn btn-primary" style="float:right" data-toggle="modal" data-target="#idModalConfirmCotizacionCrear" type="button">Guardar</button>
+
+
+                                <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" id="idModalConfirmCotizacionCrear">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                <h4 class="modal-title" id="myModalLabel">Confirmar</h4>
+                                            </div>
+                                            <div class="modal-body">
+                                                <p>¿Esta seguro que desea confirmar la creación de la cotizacion?</p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="submit" class="btn btn-primary">Aceptar</button>
+                                                <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+
+
+<div id='myModal' class='modal'>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body" id='myModalContent'>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    $(document).ready(function () {
+        $("#idSelectRut").trigger("change");
+
+        $("#idSelectModalidadCurso").trigger("change");
+
+        $("#idSelectTipoCurso").trigger("change");
+
+        $('#cantParticipantes').change(function () {
+            if ($("#idSelectCursos").val() != null && $("#idSelectCursos").val() != '') {
+                obtenerCursos($("#idSelectCursos").val(), $('#idSelectModalidadCurso').val(), $('#cantParticipantes').val())
+            }
+        });
+    });
+
+    $('#idSelectRut').on('change', function () {
+        console.log('AAAA' + this.value);
+        var clientesArray = @Html.Raw(Json.Encode(Model.clientes));
+        var cliente = clientesArray.find(o => o.idCliente === Number(this.value));
+        $('#cotizacion_nombreEmpresa').val(cliente.nombreEmpresa);
+        $('#cotizacion_razonSocial').val(cliente.razonSocial);
+        $('#cotizacion_telefonoCorporativo').val(cliente.telefonoCorporativo);
+        $('#cotizacion_direccion').val(cliente.direccion);
+
+
+
+        $.ajax({
+            url: "@Url.Action("ObtenerGiro", "Cotizacion_R13")", // Url
+            data: {
+                id: cliente.idCliente, // Parámetros
+            },
+            type: "post"  // Verbo HTTP
+        })
+        // Se ejecuta si todo fue bien.
+        .done(function (result) {
+            $("#idSelectGiro").html("");
+            $("#idSelectGiro").append('<option disabled data-tokens="" selected> Seleccionar </option>');
+            for (var i = 0; i < result.length; i++) {
+                @if (@Model.cotizacion != null)
+                {
+
+                    <text>
+                if (@Html.Raw(Json.Encode(Model.cotizacion.giro)) == result[i].descripcion) {
+                    $("#idSelectGiro").append('<option data-tokens="' + result[i].descripcion + ' "selected>' + result[i].descripcion + '</option>');
+
+                } else {
+                    $("#idSelectGiro").append('<option data-tokens="' + result[i].descripcion + '">' + result[i].descripcion + '</option>');
+
+                }
+                    </text>
+                }
+                else
+                {
+                    <text>
+
+                    $("#idSelectGiro").append('<option data-tokens="' + result[i].descripcion + '">' + result[i].descripcion + '</option>');
+                    </text>
+
+                }
+            }
+
+        })
+        // Se ejecuta si se produjo un error.
+        .fail(function (xhr, status, error) {
+
+        })
+        // Hacer algo siempre, haya sido exitosa o no.
+        .always(function () {
+
+        });
+
+
+        $.ajax({
+            url: "@Url.Action("ObtenerEncargadoDePago", "Cotizacion_R13")", // Url
+            data: {
+                id: cliente.idCliente, // Parámetros
+            },
+            type: "post"  // Verbo HTTP
+        })
+        // Se ejecuta si todo fue bien.
+        .done(function (result) {
+            $("#idSelectEncargadoPago").html("");
+            $("#idSelectEncargadoPago").append('<option disabled data-tokens="" selected> Seleccionar </option>');
+
+            for (var i = 0; i < result.length; i++) {
+
+                @if (@Model.cotizacion != null)
+                {
+
+                    <text>
+                    if (@Html.Raw(Json.Encode(Model.cotizacion.contactoEncargadoPago)) == result[i].idContacto) {
+                        $("#idSelectEncargadoPago").append('<option selected value="' + result[i].idContacto + '" data-tokens="' + result[i].nombres + ' ' + result[i].apellidoPaterno + ' ' + result[i].apellidoMaterno + '">' + result[i].nombres + ' ' + result[i].apellidoPaterno + ' ' + result[i].apellidoMaterno + '</option>');
+
+                    } else {
+                        $("#idSelectEncargadoPago").append('<option value="' + result[i].idContacto + '" data-tokens="' + result[i].nombres + ' ' + result[i].apellidoPaterno + ' ' + result[i].apellidoMaterno + '">' + result[i].nombres + ' ' + result[i].apellidoPaterno + ' ' + result[i].apellidoMaterno + '</option>');
+
+                }
+                    </text>
+                }
+                else
+                {
+                    <text>
+
+                    $("#idSelectEncargadoPago").append('<option value="' + result[i].idContacto +'" data-tokens="' + result[i].nombres + ' ' + result[i].apellidoPaterno + ' ' + result[i].apellidoMaterno + '">' + result[i].nombres + ' ' + result[i].apellidoPaterno + ' ' + result[i].apellidoMaterno + '</option>');
+
+                    </text>
+
+                }
+
+
+
+            }
+
+        })
+        // Se ejecuta si se produjo un error.
+        .fail(function (xhr, status, error) {
+
+        })
+        // Hacer algo siempre, haya sido exitosa o no.
+        .always(function () {
+
+        });
+
+
+
+        $.ajax({
+            url: "@Url.Action("ObtenerContacto", "Cotizacion_R13")", // Url
+            data: {
+                id: cliente.idCliente, // Parámetros
+            },
+            type: "post"  // Verbo HTTP
+        })
+        // Se ejecuta si todo fue bien.
+        .done(function (result) {
+            $("#idSelectContacto").html("");
+            $("#idSelectContacto").append('<option disabled data-tokens="" selected> Seleccionar </option>');
+
+            for (var i = 0; i < result.length; i++) {
+
+                @if (@Model.cotizacion != null)
+                {
+
+                    <text>
+
+                    if (@Html.Raw(Json.Encode(Model.cotizacion.contacto)) == result[i].idContacto) {
+                        $("#idSelectContacto").append('<option selected value="' + result[i].idContacto + '" data-tokens="' + result[i].nombres + ' ' + result[i].apellidoPaterno + ' ' + result[i].apellidoMaterno + '">' + result[i].nombres + ' ' + result[i].apellidoPaterno + ' ' + result[i].apellidoMaterno + '</option>');
+
+                    } else {
+                        $("#idSelectContacto").append('<option value="' + result[i].idContacto + '" data-tokens="' + result[i].nombres + ' ' + result[i].apellidoPaterno + ' ' + result[i].apellidoMaterno + '">' + result[i].nombres + ' ' + result[i].apellidoPaterno + ' ' + result[i].apellidoMaterno + '</option>');
+
+                    }
+                    </text>
+                }
+                else
+                {
+                    <text>
+
+                $("#idSelectContacto").append('<option value="' + result[i].idContacto +'" data-tokens="' + result[i].nombres + ' ' + result[i].apellidoPaterno + ' ' + result[i].apellidoMaterno + '">' + result[i].nombres + ' ' + result[i].apellidoPaterno + ' ' + result[i].apellidoMaterno + '</option>');
+
+                    </text>
+
+                }
+
+            }
+
+        })
+        // Se ejecuta si se produjo un error.
+        .fail(function (xhr, status, error) {
+
+        })
+        // Hacer algo siempre, haya sido exitosa o no.
+        .always(function () {
+
+        });
+
+
+    });
+    $('#idSelectModalidadCurso').on('change', function () {
+
+        $.ajax({
+            url: "@Url.Action("ObtenerCursosAutoCotizacion", "Cotizacion_R13")", // Url
+            data: {
+                modalidad: $(this).val(), // Parámetros
+            },
+            type: "post"  // Verbo HTTP
+        })
+        // Se ejecuta si todo fue bien.
+        .done(function (result) {
+            $("#idSelectCursos").html("");
+            $("#idSelectCursos").append('<option disabled data-tokens="" selected> Seleccionar </option>');
+
+            for (var i = 0; i < result.length; i++) {
+
+                @if (@Model.cotizacion != null)
+                {
+
+                    <text>
+
+
+                    if (@Html.Raw(Json.Encode(Model.cotizacion.idCurso)) == Number(result[i].idCurso)) {
+
+                        $("#idSelectCursos").append('<option selected data-tokens="' + result[i].curso.nombreCurso + '" value= "' + result[i].curso.idCurso + '">' + result[i].curso.nombreCurso + ' (' + result[i].horas + ' hrs)</option>');
+                        $("#idSelectCursos").trigger("change");
+
+                    } else {
+                        $("#idSelectCursos").append('<option data-tokens="' + result[i].curso.nombreCurso + '" value= "' + result[i].curso.idCurso + '">' + result[i].curso.nombreCurso + ' (' + result[i].horas + ' hrs)</option>');
+
+                    }
+                    </text>
+                }
+                else
+                {
+                    <text>
+
+                $("#idSelectCursos").append('<option data-tokens="' + result[i].curso.nombreCurso + '" value= "' + result[i].curso.idCurso + '">' + result[i].curso.nombreCurso + ' (' + result[i].horas + ' hrs)</option>');
+
+
+                    </text>
+
+                }
+
+            }
+
+        })
+        // Se ejecuta si se produjo un error.
+        .fail(function (xhr, status, error) {
+
+        })
+        // Hacer algo siempre, haya sido exitosa o no.
+        .always(function () {
+
+        });
+    });
+
+    $('#idSelectCursos').on('change', function () {
+         $.ajax({
+            url: "@Url.Action("ObtenerDatosCursoAutoCotizacion", "Cotizacion_R13")", // Url
+            data: {
+                id: $(this).val(), // Parámetros
+            },
+            type: "post"  // Verbo HTTP
+        })
+        // Se ejecuta si todo fue bien.
+             .done(function (result) {
+                 //Tiene R11
+                 if (result !== null && result !== '') {
+                     $("#idButtonR51").css("display", "none");
+                     //Tiene codigo SENCE
+                     if (result.codigoSence != null) {
+                         $("#idCodigoSENCE").val(result.codigoSence);
+                         $("#idButtonSENCE").css("display", "block");
+                         $("#idButtonR51").css("display", "none");
+                         $('#idCheckBoxCodigoSENCE').attr('disabled', false);
+                         $("#idCheckBoxCodigoSENCE").prop('checked', false);
+                     } else {
+                         $("#idCodigoSENCE").val(result.codigoSence);
+                         $("#idButtonSENCE").css("display", "none");
+                         $("#idButtonR51").css("display", "none");
+                         $("#idCheckBoxCodigoSENCE").prop('checked', true);
+                         $('#idCheckBoxCodigoSENCE').attr('disabled', true);
+                     }
+                 } else {
+                     $("#idCodigoSENCE").val(result.codigoSence);
+                     $("#idButtonR51").css("display", "block");
+                     $("#idButtonSENCE").css("display", "none");
+                     $("#idCheckBoxCodigoSENCE").prop('checked', true);
+                     $('#idCheckBoxCodigoSENCE').attr('disabled', true);
+                 }
+        })
+        // Se ejecuta si se produjo un error.
+        .fail(function (xhr, status, error) {
+
+        })
+        // Hacer algo siempre, haya sido exitosa o no.
+        .always(function () {
+
+        });
+        obtenerCursos($(this).val(), $('#idSelectModalidadCurso').val(), $('#cantParticipantes').val())
+    });
+
+    function obtenerCursos(id, modalidad, cantParticipantes) {
+        $.ajax({
+            url: "@Url.Action("ObtenerCostos", "Cotizacion_R13")", // Url
+            data: {
+                id: id, // Parámetros
+                modalidad: modalidad,
+                cantParticipantes: cantParticipantes
+            },
+            type: "post"  // Verbo HTTP
+        })
+        // Se ejecuta si todo fue bien.
+            .done(function (result) {
+                console.log(result);
+                $("#idTableCostoDatos").html('');
+                for (var i = 0; i < result.length; i++) {
+                    var htmlTr = '<tr><td style="border: 1px solid #e7ecf1;">' + result[i].detalle;
+                    var htmlTr = htmlTr + '<input type="hidden" name="cotizacion.costo[' + i + '].detalle" value="' + result[i].detalle + '" /></td>';
+                    var htmlTr = htmlTr + '<td><input class="form-control tdCantidad" onchange="cambioCantidad(this)" type="number" min="-1"  max="99999" name="cotizacion.costo[' + i + '].cantidad" value="' + result[i].cantidad + '" /></td>';
+                    var htmlTr = htmlTr + '<td><input class="form-control tdValor" onchange="cambioValor(this)" type="number" min="' + result[i].valorMinimo + '"  max="' + result[i].valorMaximo + '" name="cotizacion.costo[' + i + '].valor" value="' + result[i].valor + '" /></td>';
+                    var htmlTr = htmlTr + '<td><input readonly class="form-control tdTotal" type="number" name="cotizacion.costo[' + i + '].total" value="' + result[i].total + '" /></td></tr>';
+
+                    $("#idTableCostoDatos").append(htmlTr)
+                }
+                var total = 0;
+                $(".tdTotal").each(function () {
+
+                    total += Number($(this).val());
+
+                });
+                $('#idTotalTotal').html(  new Intl.NumberFormat('es-CL', { currency: 'CLP', style: 'currency' }).format(total));
+
+        })
+        // Se ejecuta si se produjo un error.
+        .fail(function (xhr, status, error) {
+
+        })
+        // Hacer algo siempre, haya sido exitosa o no.
+        .always(function () {
+
+        });
+    }
+
+    $('#idSelectTipoCurso').on('change', function () {
+        //if ($(this).val() == "Recertificación (Sin Detalle)") {
+        //    $('#idCostosCursoDiv').hide();
+        //    $('#idCostosCursoDiv').find('input, textarea, button, select').attr('disabled', true);
+        //    $('#idCostosCursoDivCorto').show();
+        //    $('#idCostosCursoDivCorto').find('input, textarea, button, select').attr('disabled', false);
+        //} else {
+        //    $('#idCostosCursoDiv').show();
+        //    $('#idCostosCursoDiv').find('input, textarea, button, select').attr('disabled', false);
+        //    $('#idCostosCursoDivCorto').hide();
+        //    $('#idCostosCursoDivCorto').find('input, textarea, button, select').attr('disabled', true);
+        //}
+        $('#idCostosCursoDiv').show();
+        $('#idCostosCursoDiv').find('input, textarea, button, select').attr('disabled', false);
+        $('#idCostosCursoDivCorto').hide();
+        $('#idCostosCursoDivCorto').find('input, textarea, button, select').attr('disabled', true);
+    });
+
+
+    function cambioCantidad(object){
+        var total = $(object).parent().parent().find(".tdTotal");
+        var valor = $(object).parent().parent().find(".tdValor").val();
+        var totalNumero = $(object).val() * valor;
+        total.val(totalNumero);
+
+        var totalTotal = 0;
+        $(".tdTotal").each(function () {
+
+            totalTotal += Number($(this).val());
+
+        });
+        $('#idTotalTotal').html(  new Intl.NumberFormat('es-CL', { currency: 'CLP', style: 'currency' }).format(total));
+    };
+
+    function cambioValor(object) {
+        var total = $(object).parent().parent().find(".tdTotal");
+        var cantidad = $(object).parent().parent().find(".tdCantidad").val();
+        var totalNumero = $(object).val() * cantidad;
+        total.val(totalNumero);
+        var totalTotal = 0;
+        $(".tdTotal").each(function () {
+
+            totalTotal += Number($(this).val());
+
+        });
+        $('#idTotalTotal').html( new Intl.NumberFormat('es-CL', { currency: 'CLP', style: 'currency' }).format(total));
+    };
+
+
+</script>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+

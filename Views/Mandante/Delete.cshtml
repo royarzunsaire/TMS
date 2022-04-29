@@ -1,0 +1,76 @@
+﻿@model SGC.Models.Mandante
+
+@{
+    ViewBag.Title = "Delete";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Eliminar mandante</h2>
+
+<h3>Seguro que deseas eliminar la empresa mandante</h3>
+<div>
+    <h4>Mandante</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.nombreMandante)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.nombreMandante)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.rut)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.rut)
+        </dd>
+
+
+
+
+        <dt>
+            @Html.DisplayNameFor(model => model.dirección)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.dirección)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.vigencia)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.vigencia)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.fechaCreacion)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.fechaCreacion)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.usuarioCreador)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.usuarioCreador)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Eliminar" class="btn btn-default" /> |
+            @Html.ActionLink("Volver", "Index")
+        </div>
+    }
+</div>

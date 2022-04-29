@@ -1,0 +1,104 @@
+﻿@model SGC.Models.Comercializacion
+
+<h3>
+    Administrar Bloques
+</h3>
+<hr />
+
+<div class="portlet box blue-dark">
+    <div class="portlet-title">
+        <div class="caption">
+            Bloques
+        </div>
+        <div class="tools">
+            <a href="javascript:;" class="collapse"> </a>
+            <a href="javascript:;" class="fullscreen"> </a>
+        </div>
+        <div class="actions">
+            <div class="inputs pull-right">
+                <a href="@Url.Action("Create", new { id = Model.idComercializacion }) " class="btn btn-circle btn-sm btn-default btn-group-lg" style="margin-right:10px; margin-left:10px;">
+                    <i class="fa fa-plus-circle"></i> Nuevo
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="portlet-body">
+        <table class="table table-striped table-bordered table-hover dt-responsive dataTable" id="sys-table" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayName("Fecha")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Inicio")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Término")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Relator")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Sala")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Almuerzo")
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.bloques.OrderBy(b => b.horarioInicio).OrderBy(b => b.fecha))
+                {
+                <tr>
+                    <td data-sort="@item.fecha.ToString("MM/dd/yyyy")">
+                        @Html.DisplayFor(modelItem => item.fecha)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.horarioInicio)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.horarioTermino)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.relator.contacto.nombreCompleto)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.sala.nombre)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.lugarAlmuerzo.nombre)
+                    </td>
+                    <td class="text-center">
+                        @using (Html.BeginForm("Delete", "Bloques", FormMethod.Post, new { @id = "notificationForm_" + @item.idBloque }))
+                        {
+                            <div class="input-group-btn">
+                                @Html.AntiForgeryToken()
+                                @if (!(Model.comercializacionEstadoComercializacion.LastOrDefault().EstadoComercializacion == SGC.Models.EstadoComercializacion.Terminada
+                                && Model.comercializacionEstadoComercializacion.LastOrDefault().EstadoComercializacion == SGC.Models.EstadoComercializacion.Cancelada
+                                && Model.comercializacionEstadoComercializacion.LastOrDefault().EstadoComercializacion == SGC.Models.EstadoComercializacion.Deshabilitada))
+                                {
+                                    @Html.ActionLink(" ", "Edit", new { id = item.idBloque }, htmlAttributes: new { @class = "btn btn-warning btn-sm glyphicon glyphicon-edit", @datatoggle = "tooltip", @title = "Editar" })
+                                }
+                                @Html.ActionLink(" ", "Details", new { id = item.idBloque }, htmlAttributes: new { @class = "btn btn-info btn-sm glyphicon glyphicon-list", @datatoggle = "tooltip", @title = "Ver" })
+                                @if (!(Model.comercializacionEstadoComercializacion.LastOrDefault().EstadoComercializacion == SGC.Models.EstadoComercializacion.Terminada
+                                && Model.comercializacionEstadoComercializacion.LastOrDefault().EstadoComercializacion == SGC.Models.EstadoComercializacion.Cancelada
+                                && Model.comercializacionEstadoComercializacion.LastOrDefault().EstadoComercializacion == SGC.Models.EstadoComercializacion.Deshabilitada))
+                                {
+                                    <a class="btn btn-danger btn-sm glyphicon glyphicon-trash" href="javascript:confirmDelete('Delete','@(item.idBloque)','Bloques')" title="Eliminar"></a>
+                                }
+                            </div>
+                        }
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+
+@section topLevel{
+    @{Html.RenderPartial("_RenderConfirm.Modal"); }
+}

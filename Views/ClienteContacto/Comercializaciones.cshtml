@@ -1,0 +1,313 @@
+﻿@using SGC.Helpers
+
+@model IEnumerable<SGC.Models.Comercializacion>
+
+@{
+    ViewBag.Title = "Listado Comercializacion";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<h3 class="page-title">
+    Administracion Comercializacion Representante Legal
+</h3>
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-folder"></i>Comercializaciones Creadas
+                </div>
+                <div class="tools">
+                    <a href="javascript:;" class="collapse"> </a>
+                    <a href="javascript:;" class="fullscreen"> </a>
+                </div>
+
+            </div>
+            <div class="portlet-body">
+                @if (ViewBag.PosseComercializacion != null)
+                {
+                    <div class="alert alert-danger" role="alert">
+                        @ViewBag.PosseComercializacion
+                    </div>
+                }
+            <table class="table table-striped table-bordered table-hover dt-responsive dataTable" id="sys-table" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.fechaInicio)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.fechaTermino)
+                        </th>
+                        <th>
+                            Nombre Curso
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td data-sort="@item.fechaInicio.ToString("MM/dd/yyyy")">
+                                @Html.DisplayFor(modelItem => item.fechaInicio)
+                            </td>
+                            <td data-sort="@item.fechaTermino.ToString("MM/dd/yyyy")">
+                                @Html.DisplayFor(modelItem => item.fechaTermino)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.cotizacion.curso.nombreCurso)
+                            </td>
+                            <td>
+                                <button id="idButtonDetalleCotizacion" value="@item.idComercializacion" class="btn btn-default btn-sm"><span class='glyphicon glyphicon-list-alt'></span></button>
+
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<div class="row" style="display: none" id="idDetalleComercializacion">
+    <div class="col-md-12">
+        <div class="portlet box blue">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-folder"></i>Detalle Comercializacion
+                </div>
+                <div class="tools">
+                    <a href="javascript:;" class="collapse"> </a>
+                    <a href="javascript:;" class="fullscreen"> </a>
+                </div>
+
+            </div>
+            <div class="portlet-body">
+                <h2>Participantes</h2>
+                <table class="table table-striped table-bordered table-hover dt-responsive dataTable" id="sys-table" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>
+                                Rut
+                            </th>
+                            <th>
+                                Nombre
+                            </th>
+                            <th>
+                                Nota
+                            </th>
+                            <th>
+                                Asistencia
+                            </th>
+                            <th>
+                                Detalles
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="idTableParticipantesDatos">                        
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="classModal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="classInfo" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    ×
+                </button>
+                <h4 class="modal-title" id="classModalLabel">
+                    Detalle de notas y asistencias de participantes
+                </h4>
+            </div>
+            <div class="modal-body">
+                <h2>Notas</h2>
+                <table id="classTable" class="table table-bordered">
+                    <thead>
+                    </thead>
+                    <tbody id="idTableParticipantesDatosDetallesNotas">
+                    </tbody>
+                </table>
+                <h2>Asistencias</h2>
+                <table id="classTable" class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>
+                                Fecha
+                            </th>
+                            <th>
+                                Hora inicio
+                            </th>
+                            <th>
+                                Hora Termino
+                            </th>
+                            <th>
+                                Asistio
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="idTableParticipantesDatosDetallesAsistencias">
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">
+                    Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts{
+
+    <script src="/Content/plugins/datatables/datatables.js" type="text/javascript"></script>
+    <script src="/Content/plugins/datatables/datatables.min.js" type="text/javascript"></script>
+    <script src="/Content/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js" type="text/javascript"></script>
+
+
+}
+
+<script>
+
+    var DatosDetalle = null;
+    function btn_click(id) {
+        console.log(DatosDetalle[id]);
+
+        $("#idTableParticipantesDatosDetallesNotas").html('');
+
+        var htmlTr = '<tr><td style="border: 1px solid #e7ecf1; background-color: #ececec; width: 120px">';
+        htmlTr = htmlTr +  '<b>Notas</b></td>';
+
+        var notaFinal = 0;
+        for (var j = 0; j < DatosDetalle[id].notas.length; j++) {
+            htmlTr = htmlTr + '<td>' + DatosDetalle[id].notas[j].nota + '</td>';
+
+            //notaFinal += Number(Number(DatosDetalle[id].notas[j].nota) * (Number(result[i].notas[j].porcentaje) / 100));
+        }
+
+        htmlTr = htmlTr + '</tr>';
+        htmlTr = htmlTr + '<tr><td style="border: 1px solid #e7ecf1; background-color: #ececec; width: 120px">';
+        htmlTr = htmlTr + '<b>Porcentaje</b></td>';
+
+        for (var j = 0; j < DatosDetalle[id].notas.length; j++) {
+            htmlTr = htmlTr + '<td>%' + DatosDetalle[id].notas[j].porcentaje + '</td>';
+        }
+
+        htmlTr = htmlTr + '</tr>';
+        $("#idTableParticipantesDatosDetallesNotas").append(htmlTr)
+
+
+
+
+
+        $("#idTableParticipantesDatosDetallesAsistencias").html('');
+
+        var htmlTr = '<tr>';
+
+        for (var j = 0; j < DatosDetalle[id].asistencias.length; j++) {
+            var fecha = new Date(parseInt(DatosDetalle[id].asistencias[j].fecha.replace("/Date(", "").replace(")/", ""), 10));
+            var month = fecha.getMonth();
+            var day = fecha.getDate();
+            var year = fecha.getFullYear();
+
+            var horaInicio = new Date(parseInt(DatosDetalle[id].asistencias[j].bloque.horarioInicio.replace("/Date(", "").replace(")/", ""), 10));
+            var horaTermino = new Date(parseInt(DatosDetalle[id].asistencias[j].bloque.horarioTermino.replace("/Date(", "").replace(")/", ""), 10));
+
+            htmlTr = htmlTr + '<td>' + day + '/' + month + '/' + year + '</td>';
+            htmlTr = htmlTr + '<td>' + horaInicio.getHours() + ':' + horaInicio.getMinutes() + '</td>';
+            htmlTr = htmlTr + '<td>' + horaTermino.getHours()  + ':' + horaTermino.getMinutes() + '</td>';
+
+            var asistio = 'No';
+
+            if (DatosDetalle[id].asistencias[j].asistio) {
+                asistio = 'Si';
+            }
+
+
+            htmlTr = htmlTr + '<td>' + asistio + '</td>';
+            htmlTr = htmlTr + '</tr>';
+
+        }
+
+        $("#idTableParticipantesDatosDetallesAsistencias").append(htmlTr)
+
+        $('#classModal').modal('show')
+    }
+
+
+    $(document).ready(function () {
+        $("#idButtonDetalleCotizacion").click(function () {
+            $("#idDetalleComercializacion").show();
+
+            $.ajax({
+                url: "@Url.Action("ObtenerNotasAsitenciaGeneral", "ClienteContacto")", // Url
+                data: {
+                    id: $(this).val(), // Parámetros
+                },
+                type: "post"  // Verbo HTTP
+            })
+            // Se ejecuta si todo fue bien.
+                .done(function (result) {
+                    $("#idTableParticipantesDatos").html('');
+                    console.log(result);
+                    DatosDetalle = result;
+                    for (var i = 0; i < result.length; i++) {
+                        var htmlTr = '<tr><td style="border: 1px solid #e7ecf1;">';
+                         htmlTr = htmlTr + result[i].rut + '</td>';
+                         htmlTr = htmlTr + '<td>' + result[i].nombre + '</td>';
+
+                        var notaFinal = 0;
+                        for (var j = 0; j < result[i].notas.length; j++) {
+                            notaFinal += Number(Number(result[i].notas[j].nota) * (Number(result[i].notas[j].porcentaje)/100));
+                        }
+
+                        var asistenciaFinal = 0;
+                        var contadorAsistenciaFinal = 0;
+                        for (var y = 0; y < result[i].asistencias.length; y++) {
+                            asistenciaFinal += Number(result[i].asistencias[y].asistio);
+                            contadorAsistenciaFinal++;
+                        }
+                        asistenciaFinal = asistenciaFinal / contadorAsistenciaFinal;
+                         htmlTr = htmlTr + '<td>' + notaFinal + '</td>';
+                        htmlTr = htmlTr + '<td>%' + asistenciaFinal * 100 + '</td>';
+                        htmlTr = htmlTr + '<td><button class="btn btn-primary" onclick="btn_click('+i+');"> Detalles</button></td>';
+
+                        htmlTr = htmlTr + '</tr>';
+
+                        $("#idTableParticipantesDatos").append(htmlTr)
+                    }
+
+            })
+            // Se ejecuta si se produjo un error.
+            .fail(function (xhr, status, error) {
+
+            })
+            // Hacer algo siempre, haya sido exitosa o no.
+            .always(function () {
+
+            });
+        });
+
+
+    });
+
+
+</script>
+
+@section topLevel{
+    @{Html.RenderPartial("_RenderConfirm.Modal"); }
+}

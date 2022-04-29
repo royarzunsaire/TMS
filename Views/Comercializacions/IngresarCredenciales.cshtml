@@ -1,0 +1,122 @@
+﻿@model SGC.Models.Comercializacion
+@using SGC.Models
+@{
+    List<CredencialesFile> credencialesFile = ViewBag.CredencialesFile;
+    ViewBag.Title = "Ingresar Credencial";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="page-title" style="margin-bottom: 0">
+    <div class="row">
+        <div class="col-md-12">
+            Administrar Comercialización
+        </div>
+        <div class="col-md-12">
+            <small>Comercialización: @Model.cotizacion.codigoCotizacion</small>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet light bordered">
+            <div class="portlet-title">
+                <div class="caption">
+                    Credenciales
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="row col-md-12">
+                    <div class="col-md-2 text-center">
+                        <label> Elementos </label>
+                    </div>
+
+                    <div class="col-md-4 text-center">
+                        <label> Fichero</label>
+                    </div>
+                    <div class="col-md-3 text-center">
+                        <label> Descripción </label>
+                    </div>
+                    <div class="col-md-3">
+                        <label>  </label>
+                    </div>
+                </div>
+
+                @if (credencialesFile != null && credencialesFile.Count() > 0)
+                {
+                    int i = 1;
+                    foreach (CredencialesFile credencial in credencialesFile)
+                    {
+                        <div class="row col-md-12">
+                            <div class="col-md-2 text-left">
+                                @Html.Label("Documentos", "Documento " + i, htmlAttributes: new { @class = "control-label" })
+                            </div>
+                            <div class="col-md-4 text-left">
+                                <span class="glyphicon glyphicon-save"></span>
+                                @Html.ActionLink(credencial.file.nombreArchivo, "Descargar", new { id = credencial.file.idStorage }, new { })
+                            </div>
+                            <div class="col-md-3 text-center">
+                                <label> @credencial.description</label>
+                            </div>
+                            <div class="col-md-3  text-right">
+                                <span class="glyphicon glyphicon-remove"></span>
+                                @Html.ActionLink("Eliminar", "DeleteCredenciales", "Comercializacions", new { idComercializacion = Model.idComercializacion, idStorage = credencial.file.idStorage }, new { onclick = "return confirm('Está seguro que desea eliminar el CredencialesFile: " + credencial.file.nombreArchivo + "?');" })
+                            </div>
+                        </div>
+                        <hr />
+                        i++;
+                    }
+
+                }
+                <hr />
+                @using (Html.BeginForm("IngresarCredenciales", "Comercializacions", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <div class="col-md-12">
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    </div>
+                    @Html.HiddenFor(model => model.idComercializacion)
+                    <div class="row">
+                        <div class="col-md-12">
+                            @Html.Label("Archivo CredencialesFile", "Seleccionar archivo", htmlAttributes: new { @class = "control-label" })
+                            @if (credencialesFile != null && credencialesFile.Count() < 1)
+                            {
+                                for (int i = (credencialesFile.Count() + 1); i <= 1; i++)
+                                {
+                                    int pos = (@i - @credencialesFile.Count() - 1);
+                                    <div class="col-md-12">
+                                        <div class="col-md-4  text-left">
+                                            <label> Documento @i</label>
+                                        </div>
+                                        <div class="col-md-4  text-left">
+
+                                            <label> Descripción: </label>
+                                            <input type="text" name="viewModelCredenciales[@pos].descritions" id="descritions_@pos" />
+                                        </div>
+                                        <div class="col-md-4  text-left">
+                                            <input type="file" name="viewModelCredenciales[@pos].files" id="files_@pos" accept="application/pdf" />
+                                        </div>
+                                    </div>
+                                    <br>
+                                }
+                            }
+
+
+
+
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="row">
+                        <div class="col-md-6">
+                            @Html.ActionLink("Volver", "Index", new { }, new { @class = "btn btn-default" })
+                        </div>
+                        <div class="col-md-6 text-right">
+                            <input type="submit" value="Guardar" class="btn btn-primary" />
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

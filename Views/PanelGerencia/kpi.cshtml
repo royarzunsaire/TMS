@@ -1,0 +1,114 @@
+﻿@model IEnumerable<SGC.Models.Cotizacion_R13>
+@using SGC.Models;
+@using System.Collections.Generic;
+@{
+    var data = Model.ToList();
+    var vendedores = (List<AspNetUsers>)ViewBag.vendedores;
+    var fecha = ViewBag.fechaInicio + " - " + ViewBag.fechaTermino;
+}
+   
+    <style>
+        #table-wrapper {
+            position: relative;
+        }
+
+        #table-scroll {
+            overflow: auto;
+        }
+
+        #table-wrapper table {
+            width: 100%;
+        }
+
+        #table-wrapper td {
+            white-space: nowrap;
+        }
+
+        #table-wrapper th {
+            white-space: nowrap;
+        }
+
+        th {
+            background-color: yellow;
+        }
+    </style>
+
+    <div id="table-wrapper">
+        <div id="table-scroll">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th colspan="5">
+                         @fecha
+                        </th>
+
+                    </tr>
+                    <tr>
+                        <th>
+                            Comercial
+                        </th>
+                        @foreach (string name in Enum.GetNames(typeof(TipoEjecucion)))
+                        {
+                            
+                            <th>
+                                @Html.DisplayName(name)
+                            </th>
+                        }
+                        <th>
+                            Total
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @foreach (var vendedor in vendedores)
+                    {
+                        var items = data.Where(x => x.usuarioCreador.Id == vendedor.Id).ToList();
+                        if (items != null && items.Count() > 0) { 
+                    <tr>
+                        <td>
+                            @Html.Label(vendedor.nombreCompleto)
+                        </td>
+
+
+                        @foreach (int i in Enum.GetValues(typeof(TipoEjecucion)))
+                        {
+                            var count = items.Count(x => (int)x.curso.tipoEjecucion == i);
+
+                            <td>
+                                @Html.Label(Convert.ToString(count))
+                            </td>
+                        }
+                        <td>
+                            @Html.Label(Convert.ToString(items.Count()))
+                        </td>
+                    </tr>
+                        }
+                        
+
+
+                    }
+
+                    <tr>
+                        <td>
+                            @Html.Label("Total")
+                        </td>
+
+
+                        @foreach (int i in Enum.GetValues(typeof(TipoEjecucion)))
+                        {
+                            var count = data.Count(x => (int)x.curso.tipoEjecucion == i);
+
+                            <td>
+                                @Html.Label(Convert.ToString(count))
+                            </td>
+                        }
+                        <td>
+                            @Html.Label(Convert.ToString(data.Count()))
+                        </td>
+                    </tr>
+                </tbody>
+                </table>
+        </div>
+    </div>
+

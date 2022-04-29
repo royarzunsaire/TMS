@@ -1,0 +1,144 @@
+﻿@model IEnumerable<SGC.Models.Comercializacion>
+
+<style>
+    #table-wrapper {
+        position: relative;
+    }
+
+    #table-scroll {
+        overflow: auto;
+    }
+
+    #table-wrapper table {
+        width: 100%;
+    }
+
+    #table-wrapper td {
+        white-space: nowrap;
+    }
+
+    #table-wrapper th {
+        white-space: nowrap;
+    }
+
+    th {
+        background-color: yellow;
+    }
+</style>
+
+<div id="table-wrapper">
+    <div id="table-scroll">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayName("Código Comercialización")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Código Consolidación")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Cliente")
+                    </th>
+                    <th>
+                        @Html.DisplayName("RUT Cliente")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Curso")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Tipo de Ejecución")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Fecha Inicio")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Fecha Término")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Sucursal")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Promedio R25")
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var comercializacion in Model)
+                    {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => comercializacion.cotizacion.codigoCotizacion)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => comercializacion.cotizacion.calendarizacionAbierta.codigoConsolidacion)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => comercializacion.cotizacion.cliente.nombreEmpresa)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => comercializacion.cotizacion.cliente.rut)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => comercializacion.cotizacion.curso.nombreCurso)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => comercializacion.cotizacion.curso.tipoEjecucion)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => comercializacion.fechaInicio)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => comercializacion.fechaTermino)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => comercializacion.cotizacion.sucursal.nombre)
+                    </td>
+                    @{
+                        var totalFinal = 0.0;
+                        var contFinal = 0;
+                        foreach (var formulario in comercializacion.r19.FirstOrDefault().encuesta.seccionEncuesta)
+                        {
+                            foreach (var contacto in comercializacion.participantes)
+                            {
+                                foreach (var pregunta in formulario.formulario.preguntasFormularios)
+                                {
+                                    if (pregunta.tipo == SGC.Models.TipoPregunta.Alternativa)
+                                    {
+                                        foreach (var r19 in comercializacion.r19)
+                                        {
+                                            if (r19.encuesta.respuestas != null && r19.encuesta.respuestas.Count() != 0)
+                                            {
+                                                var respuesta = r19.encuesta.respuestas
+                                                    .Where(r => r.pregunta.idPreguntasFormulario == pregunta.idPreguntasFormulario)
+                                                    .Where(r => r.contacto.idContacto == contacto.contacto.idContacto)
+                                                    .FirstOrDefault();
+                                                if (respuesta != null)
+                                                {
+                                                    totalFinal += double.Parse(respuesta.respuesta);
+                                                    contFinal++;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        if (contFinal != 0)
+                        {
+                            <td>
+                                @((totalFinal / contFinal).ToString("#.#"))%
+                            </td>
+                        }
+                        else
+                        {
+                            <td> - </td>
+                        }
+                    }
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+

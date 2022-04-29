@@ -1,0 +1,24 @@
+﻿@model SGC.Models.PostCurso
+
+@{
+    var djo = Model.djo ? "success" : "danger";
+    var credReady = Model.credReady? "success" : "danger";
+    var infoCheck = Model.infoCheck ? "success" : "danger";
+    var mailClient = Model.mailClient ? "success" : "danger";
+ }
+
+
+<div class="input-group-btn" >
+
+    @Html.Label(" ", htmlAttributes: new { @class = "btn btn-"+djo+" btn-sm glyphicon glyphicon-pencil", @datatoggle = "tooltip", @title = "Declaración Jurada OTEC" })
+    @Html.Label(" ", htmlAttributes: new { @class = "btn btn-" + credReady + " btn-sm glyphicon glyphicon-credit-card", @datatoggle = "tooltip", @title = "Credenciales Listas" })
+    @Html.Label(" ", htmlAttributes: new { @class = "btn btn-" + infoCheck + " btn-sm glyphicon glyphicon-check", @datatoggle = "tooltip", @title = "Información Revisada" })
+    @Html.Label(" ", htmlAttributes: new { @class = "btn btn-" + mailClient + " btn-sm glyphicon glyphicon-envelope", @datatoggle = "tooltip", @title = "Correo a cliente enviado" })
+
+
+</div>
+
+
+
+
+

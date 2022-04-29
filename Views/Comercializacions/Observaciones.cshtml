@@ -1,0 +1,39 @@
+﻿@model SGC.Models.Comercializacion
+
+<div class="form-group">
+    <div class="col-md-12" style="padding-left: 0px;padding-right: 0px;">
+        <ul class="media-list">
+            @foreach (var item in Model.observaciones.OrderByDescending(model => model.fechaCreacion))
+            {
+                <li>
+                    <div class="row note note-info" style="padding-top: 5px;padding-bottom: 5px;padding-left: 0px;padding-right: 0px;">
+                        <div class="col-lg-8 col-md-12 col-sm-8">
+                            <div class="observacion-titulo">
+                                @item.usuarioCreador.UserName
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-12 col-sm-4">
+                            <div class="observacion-fecha">
+                                <div class="fechaObservacion-@item.idObservacion"></div>
+                                <input type="hidden" id="hoy" value="@Newtonsoft.Json.JsonConvert.SerializeObject(DateTimeOffset.Parse(DateTime.Now.ToString(), null).DateTime)" />
+                                <script>
+                                    fechaObservacion = JSON.parse('@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(@item.fechaCreacion))');
+                                    @*fechaObservacion = '@Newtonsoft.Json.JsonConvert.SerializeObject(@item.fechaCreacion)';
+                                    fechaObservacion = fechaObservacion.replace(/&quot;/g, '"');
+                                    fechaObservacion = JSON.parse(fechaObservacion);*@
+                                    hoy = Date.parse(JSON.parse($("#hoy").val()));
+                                    $('.fechaObservacion-@item.idObservacion').html(moment(Date.parse(fechaObservacion)).startOf('minute').from(hoy));
+                                </script>
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="observacion-detalles">
+                                @Html.Raw(item.observacion.Replace("\n", "<br/>"))
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            }
+        </ul>
+    </div>
+</div>

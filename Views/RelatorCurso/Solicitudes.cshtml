@@ -1,0 +1,171 @@
+﻿@model IEnumerable<SGC.Models.RelatorCursoSolicitado>
+
+@{
+    ViewBag.Title = "Listado RelatorCursoSolicitado";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>
+    Solicitudes de Cursos por Relatores
+</h2>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            @Html.Label("cursos", "Cursos", htmlAttributes: new { @class = "control-label" })
+            <div class="row">
+                <div class="col-md-10">
+                    @Html.DropDownList("cursos", (SelectList)ViewBag.cursos, "", htmlAttributes: new { @class = "form-control select2", id = "cursos", onchange = "cargarTabla()" })
+                </div>
+                <div class="col-md-2">
+                    <button class="btn btn-default" type="button" id="btnBorrarCursos"><i class="fa fa-times"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            @Html.Label("relatores", "Relatores", htmlAttributes: new { @class = "control-label" })
+            <div class="row">
+                <div class="col-md-10">
+                    @Html.DropDownList("relatores", (SelectList)ViewBag.relatores, "", htmlAttributes: new { @class = "form-control select2", id = "relatores", onchange = "cargarTabla()" })
+                </div>
+                <div class="col-md-2">
+                    <button class="btn btn-default" type="button" id="btnBorrarRelatores"><i class="fa fa-times"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<table id="table" class="table table-striped table-bordered table-hover dt-responsive dataTable no-footer">
+    <thead>
+        <tr>
+            <th hidden>
+                @Html.DisplayName("idCurso")
+            </th>
+            <th hidden>
+                @Html.DisplayName("idRelator")
+            </th>
+            <th>
+                @Html.DisplayName("Curso")
+            </th>
+            <th>
+                @Html.DisplayName("Tipo de Ejecución")
+            </th>
+            <th>
+                @Html.DisplayName("Relator")
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td hidden>
+                    @Html.DisplayFor(modelItem => item.curso.idCurso)
+                </td>
+                <td hidden>
+                    @Html.DisplayFor(modelItem => item.relator.idRelator)
+                </td>
+                <td>
+                    @*@Html.ActionLink(item.curso.nombreCurso, "Details", "Curso", new { id = item.idCurso }, new { }) //TODO*@
+                    @Html.DisplayFor(modelItem => item.curso.nombreCurso)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.curso.tipoEjecucion)
+                </td>
+                <td>
+                    @Html.ActionLink(item.relator.contacto.nombreCompleto, "Details", "Relator", new { id = item.idRelator }, new { })
+                </td>
+                <td>
+                    @Html.ActionLink("Aceptar", "Aceptar", "RelatorCurso", new { id = item.idCurso + "-" + item.idRelator }, htmlAttributes: new { @class = "btn btn-primary", @style = "float: left" })
+                    @using (Html.BeginForm("Rechazar", "RelatorCurso", FormMethod.Post, new { @style = "float: left", id = "formRechazar" + @item.idRelator + "-" + @item.idCurso }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="idRelator" id="idRelator" value="@item.idRelator" />
+                        <input type="hidden" name="idCurso" id="idCurso" value="@item.idCurso" />
+                        <div class="form-actions no-color">
+                            <input type="button" onclick="rechazar()" value="Rechazar" class="btn btn-danger" />
+                        </div>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+<div id="modalConfirmarRechazar" class="modal fade draggable-modal modalx" tabindex="-1" role="alertdialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div id="modal-content" class="modal-content">
+            <div class="modal-header">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4 class="modal-title">Confirmar</h4>
+                    </div>
+                    <div class="col-md-6">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body text-center">
+                <p>¿Esta seguro que desea rechazar la solicitud?</p>
+            </div>
+            <div class="modal-footer">
+                <button id="btnConfirmarRechazar" type="button" class="btn btn-primary">Aceptar</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        /* Custom filtering function which will search data in column 3 between two values */
+        $.fn.dataTable.ext.search.push(
+            function (settings, data, dataIndex) {
+                cursoFiltro = $("#cursos").val();
+                relatorFiltro = $("#relatores").val();
+                curso = data[0];
+                relator = data[1];
+                if (((cursoFiltro === '') && (relatorFiltro === '')) ||
+                    ((relatorFiltro === '') && curso === cursoFiltro) ||
+                    (relatorFiltro === relator && (cursoFiltro === '')) ||
+                    (cursoFiltro === curso && relator === relatorFiltro)) {
+                    return true;
+                }
+                return false;
+            }
+        );
+
+        var table = $('#table').DataTable();
+
+        $(document).ready(function () {
+
+            $('#btnBorrarCursos').click(function () {
+                $('#cursos').val('');
+                $('#cursos').trigger('change');
+            });
+
+            $('#btnBorrarRelatores').click(function () {
+                $('#relatores').val('');
+                $('#relatores').trigger('change');
+            });
+            // -------- submit --------
+            $("#btnConfirmarRechazar").click(function () {
+                idRelator = $("#idRelator").val();
+                idCurso = $("#idCurso").val();
+                console.log("#formRechazar" + idRelator + "-" + idCurso);
+                $("#formRechazar" + idRelator + "-" + idCurso).submit();
+            });
+        });
+        function rechazar() {
+            $('#modalConfirmarRechazar').modal({ keyboard: true }, 'show');
+        }
+        function cargarTabla() {
+            table.draw();
+        }
+    </script>
+}

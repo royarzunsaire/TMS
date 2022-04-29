@@ -1,0 +1,746 @@
+﻿@model IEnumerable<SGC.Models.Participante>
+@using SGC.Models
+@{
+    ViewBag.Title = "Administrar Participantes";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    string tipoEjecucion = null;
+
+    if (Model.Any())
+    {
+        tipoEjecucion = Convert.ToString(Model.FirstOrDefault().comercializacion.cotizacion.curso.tipoEjecucion);
+    }
+
+    var linkComercializacion = (LinkComercializacion)ViewBag.linkComercializacion;
+    if (linkComercializacion == null)
+    {
+        linkComercializacion = new LinkComercializacion();
+    }
+    List<SelectListItem> acciones = new List<SelectListItem>();
+    acciones.Add(new SelectListItem { Text = "Eliminar", Value = "eliminar" });
+    acciones.Add(new SelectListItem { Text = "Rematicula", Value = "matricula" });
+    var fechaMatricula = DateTime.Now;
+}
+
+<div class="page-title" style="margin-bottom: 0">
+    <div class="row">
+        <div class="col-md-12">
+            Administrar Participantes
+        </div>
+        <div class="col-md-12">
+            <small>Curso: @ViewBag.nombreCurso</small>
+        </div>
+        <div class="col-md-6">
+            <small>Comercialización: @ViewBag.codigoComercializacion</small>
+        </div>
+        <div class="col-md-6">
+            <small>Tipo De Ejecucion: @ViewBag.tipoEjecucion</small>
+        </div>
+
+        <div class="col-md-6">
+            @if (@ViewBag.linkComercializacion != null)
+            {
+                if (@ViewBag.linkComercializacion.linkAutomatic == true)
+                {
+                    if (@ViewBag.linkComercializacion.link == null)
+                    {
+                        <small href="">Link Videollamada: Aún no Asignado</small>
+                    }
+                    else
+                    {
+                        <small>
+                            Link Videollamada: <a target="_blank" href="@ViewBag.link">Click aquí</a>
+                        </small>
+                    }
+                }
+                else
+                {
+                    if (@ViewBag.linkComercializacion.linkManual == null)
+                    {
+                        <small>Link Videollamada: Aún no Asignado</small>
+                    }
+                    else
+                    {
+                        <small>
+                            Link Videollamada: <a target="_blank" href="@ViewBag.linkComercializacion.linkManual">Click aquí</a>
+                        </small>
+                    }
+                }
+            }
+
+        </div>
+        <div class="col-md-6">
+            <small>Plataforma: @ViewBag.salas</small>
+        </div>
+    </div>
+</div>
+<div class="portlet box blue-dark">
+    <div class="portlet-title">
+        <div class="caption">
+            Paricipantes
+        </div>
+        <div class="tools">
+            <a href="javascript:;" class="collapse"> </a>
+            <a href="javascript:;" class="fullscreen"> </a>
+        </div>
+        <div class="actions">
+            <div class="inputs pull-right">
+                <a href="@Url.Action("GetQuizAprendizaje", new { id = ViewBag.idComercializacion }) " class="btn btn-circle btn-sm btn-default ">
+                    Quiz Aprendizaje
+                </a>
+                <a href="@Url.Action("Resumen", new { id = ViewBag.idComercializacion }) " class="btn btn-circle btn-sm btn-default ">
+                    <span class="glyphicon glyphicon-list-alt"></span> Asistencia/Notas
+                </a>
+                <button href="#" class="btn btn-circle btn-sm btn-default link">
+                    <span class="glyphicon glyphicon-link"></span> <span class="glyphicon glyphicon-education"></span> Link
+                </button>
+                <a href="@Url.Action("AgregarUsuariosGrupoMoodle", new { id = ViewBag.idComercializacion }) " class="btn btn-circle btn-sm btn-default cargandoGrupos">
+                    <span class="glyphicon glyphicon-link"></span> <span class="glyphicon glyphicon-education"></span> Usuarios a Grupo Moodle
+                </a>
+                <a href="@Url.Action("AgregarUsuariosMoodle", new { id = ViewBag.idComercializacion }) " class="btn btn-circle btn-sm btn-default cargandoUsuarios">
+                    <span class="glyphicon glyphicon-link"></span> <span class="glyphicon glyphicon-user"></span> Usuarios a Moodle
+                </a>
+                <a href="@Url.Action("IngresarParticipantes", new { id = ViewBag.idComercializacion }) " class="btn btn-circle btn-sm btn-default">
+                    Ingresar Participantes
+                </a>
+                <a href="@Url.Action("Notas", new { id = ViewBag.idComercializacion }) " class="btn btn-circle btn-sm btn-default">
+                    Notas
+                </a>
+                <a href="@Url.Action("Asistencia", new { id = ViewBag.idComercializacion }) " class="btn btn-circle btn-sm btn-default">
+                    Asistencia
+                </a>
+                <a href="@Url.Action("ConfigurarR19", "R19", new { id = ViewBag.idComercializacion }) " class="btn btn-circle btn-sm btn-default">
+                    R19
+                </a>
+                <a href="@Url.Action("Create", new { id = ViewBag.idComercializacion }) " class="btn btn-circle btn-sm btn-default" style="margin-right:10px;">
+                    <i class="fa fa-plus-circle"></i> Nuevo
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="portlet-body">
+        <div class="row text-left" id="logError">
+        </div>
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @using (Html.BeginForm("Acciones", "Participante", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken();
+            <input type="hidden" name="idComercializacion" value="@ViewBag.idComercializacion" />
+            @Html.Label("Acciones: ")
+            @Html.DropDownList("idaction", new SelectList(acciones, "Value", "Text"), "Seleccione una acción", htmlAttributes: new { @class = "btn-group coordinador", @id = "idaction", @style = "max-width:150px" })
+            <button type="button" class="btn btn-success  glyphicon glyphicon-arrow-right" datatoggle="tooltip" id="idactionBoton" title=""> </button>
+            @Html.Hidden("participantes", "", new { @id = "participantes" })
+            <div class="modal fade draggable-modal modalx"
+                 id="modalAction"
+                 tabindex="-1"
+                 data-backdrop="static"
+                 data-keyboard="false"
+                 role="dialog"
+                 aria-labelledby="deleteLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <div class="row">
+                                <div class="col-md-10">
+                                    <h4 class="modal-title">Configurar Links</h4>
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-body">
+                            <label id="replace"></label>
+                            @Html.EditorFor(model => fechaMatricula, new { htmlAttributes = new { @class = "form-control datepicker", placeholder = "dd-mm-yyyy", @id = "fechaMatricula" } })
+                            <div class="modal-footer">
+                                <div class="row">
+                                    <div class="col-md-6 text-left">
+                                        <button type="button" data-dismiss="modal" class="btn btn-default" data-dissmiss="modal">Salir</button>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <button id="sendAction" type="submit" class="btn btn-primary">Aceptar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+
+        <table class="table table-striped table-bordered table-hover dt-responsive dataTable" id="sys-table" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.contacto.nombreCompleto)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.contacto.run)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.contacto.telefono)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.timeend)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.CheckBox("selected", false, new { @class = "select", @id = "select-" + item.idParticipante })
+                            @Html.HiddenFor(modelitem => item.idParticipante)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelitem => item.contacto.nombreCompleto)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelitem => item.contacto.run)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelitem => item.contacto.telefono)
+                        </td>
+
+                        <td>
+                            @Html.DisplayFor(modelitem => item.timestart)
+                            -
+                            @Html.DisplayFor(modelitem => item.timeend)
+                        </td>
+                        <td class="text-center">
+                            @using (Html.BeginForm("Delete", "Participante", FormMethod.Post, new { @id = "notificationForm_" + @item.idParticipante }))
+                            {
+                                <div class="input-group-btn">
+                                    @if (item.timeend >= DateTime.Today)
+                                    {
+                                        <button type="button" class="btn btn-success  btn-sm glyphicon  glyphicon-ok" datatoggle="tooltip" title="Activo"> </button>
+                                    }
+                                    else
+                                    {
+                                        <button type="button" class="btn btn-danger btn-sm glyphicon  glyphicon-remove" datatoggle="tooltip" title="Desactivado"> </button>
+                                    }
+                                    @if (item.correoEnviado)
+                                    {
+                                        <button type="button" class="mail btn btn-success  btn-sm glyphicon  glyphicon-envelope" datatoggle="tooltip" id="@item.idParticipante" title="Correo enviado"> </button>
+                                    }
+                                    else
+                                    {
+                                        <button type="button" class="mail btn btn-default btn-sm glyphicon  glyphicon-envelope" datatoggle="tooltip" id="@item.idParticipante" title="Sin Enviar correo"> </button>
+                                    }
+
+                                    @if (item.comercializacion.r19.Count() == 0)
+                                    {
+                                        <button type="button" class="btn btn-default btn-sm glyphicon glyphicon-list-alt" title="Encuesta" disabled></button>
+                                    }
+                                    else
+                                    {
+                                        var respondio = true;
+                                        foreach (var r19 in item.comercializacion.r19)
+                                        {
+                                            if (item.contacto.respuestasEncuesta.Where(x => x.encuesta.idEncuesta == r19.encuesta.idEncuesta).Count() == 0)
+                                            {
+                                                respondio = false;
+                                            }
+                                        }
+                                        if (!respondio)
+                                        {
+                                            @Html.ActionLink(" ", "LlenarR19", "R19", new { id = item.idParticipante, id2 = ViewBag.idComercializacion }, htmlAttributes: new { @class = "btn btn-default btn-sm glyphicon glyphicon-list-alt", @datatoggle = "tooltip", @title = "Encuesta" })
+                                        }
+                                        else
+                                        {
+                                            @Html.ActionLink(" ", "LlenarR19", "R19", new { id = item.idParticipante, id2 = ViewBag.idComercializacion }, htmlAttributes: new { @class = "btn btn-success btn-sm glyphicon glyphicon-list-alt", @datatoggle = "tooltip", @title = "Encuesta" })
+                                        }
+                                    }
+
+                                    @if (item.credenciales == null)
+                                    {
+                                        @Html.ActionLink(" ", "Credenciales", new { id = item.idParticipante }, htmlAttributes: new { @class = "btn btn-default btn-sm glyphicon glyphicon-picture", @datatoggle = "tooltip", @title = "Foto Credenciales" })
+                                    }
+                                    else
+                                    {
+                                        @Html.ActionLink(" ", "Credenciales", new { id = item.idParticipante }, htmlAttributes: new { @class = "btn btn-success btn-sm glyphicon glyphicon-picture", @datatoggle = "tooltip", @title = "Foto Credenciales" })
+                                    }
+
+                                    @if (item.contacto.idUsuarioMoodle != null)
+                                    {
+                                        if (item.agregadoAGrupo)
+                                        {
+                                            <button type="button" class="btn btn-success btn-sm glyphicon glyphicon-link" title="Usuario Agregado a Grupo Moodle" disabled>
+                                                <span class='glyphicon glyphicon-education'></span>
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            <a href="@Url.Action("AsignarUsuarioGrupoMoodle", "Participante", new { id = item.idParticipante })" class="btn btn-default btn-sm glyphicon glyphicon-link cargando" datatoggle="tooltip" , title="Agregar Usuario a Grupo Moodle">
+                                                <span class='glyphicon glyphicon-education'></span>
+                                            </a>
+                                        }
+                                        <button type="button" class="btn btn-success btn-sm glyphicon glyphicon-link" title="Usuario Agregado a Moodle" disabled>
+                                            <span class='glyphicon glyphicon-user'></span>
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <button type="button" class="btn btn-default btn-sm glyphicon glyphicon-link" title="Agregar Usuario a Grupo Moodle" disabled>
+                                            <span class='glyphicon glyphicon-education'></span>
+                                        </button>
+                                        <a href="@Url.Action("AgregarUsuarioMoodle", "Participante", new { id = item.idParticipante })" class="btn btn-default btn-sm glyphicon glyphicon-link cargando" datatoggle="tooltip" , title="Agregar Usuario a Grupo Moodle">
+                                            <span class='glyphicon glyphicon-user'></span>
+                                        </a>
+                                    }
+
+                                    @Html.ActionLink(" ", "Details", "Contacto", new { id = item.contacto.idContacto }, htmlAttributes: new { @class = "btn btn-info btn-sm glyphicon glyphicon-list", @datatoggle = "tooltip", @title = "Ver" })
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="idComercializacion" value="@ViewBag.idComercializacion" />
+
+                                    <a class="btn btn-danger btn-sm glyphicon glyphicon-trash" href="javascript:confirmDelete('Delete','@(item.idParticipante)','Participante')" title="Eliminar"></a>
+                                </div>
+                            }
+                        </td>
+                    </tr>
+
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        @Html.ActionLink("Volver", "Index", "Comercializacions", new { }, new { @class = "btn btn-default" })
+    </div>
+</div>
+
+@section topLevel{
+    @{Html.RenderPartial("_RenderConfirm.Modal"); }
+}
+
+<div class="modal fade draggable-modal modalx"
+     id="modalLink"
+     tabindex="-1"
+     data-backdrop="static"
+     data-keyboard="false"
+     role="dialog"
+     aria-labelledby="deleteLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="row">
+                    <div class="col-md-10">
+                        <h4 class="modal-title">Configurar Links</h4>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <label id="guardando" class="form-check-label" style="color:red"></label>
+                @using (Html.BeginForm("SaveLink", "Bloques", FormMethod.Post, new { @id = "form-link" }))
+                {
+
+                    @Html.AntiForgeryToken()
+                    <input hidden name="idComercializacion" type="number" value="@ViewBag.idComercializacion">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="linkAutomatic" class="control-label">Link Automatico</label>
+
+                                @Html.EditorFor(model => linkComercializacion.linkAutomatic, new { htmlAttributes = new { @class = "form-control linkAutomatic", @id = "linkAutomatic" } })
+
+
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                @if (linkComercializacion != null)
+                                {
+                                    if (linkComercializacion.linkAutomatic)
+                                    {
+                                        if (linkComercializacion.link != null)
+                                        {
+                                            <a target="_blank" href="@linkComercializacion.link.url">Click para videollamada</a>
+                                        }
+                                        else
+                                        {
+                                            <label class="control-label">Sin link asignados</label>
+                                        }
+
+                                    }
+                                    else
+                                    {
+                                        <a target="_blank" href="@linkComercializacion.linkManual">Click para videollamada</a>
+                                    }
+
+
+                                }
+                                else
+                                {
+                                    <label class="control-label">Sin link asignados</label>
+
+                                }
+
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+
+                                @Html.EditorFor(model => linkComercializacion.linkManual, new { htmlAttributes = new { @class = "form-control linkManual", @id = "linkManual" } })
+
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                @Html.DropDownListFor(model => linkComercializacion.linkType.idLinkType, new SelectList(ViewBag.typesLink, "Value", "Text", linkComercializacion.linkType != null ? linkComercializacion.linkType.idLinkType : 0), "Seleccione un Tipo", htmlAttributes: new { @class = "form-control" })
+
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="separador-ver" />
+                    <div class="row">
+
+
+
+
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                @Html.Label("Correo:", htmlAttributes: new { @class = "control-label" })
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                @Html.Editor("mail", new { htmlAttributes = new { @class = "form-control", @id = "text-mail" } })
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <input type="checkbox" id="check-mail" class="btn btn-primary">
+
+
+                        </div>
+
+
+
+
+
+
+                    </div>
+                    <hr class="separador-ver" />
+
+
+                    <div class="modal-footer">
+                        <div class="row text-left" id="count">
+                        </div>
+                        <div class="row text-left" id="log">
+                        </div>
+                    </div>
+                }
+                <div class="modal-footer">
+                    <div class="row">
+                        <div class="col-md-6 text-left">
+                            <button type="button" data-dismiss="modal" class="btn btn-default" data-dissmiss="modal">Salir</button>
+                        </div>
+                        <div class="col-md-6">
+                            <button id="btnEnviarMail" class="btn btn-primary">Enviar correos</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@using (Html.BeginForm("GetListParticipantes", "Comercializacions", FormMethod.Get, new { @id = "form-ListPart" }))
+{
+    <input hidden name="id" type="number" value="@ViewBag.idComercializacion">
+}
+
+@using (Html.BeginForm("CorreoAlumnosComercializacion", "Comercializacions", FormMethod.Post, new { @id = "form-CorreoAlumnosComercializacion" }))
+{
+    <input hidden id="idComer" name="id" type="number" value="@ViewBag.idComercializacion">
+    <input hidden name="idParticipante" type="number" value="0">
+    <input hidden name="mail" type="text" value="">
+}
+
+
+@section Scripts {
+    <script>
+        function delay(callback, ms) {
+            var timer = 0;
+            return function () {
+                var context = this, args = arguments;
+                clearTimeout(timer);
+                timer = setTimeout(function () {
+                    callback.apply(context, args);
+                }, ms || 0);
+            };
+        }
+
+        $("#btnEnviarMail").click(function () {
+
+            $("#btnEnviarMail").prop("disabled", true);
+            var form = $('#form-ListPart');
+            var url = form.attr('action');
+            var log = $("#log");
+            log.html("");
+            if ($('#check-mail').prop('checked')) {
+                $("#count").html("0/1");
+                var mail = $("#text-mail").val();
+                sendMail(0, "all", mail);
+            } else {
+                $.ajax({
+                    type: "GET",
+                    url: url,
+                    data: form.serialize(), // serializes the form's elements.
+                    success: function (data) {
+                        if (data.error != "OK") {
+                            log.html("<label  style='color: red'>" + data.error + "</label>");
+
+                        } else {
+                            log.html(log.html() + "Enviando correos </br>")
+                            $("#count").html("0/" + data.participantes.length);
+                            for (let i = 0; i < data.participantes.length; i++) {
+
+                                sendMail(data.participantes[i], "all", null)
+                            }
+                            sendMail(0, "all", null);
+                        }
+
+
+                    }
+                });
+            }
+
+
+        })
+        $(".mail").click(function () {
+
+            var idparticipante = this.id;
+            $("#" + idparticipante).prop("disabled", true);
+            $("#" + idparticipante).html('<i class="fa fa-spinner fa-pulse"></i>');
+            sendMail(idparticipante, "one", "")
+        })
+        function sendMail(idparticipante, mode, mail) {
+            $('#idParticipante').val(idparticipante);
+            var form = $('#form-CorreoAlumnosComercializacion');
+            var url = form.attr('action');
+
+            var id = $("#idComer").val();
+            $.ajax({
+                type: "GET",
+                url: url,
+                data: { id, idParticipante: idparticipante, mail }, // serializes the form's elements.
+                success: function (data) {
+                    if (mode == "all") {
+
+                        $("#btnEnviarMail").prop("disabled", false);
+                        var log = $("#log");
+                        log.html(log.html() + data.error + "</br>")
+                        var total = $("#count").html().split('/')[1];
+                        var cont = parseInt($("#count").html().split('/')[0]) + 1;
+                        if (idparticipante != 0) {
+                            $("#count").html(cont + "/" + total);
+                            if (cont == total) {
+                                log.html(log.html() + "</br>Enviados")
+                            }
+                        }
+                        if (idparticipante == 0 && mail != "") {
+                            $("#count").html(cont + "/" + total);
+                        }
+
+
+
+                    } else if (mode == "one") {
+                        var mail = $("#" + idparticipante);
+                        mail.prop("disabled", false);
+                        if (data.error.includes("Correo enviado a")) {
+                            mail.removeClass("btn-default")
+                            mail.removeClass("btn-success")
+                            mail.addClass("btn-success")
+                            mail.html('');
+                        } else {
+                            $("#logError").html(data.error);
+                        }
+
+                    }
+
+
+
+
+                }
+            });
+
+        }
+
+        $(".link").click(function () {
+            $('#modalLink').modal({ keyboard: true }, 'show');
+
+        })
+
+        $("#idactionBoton").on("click", function () {
+            let selected = [];
+            var select = $("#idaction");
+            $('.select').each(function () {
+                if (this.checked) {
+                    selected.push(this.id.split("-")[1]);
+                }
+            });
+
+            if (selected.length == 0) {
+                alert("Debe seleccionar al menos un participante");
+                return 0;
+            }
+            if (select.val() == "") {
+                alert("Seleccione una acción a realizar");
+                return 0;
+            }
+
+
+            $("#participantes").val(selected.join(','));
+
+            var text = "Está seguro que desea eliminar él/los participantes " + selected.length + " seleccionados?";
+            $("#fechaMatricula").hide();
+            if (select.val() == "matricula") {
+                $("#fechaMatricula").show();
+                text = "Seleccione la fecha de fin de matricula del curso de él/los " + selected.length + " alumnos seleccionados: "
+            }
+            $("#replace").html(text);
+            $('#modalAction').modal({ keyboard: true }, 'show');
+
+        })
+        $(".linkAutomatic").on("change", function () {
+            var manual = $("#linkManual");
+
+            if (this.checked) {
+                manual.val("")
+                manual.prop("disabled", true);
+            } else {
+                manual.prop("disabled", false);
+            }
+            link();
+        });
+
+        $("#check-mail").on("change", function () {
+            var manual = $("#text-mail");
+
+            if (this.checked) {
+                manual.prop("disabled", false);
+                document.getElementById("btnEnviarMail").disabled = true;
+            } else {
+                manual.val("")
+                document.getElementById("btnEnviarMail").disabled = false;
+                manual.prop("disabled", true);
+
+            }
+
+        });
+
+        $('.linkManual').keyup(delay(function (e) {
+            link();
+        }, 500));
+
+        $('#linkComercializacion_linkType_idLinkType').change(delay(function (e) {
+            link();
+        }, 500));
+
+        function link() {
+            var form = $('#form-link');
+            var url = form.attr('action');
+            var save = $('#guardando');
+
+            save.html("(Guardando...)");
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: form.serialize(), // serializes the form's elements.
+                success: function (data) {
+                    if (data.error != "ok") {
+                        save.html("<label  style='color: red'>" + data.error + "</label>");
+
+                    } else {
+
+                        setTimeout(function () {
+                            save.html("<label  style='color: green'>Guardado Correctamente...</label>");
+                        }, 500);
+                        if (data.id == 0) {
+                            location.reload();
+                        }
+                    }
+                    setTimeout(function () {
+                        save.html("");
+                    }, 5000);
+
+
+
+                }
+            });
+        }
+
+        $('#modalLink').on('hidden.bs.modal', function () {
+            location.reload();
+        })
+
+        $(document).ready(function () {
+            //$(".linkAutomatic").trigger("change");
+            $("#check-mail").trigger("change");
+
+            $('.cargando').click(function () {
+                $(this).attr('class', 'btn btn-default btn-sm');
+                $(this).html('<i class="fa fa-spinner fa-pulse"></i>');
+            });
+            $('.cargandoGrupos').click(function () {
+                $(this).attr('class', 'btn btn-default btn-sm btn-circle');
+                $(this).html('<i class="fa fa-spinner fa-pulse"></i> Usuarios a Grupo Moodle');
+            });
+            $('.cargandoUsuarios').click(function () {
+                $(this).attr('class', 'btn btn-default btn-sm btn-circle');
+                $(this).html('<i class="fa fa-spinner fa-pulse"></i> Usuarios a Moodle');
+            });
+            $('#text-mail').on("keyup", function () {
+                var value = document.getElementById("text-mail").value;
+                var re = /\S+@@\S+\.\S+/;
+                if (re.test(value)) {
+                    document.getElementById("btnEnviarMail").disabled = false;
+                } else {
+                    document.getElementById("btnEnviarMail").disabled = true;
+                }
+
+
+            });
+
+
+
+
+
+        });
+
+
+
+
+
+    </script>
+}
+
+
+
+
+
+
+
+
+
+

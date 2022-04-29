@@ -1,0 +1,67 @@
+﻿@model SGC.Models.Comercializacion
+
+@{
+    ViewBag.Title = "Confirmar Curso";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2 class="page-title">Confirmar que Realizará el Curso</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="portlet light bordered">
+                <div class="portlet-title">
+                    <div class="caption">
+                        Detalles del Curso
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    @Html.HiddenFor(model => model.idComercializacion)
+                    <input type="hidden" name="idRelator" value="@ViewBag.idRelator" />
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                @Html.Label("Curso", htmlAttributes: new { @class = "control-label" })
+                                @Html.EditorFor(model => model.cotizacion.curso.nombreCurso, new { htmlAttributes = new { @class = "form-control ver" } })
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                @Html.Label("Fecha", htmlAttributes: new { @class = "control-label" })
+                                <div class="form-control ver">
+                                    @Html.DisplayFor(model => model.fechaInicio) - @Html.DisplayFor(model => model.fechaTermino)
+                                </div>
+                            </div>
+                            <hr />
+                            <h4>Horarios</h4>
+                        </div>
+                        @foreach (var bloque in Model.bloques)
+                        {
+                            if (bloque.relator.idRelator == ViewBag.idRelator)
+                            {
+                                <div class="col-md-12">
+                                    <div class="form-control ver">                                        
+                                       El día @Html.DisplayFor(model => bloque.fecha) de @Html.DisplayFor(model => bloque.horarioInicio) a @Html.DisplayFor(model => bloque.horarioTermino)
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>
+                    <hr />
+                    <div class="row">
+                        <div class="form-group">
+                            <div class="col-md-12 text-right">
+                                <input type="submit" value="Confirmar" class="btn btn-primary" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

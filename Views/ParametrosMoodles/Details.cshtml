@@ -1,0 +1,61 @@
+﻿@model SGC.Models.ParametrosMoodle
+
+@{
+    ViewBag.Title = "Detalles Parametros Moddle";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<h2 class="page-title">Detalles</h2>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet light bordered">
+            <div class="portlet-title">
+                <div class="caption">
+                    Parametros Moddle
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.username, htmlAttributes: new { @class = "control-label" })
+                            <hr class="separador-ver" />
+                            @Html.EditorFor(model => model.username, new { htmlAttributes = new { @class = "form-control ver", @readonly = "readonly" } })
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.urlMoodle, htmlAttributes: new { @class = "control-label" })
+                            <hr class="separador-ver" />
+                            @Html.EditorFor(model => model.urlMoodle, new { htmlAttributes = new { @class = "form-control ver", @readonly = "readonly" } })
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.password, htmlAttributes: new { @class = "control-label" })
+                            <hr class="separador-ver" />
+                            @Html.EditorFor(model => model.password, new { htmlAttributes = new { @class = "form-control ver", @readonly = "readonly" } })
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.service, htmlAttributes: new { @class = "control-label" })
+                            <hr class="separador-ver" />
+                            @Html.EditorFor(model => model.service, new { htmlAttributes = new { @class = "form-control ver", @readonly = "readonly" } })
+                        </div>
+                    </div>
+                </div>
+                <hr />
+                <div class="row">
+                    <div class="form-group">
+                        <div class="col-md-6">
+                            <button type="button" class="btn btn-default" onclick="javascript:history.back()">Volver</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

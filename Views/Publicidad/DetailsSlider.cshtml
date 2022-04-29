@@ -1,0 +1,84 @@
+﻿@model List<SGC.Models.Publicidad>
+@using SGC.Models
+
+@{
+    ViewBag.Title = "Vista del Slider";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var i = 0;
+    var clientes = ((List<Cliente>)ViewBag.clientes).Select(p => new SelectListItem() { Value = p.idCliente.ToString(), Text = p.nombreEmpresa }).ToList<SelectListItem>();
+
+}
+
+
+@section Styles{
+    <link href="~/Content/css/slider.css" rel="stylesheet" type="text/css" />
+    @foreach (var item in Model)
+    {
+        var left = i * 100;
+        var left2 = left / 2;
+        i++;
+
+
+        <style>
+        body .slide:nth-child(@i) {
+            left: @left%;
+        }
+
+            body .slide:nth-child(@i) .slide__bg {
+                left: -@left2%;
+                background-image: url('@item.foto.urlArchivo');
+            }
+
+            body .slide:nth-child(@i) .slide__overlay-path {
+                fill: #485cc7;
+            }
+
+        @@media (max-width: 991px) {
+            body .slide:nth-child(@i) .slide__text {
+                background-color: rgba(233, 156, 126, 0.8);
+            }
+        }
+        </style>
+
+    }
+}
+<h2>Vista por Cliente</h2>
+
+<div>
+    <h4>Publicidad</h4>
+    <hr />
+    <div class="row">
+
+        @using (Html.BeginForm("DetailsSlider", "Publicidad", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+
+            <div class="form-group col-md-7" id="clientes">
+                @Html.Label("Seleccione un cliente ", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownList("clientes", clientes, "Seleccione los clientes", htmlAttributes: new { @class = "form-control select2" })
+                    @Html.ValidationMessage("clientes", "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-offset-1 col-md-3">
+                    <input type="submit" value="Actualizar" class="btn btn-default" />
+                </div>
+            </div>
+        }
+    </div>
+    <div class="dl-horizontal">
+
+        @if (Model.Count() > 0)
+        {
+            <div class="row col-md-10 col-md-offset-1" style="overflow: hidden;margin-bottom:50px; height: 500px">
+
+                @{ Html.RenderAction("Slider", "Publicidad", new { publicidades = Model }); }
+
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/Content/js/slider.js" type="text/javascript"></script>
+}

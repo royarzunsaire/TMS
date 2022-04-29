@@ -1,0 +1,325 @@
+﻿@model SGC.Models.ViewModelR51
+<style>
+    textarea {
+        resize: none;
+    }
+
+    .modal {
+        text-align: center;
+        padding: 0 !important;
+    }
+
+    .modal:before {
+        content: '';
+        display: inline-block;
+        height: 100%;
+        vertical-align: middle;
+        margin-right: -4px;
+    }
+
+    .modal-dialog {
+        display: inline-block;
+        text-align: left;
+        vertical-align: middle;
+    }
+</style>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    ViewBag.Title = "Editar";
+}
+
+@{
+    List<SelectListItem> listItemsAplica = new List<SelectListItem>();
+    listItemsAplica.Add(new SelectListItem
+    {
+        Text = "SI",
+        Value = "SI"
+    });
+    listItemsAplica.Add(new SelectListItem
+    {
+        Text = "NO",
+        Value = "NO"
+    });
+    listItemsAplica.Add(new SelectListItem
+    {
+        Text = "NO APLICA",
+        Value = "NO APLICA"
+    });
+}
+<h2>Editar R51</h2>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+<div class="form-horizontal">
+    <h4>Información del Curso</h4>
+    <hr />
+
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="form-group">
+        <div class="col-md-6">
+            <input type="hidden" name="idCurso" value="@Html.DisplayFor(model => model.r51.idCurso)" class="form-control" />
+            @Html.HiddenFor(model => model.r51.idCurso)
+            @Html.HiddenFor(model => model.r51.idR51)
+            @Html.LabelFor(model => model.r51.nombreCurso, htmlAttributes: new { @class = "control-label" })
+            @Html.EditorFor(model => model.r51.nombreCurso, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.r51.nombreCurso, "El campo debe ser obligatorio", new { @class = "text-danger" })
+        </div>
+        <div class="col-md-6">
+            @Html.LabelFor(model => model.r51.ciudad, htmlAttributes: new { @class = "control-label" })
+            <select name="R51.ciudad" class="form-control select2">
+                @foreach (var itemList in Model.ciudad)
+                {
+                    if (itemList.nombreCiudad == Model.r51.ciudad)
+                    {
+                        <option value="@Html.DisplayFor(modelItem => itemList.nombreCiudad)" selected>@Html.DisplayFor(modelItem => itemList.nombreCiudad)</option>
+                    }
+                    else
+                    {
+                        <option value="@Html.DisplayFor(modelItem => itemList.nombreCiudad)">@Html.DisplayFor(modelItem => itemList.nombreCiudad)</option>
+                    }
+                }
+            </select>
+        </div>
+        @*<div class="col-md-6">
+            @Html.LabelFor(model => model.r51.nombreDiploma, htmlAttributes: new { @class = "control-label" })
+            @Html.EditorFor(model => model.r51.nombreDiploma, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.r51.nombreDiploma, "El campo debe ser obligatorio", new { @class = "text-danger" })
+        </div>*@
+        <div class="col-md-6">
+            @Html.LabelFor(model => model.r51.Curso.tipoEjecucion, htmlAttributes: new { @class = "control-label" })
+            @Html.EnumDropDownListFor(model => model.r51.Curso.tipoEjecucion, htmlAttributes: new { @class = "form-control", id = "tipo" })
+            @Html.ValidationMessageFor(model => model.r51.Curso.tipoEjecucion, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    @{var lista = Model.checklists.ToList().Where(x => x.valor == "Comercialización").ToList();}
+    <div class="form-group">
+        <div class="col-md-12">
+
+
+            <h2>Comercialización</h2>
+            <table class="table table-bordered">
+                <tr>
+                    <th class="col-md-5">
+                        Item
+                    </th>
+                    <th class="col-md-1">
+                        Selección
+                    </th>
+                    <th class="col-md-6">
+                        Observación
+                    </th>
+                </tr>
+                @for (int i = 0; i < lista.Count(); i++)
+                {
+
+                    <tr>
+                        <td>
+                            @Html.HiddenFor(model => Model.r51_Checklists.ToList()[i].R51_ChecklistID)
+
+                            @Html.DisplayFor(modelItem => lista[i].detalle)
+                            <input type="hidden" name="[@i].detalle" value="@Html.DisplayFor(modelItem => lista[i].detalle)" />
+                            <input type="hidden" name="[@i].idChecklist" value="@Html.DisplayFor(modelItem => lista[i].idChecklist)" />
+
+                        </td>
+                        <td>
+                            <select name="[@i].aplica">
+
+                                @foreach (var itemList in listItemsAplica)
+                                {
+
+                                    if (itemList.Value == Model.r51_Checklists.ToList()[i].aplica)
+                                    {
+                                        <option value="@Html.DisplayFor(modelItem => itemList.Value)" selected>@Html.DisplayFor(modelItem => itemList.Text)</option>
+
+                                    }
+                                    else
+                                    {
+                                        <option value="@Html.DisplayFor(modelItem => itemList.Value)">@Html.DisplayFor(modelItem => itemList.Text)</option>
+                                    }
+                                }
+                            </select>
+
+                        </td>
+
+                        <td>
+                            @if (Model.r51_Checklists != null)
+                            {
+                                <textarea class="form-control" name="[@i].comentario" rows="2">@Model.r51_Checklists.ToList()[i].comentario</textarea>
+                            }
+                            else
+                            {
+                                <textarea class="form-control" name="[@i].comentario" rows="2"></textarea>
+                            }
+                        </td>
+                    </tr>
+
+                }
+            </table>
+
+            <h2>Coordinación Logistica</h2>
+            <!-- de aca hacia abajo es prueba, al parecer funciona pero rellenar la otras tablas-->
+            @{var contadorAcum = lista.Count;}
+            @{lista = Model.checklists.ToList().Where(x => x.valor == "Coordinación Logistica").ToList();}
+            <table class="table table-bordered">
+                <tr>
+                    <th class="col-md-5">
+                        Item
+                    </th>
+                    <th class="col-md-1">
+                        Selección
+                    </th>
+                    <th class="col-md-6">
+                        Observación
+                    </th>
+                </tr>
+                @for (int i = 0 + contadorAcum; i < lista.Count() + contadorAcum; i++)
+                {
+
+                    <tr>
+                        <td>
+                            @Html.HiddenFor(model => Model.r51_Checklists.ToList()[i].R51_ChecklistID)
+
+                            @Html.DisplayFor(modelItem => lista[i - contadorAcum].detalle)
+                            <input type="hidden" name="[@i].detalle" value="@Html.DisplayFor(modelItem => lista[i-contadorAcum].detalle)" />
+                            <input type="hidden" name="[@i].idChecklist" value="@Html.DisplayFor(modelItem => lista[i-contadorAcum].idChecklist)" />
+
+                        </td>
+                        <td>
+                            <select name="[@i].aplica">
+
+                                @foreach (var itemList in listItemsAplica)
+                                {
+
+                                    if (itemList.Value == Model.r51_Checklists.ToList()[i].aplica)
+                                    {
+                                        <option value="@Html.DisplayFor(modelItem => itemList.Value)" selected>@Html.DisplayFor(modelItem => itemList.Text)</option>
+
+                                    }
+                                    else
+                                    {
+                                        <option value="@Html.DisplayFor(modelItem => itemList.Value)">@Html.DisplayFor(modelItem => itemList.Text)</option>
+                                    }
+                                }
+                            </select>
+                        </td>
+
+                        <td>
+                            @if (Model.r51_Checklists != null)
+                            {
+                                <textarea class="form-control" name="[@i].comentario" rows="2">@Model.r51_Checklists.ToList()[i].comentario</textarea>
+                            }
+                            else
+                            {
+                                <textarea class="form-control" name="[@i].comentario" rows="2"></textarea>
+                            }
+                        </td>
+                    </tr>
+
+                }
+            </table>
+            <h2>Diseño y Desarrollo</h2>
+            <!-- de aca hacia abajo es prueba, al parecer funciona pero rellenar la otras tablas-->
+            @{ contadorAcum += lista.Count;}
+            @{lista = Model.checklists.ToList().Where(x => x.valor == "Diseño y Desarrollo").ToList();}
+            <table class="table table-bordered">
+                <tr>
+                    <th class="col-md-5">
+                        Item
+                    </th>
+                    <th class="col-md-1">
+                        Selección
+                    </th>
+                    <th class="col-md-6">
+                        Observación
+                    </th>
+                </tr>
+                @for (int i = 0 + contadorAcum; i < lista.Count() + contadorAcum; i++)
+                {
+
+                    <tr>
+                        <td>
+                            @Html.HiddenFor(model => Model.r51_Checklists.ToList()[i].R51_ChecklistID)
+
+                            @Html.DisplayFor(modelItem => lista[i - contadorAcum].detalle)
+                            <input type="hidden" name="[@i].detalle" value="@Html.DisplayFor(modelItem => lista[i-contadorAcum].detalle)" />
+                            <input type="hidden" name="[@i].idChecklist" value="@Html.DisplayFor(modelItem => lista[i-contadorAcum].idChecklist)" />
+
+                        </td>
+                        <td>
+                            <select name="[@i].aplica">
+
+                                @foreach (var itemList in listItemsAplica)
+                                {
+
+                                    if (itemList.Value == Model.r51_Checklists.ToList()[i].aplica)
+                                    {
+                                        <option value="@Html.DisplayFor(modelItem => itemList.Value)" selected>@Html.DisplayFor(modelItem => itemList.Text)</option>
+
+                                    }
+                                    else
+                                    {
+                                        <option value="@Html.DisplayFor(modelItem => itemList.Value)">@Html.DisplayFor(modelItem => itemList.Text)</option>
+                                    }
+                                }
+                            </select>
+                        </td>
+
+                        <td>
+                            @if (Model.r51_Checklists != null)
+                            {
+                                <textarea class="form-control" name="[@i].comentario" rows="2">@Model.r51_Checklists.ToList()[i].comentario</textarea>
+                            }
+                            else
+                            {
+                                <textarea class="form-control" name="[@i].comentario" rows="2"></textarea>
+                            }
+                        </td>
+                    </tr>
+
+                }
+            </table>
+        </div>
+
+    </div>
+
+
+    <div class="form-group">
+        <div class="col-md-12">
+            <!--<input type="submit" value="Cancelar" class="btn btn-danger" />-->
+            @Html.ActionLink("Volver", "Details", new { id = Model.r51.idR51 }, new { @class = "btn btn-default" })
+
+            <button class="btn btn-primary" style="float:right" data-toggle="modal" data-target="#idModalConfirmR51Crear" type="button">Guardar</button>
+
+            <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" id="idModalConfirmR51Crear">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="myModalLabel">Confirmar</h4>
+                        </div>
+                        <div class="modal-body">
+                            <p>¿Esta seguro que desea editar el R51?</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Aceptar</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+</div>
+}
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

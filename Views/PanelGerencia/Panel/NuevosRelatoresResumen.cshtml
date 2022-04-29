@@ -1,0 +1,128 @@
+﻿@model SGC.Models.ViewModelPanelGerencia
+
+<div class="row">
+    <div class="col-md-5">
+        <div class="portlet light ">
+            <div class="portlet-title">
+                <div class="caption caption-md">
+                    <i class="icon-bar-chart font-dark hide"></i>
+                    <span class="caption-subject bold uppercase" title="Ultimos seis meses">Nuevos Relatores</span>
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="table-scrollable table-scrollable-borderless">
+                    <div class="scroll">
+                        <div id="table-wrapper">
+                            <div id="table-scroll">
+                                <table class="table table-hover table-light">
+                                    <thead>
+                                        <tr class="uppercase">
+                                            <th> Relator </th>
+                                            <th> RUT </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model.nuevosRelatores)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    @item.contacto.nombreCompleto
+                                                </td>
+                                                <td>
+                                                    @item.contacto.run
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-7">
+        <div class="portlet light ">
+            <div class="portlet-title">
+                <div class="caption caption-md">
+                    <i class="icon-bar-chart font-dark hide"></i>
+                    <span class="caption-subject bold uppercase">Nuevos Relatores SENCE</span>
+                </div>
+                <div class="actions">
+                    <ul class="nav nav-tabs" style="padding-bottom:0">
+                        <li class="active">
+                            <a href="#tab_nuevos_relatores_sence_mes" data-toggle="tab"> Mensual </a>
+                        </li>
+                        <li>
+                            <a href="#tab_nuevos_relatores_sence_anio" data-toggle="tab"> Anual </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="tab-content">
+                    <div class="tab-pane active" id="tab_nuevos_relatores_sence_mes">
+                        <div class="table-scrollable table-scrollable-borderless">
+                            <div class="scroll">
+                                <div id="table-wrapper">
+                                    <div id="table-scroll">
+                                        <table class="table table-hover table-light">
+                                            <thead>
+                                                <tr class="uppercase">
+                                                    <th> Relator </th>
+                                                    <th> RUT </th>
+                                                    <th> Curso </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var item in Model.nuevosRelatoresSenceMensual)
+                                                {
+                                                    <tr>
+                                                        <td> @item.relator.contacto.nombreCompleto </td>
+                                                        <td> @item.relator.contacto.run </td>
+                                                        <td> @item.curso.nombreCurso </td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tab_nuevos_relatores_sence_anio">
+                        <div class="table-scrollable table-scrollable-borderless">
+                            <div class="scroll">
+                                <div id="table-wrapper">
+                                    <div id="table-scroll">
+                                        <table class="table table-hover table-light">
+                                            <thead>
+                                                <tr class="uppercase">
+                                                    <th> Relator </th>
+                                                    <th> RUT </th>
+                                                    <th> Curso </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var item in Model.nuevosRelatoresSenceAnual)
+                                                {
+                                                    <tr>
+                                                        <td> @item.relator.contacto.nombreCompleto </td>
+                                                        <td> @item.relator.contacto.run </td>
+                                                        <td> @item.curso.nombreCurso </td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

@@ -1,0 +1,130 @@
+﻿@model SGC.Models.ViewModelPanelGerencia
+<div class="row">
+
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div class="dashboard-stat2 " style="padding-top:31px">
+            <div class="display">
+                <div class="number">
+                    <h3 class="font-green-sharp">
+                        <span data-counter="counterup" data-value="@String.Format("{0:N0}", Model.nuevosRelatores.Count())">@String.Format("{0:N0}", Model.nuevosRelatores.Count())</span>
+                    </h3>
+                    <small>Nuevos Relatores (6 meses)</small>
+                </div>
+            </div>
+            <div class="progress-info">
+                <div class="progress">
+                    <span style="width: 100%;" class="progress-bar progress-bar-success green-sharp">
+                        <span class="sr-only"></span>
+                    </span>
+                </div>
+                <div class="status">
+                    <div class="status-title">  </div>
+                    <div class="status-number">  </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div class="dashboard-stat2 " style="padding-top:31px">
+            <div class="display">
+                <div class="number">
+                    <h3 class="font-green-sharp">
+                        <span data-counter="counterup" data-value="@String.Format("{0:N0}", Model.cantR11Mensual)">@String.Format("{0:N0}", Model.cantR11Mensual)</span>
+                    </h3>
+                    <small>Nuevos R11 del Mes</small>
+                </div>
+            </div>
+            <div class="progress-info">
+                <div class="progress">
+                    <span style="width: 100%;" class="progress-bar progress-bar-success green-sharp">
+                        <span class="sr-only"></span>
+                    </span>
+                </div>
+                <div class="status">
+                    <div class="status-title">  </div>
+                    <div class="status-number">  </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div class="dashboard-stat2 " style="padding-top:31px">
+            <div class="display">
+                <div class="number">
+                    <h3 class="font-green-sharp">
+                        <span data-counter="counterup" data-value="@String.Format("{0:N0}", Model.cantNuevosCursosCmpletosMensual)">@String.Format("{0:N0}", Model.cantNuevosCursosCmpletosMensual)</span>
+                    </h3>
+                    <small>Cursos Completos del Mes</small>
+                </div>
+            </div>
+            <div class="progress-info">
+                <div class="progress">
+                    <span style="width: 100%;" class="progress-bar progress-bar-success green-sharp">
+                        <span class="sr-only"></span>
+                    </span>
+                </div>
+                <div class="status">
+                    <div class="status-title">  </div>
+                    <div class="status-number">  </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <ul class="nav nav-tabs pull-right">
+            <li class="active">
+                <a href="#tab_nuevos_relatores_sence_mes_icono" data-toggle="tab"> Mes </a>
+            </li>
+            <li>
+                <a href="#tab_nuevos_relatores_sence_anio_icono" data-toggle="tab"> Año </a>
+            </li>
+        </ul>
+        <div class="dashboard-stat2 ">
+            <div class="tab-content">
+                <div class="tab-pane active" id="tab_nuevos_relatores_sence_mes_icono">
+                    <div class="display">
+                        <div class="number">
+                            <h3 class="font-green-sharp">
+                                <span data-counter="counterup" data-value="@String.Format("{0:N0}", Model.nuevosRelatoresSenceMensual.Count())">@String.Format("{0:N0}", Model.nuevosRelatoresSenceMensual.Count())</span>
+                            </h3>
+                            <small>Nuevos Relatores SENCE</small>
+                        </div>
+                    </div>
+                    <div class="progress-info">
+                        <div class="progress">
+                            <span style="width: 100%;" class="progress-bar progress-bar-success green-sharp">
+                                <span class="sr-only"></span>
+                            </span>
+                        </div>
+                        <div class="status">
+                            <div class="status-title">  </div>
+                            <div class="status-number">  </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane" id="tab_nuevos_relatores_sence_anio_icono">
+                    <div class="display">
+                        <div class="number">
+                            <h3 class="font-green-sharp">
+                                <span data-counter="counterup" data-value="@String.Format("{0:N0}", Model.nuevosRelatoresSenceAnual.Count())">@String.Format("{0:N0}", Model.nuevosRelatoresSenceAnual.Count())</span>
+                            </h3>
+                            <small>Nuevos Relatores SENCE</small>
+                        </div>
+                    </div>
+                    <div class="progress-info">
+                        <div class="progress">
+                            <span style="width: 100%;" class="progress-bar progress-bar-success green-sharp">
+                                <span class="sr-only"></span>
+                            </span>
+                        </div>
+                        <div class="status">
+                            <div class="status-title">  </div>
+                            <div class="status-number">  </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+   
+</div>

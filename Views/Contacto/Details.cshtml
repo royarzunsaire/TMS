@@ -1,0 +1,90 @@
+﻿@model SGC.Models.Contacto
+
+@{
+    ViewBag.Title = "Detalles Contacto";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2 class="page-title">Detalles</h2>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet light bordered">
+            <div class="portlet-title">
+                <div class="caption">
+                    Contacto
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.nombres, htmlAttributes: new { @class = "control-label" })
+                            <hr class="separador-ver" />
+                            @Html.EditorFor(model => model.nombres, new { htmlAttributes = new { @class = "form-control ver", @readonly = "readonly" } })
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.apellidoPaterno, htmlAttributes: new { @class = "control-label" })
+                            <hr class="separador-ver" />
+                            @Html.EditorFor(model => model.apellidoPaterno, new { htmlAttributes = new { @class = "form-control ver", @readonly = "readonly" } })
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.apellidoMaterno, htmlAttributes: new { @class = "control-label" })
+                            <hr class="separador-ver" />
+                            @Html.EditorFor(model => model.apellidoMaterno, new { htmlAttributes = new { @class = "form-control ver", @readonly = "readonly" } })
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.run, htmlAttributes: new { @class = "control-label" })
+                            <hr class="separador-ver" />
+                            @Html.EditorFor(model => model.run, new { htmlAttributes = new { @class = "form-control ver", @readonly = "readonly" } })
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.fechaNacimiento, htmlAttributes: new { @class = "control-label" })
+                            <hr class="separador-ver" />
+                            @Html.EditorFor(model => model.fechaNacimiento, new { htmlAttributes = new { @class = "form-control ver", @readonly = "readonly" } })
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.telefono, htmlAttributes: new { @class = "control-label" })
+                            <hr class="separador-ver" />
+                            @Html.EditorFor(model => model.telefono, new { htmlAttributes = new { @class = "form-control ver", @readonly = "readonly" } })
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.correo, htmlAttributes: new { @class = "control-label" })
+                            <hr class="separador-ver" />
+                            @Html.EditorFor(model => model.correo, new { htmlAttributes = new { @class = "form-control ver", @readonly = "readonly" } })
+                        </div>
+                    </div>
+                </div>
+                <hr />
+                <div class="row">
+                    <div class="form-group">
+                        <div class="col-md-6">
+                            @Html.ActionLink("Volver", "Participante", "Participante", new { id = Model.idContacto }, new { @class = "btn btn-default" })
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

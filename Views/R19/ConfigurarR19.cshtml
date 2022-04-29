@@ -1,0 +1,268 @@
+﻿@model SGC.Models.R19
+
+@{
+    ViewBag.Title = "Configurar R19";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="page-title" style="margin-bottom: 0">
+    <div class="row">
+        <div class="col-md-12">
+            Administrar R19
+        </div>
+        <div class="col-md-4">
+            <small>Curso: @Model.comercializacion.cotizacion.curso.nombreCurso</small>
+        </div>
+        <div class="col-md-4">
+            <small>Comercialización: @Model.comercializacion.cotizacion.codigoCotizacion</small>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet light bordered">
+            <div class="portlet-title">
+                <div class="caption">
+                    Configurar R19
+                </div>
+                <div class="actions">
+                    @if (Model.idR19 != 0)
+                    {
+                        <a href="@Url.Action("GenerarPdfR25", "R19", new { id = Model.comercializacion.idComercializacion }) " class="btn btn-circle btn-sm btn-default">
+                            Descargar Resultados
+                        </a>
+                        <a href="@Url.Action("GenerarPdfR19", "R19", new { id = Model.idR19 }) " class="btn btn-circle btn-sm btn-default">
+                            Descargar
+                        </a>
+                    }
+                    else
+                    {
+                        <button type="button" onclick="location.reload(); " class="btn btn-circle btn-sm btn-default">
+                            Reiniciar Configuración
+                        </button>
+                    }
+                    <button type="button" id="btnMostrar" class="btn btn-default btn-sm btn-circle">Previsualización</button>
+                </div>
+            </div>
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+
+                //var id = "formularios";
+                //if (Model.idR19 != 0)
+                //{
+                //    id = "";
+                //}
+                <div id="formularios" class="portlet-body">
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    @foreach (var seccionEncuesta in Model.encuesta.seccionEncuesta.OrderBy(f => f.posicion))
+                    {
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h4>@seccionEncuesta.formulario.nombre</h4>
+                                <input type="hidden" name="formulario" value="@seccionEncuesta.formulario.idFormulario" />
+                            </div>
+                            @if (Model.idR19 == 0)
+                            {
+                                <div class="col-md-4">
+                                    <div class="input-group-button text-right">
+                                        <button type="button" onClick="encuestaRelator($(this))" class="btn btn-default encuestaRelator">Encuesta Relator</button>
+                                        <button type="button" onClick="eliminarFormulario($(this))" class="btn btn-danger">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                if (Model.idFormularioRelator == seccionEncuesta.formulario.idFormulario)
+                                {
+                                    <div class="col-md-4">
+                                        <div class="input-group-button text-right">
+                                            <button type="button" class="btn btn-default encuestaRelator" disabled>Encuesta Relator</button>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                            <div class="col-md-12" hidden>
+                                <hr />
+                                @foreach (var pregunta in seccionEncuesta.formulario.preguntasFormularios)
+                                {
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                @if (pregunta.obligatoria)
+                                                {
+                                                    <label class="control-label">@pregunta.pregunta *</label>
+                                                }
+                                                else
+                                                {
+                                                    <label class="control-label">@pregunta.pregunta</label>
+                                                }
+                                                @if (pregunta.tipo == SGC.Models.TipoPregunta.Abierta)
+                                                {
+                                                    <textarea class="form-control" disabled>@pregunta.respuestaFormulario.FirstOrDefault().respuesta</textarea>
+                                                }
+                                                @if (pregunta.tipo == SGC.Models.TipoPregunta.Corta)
+                                                {
+                                                    <input class="form-control" value="@pregunta.respuestaFormulario.FirstOrDefault().respuesta" disabled>
+                                                }
+                                                @if (pregunta.tipo == SGC.Models.TipoPregunta.Alternativa)
+                                                {
+                                                    foreach (var respuesta in pregunta.respuestaFormulario)
+                                                    {
+                                                        <div class="form-check disabled">
+                                                            <input class="form-check-input" type="radio" id="idRespuesta" value="optionCheckBoxUnique" style="margin-top: 10px;" disabled>
+                                                            <label class="form-check-label" for="idRespuesta" style="display: inline; margin-top: 10px;">@respuesta.respuesta</label>
+                                                        </div>
+                                                    }
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                                <hr />
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            <div class="portlet-footer">
+                <hr />
+                <div class="row">
+                    <div class="col-md-6">
+                        @Html.ActionLink("Volver", "List", "Participante", new { id = Model.comercializacion.idComercializacion }, new { @class = "btn btn-default" })
+                    </div>
+                    @using (Html.BeginForm("Delete", "R19", FormMethod.Post, new { @id = "notificationForm_" + Model.idR19 }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <div class="col-md-6">
+                            @if (Model.idR19 != 0)
+                            {
+                                <a class="btn btn-danger pull-right" href="javascript:confirmDelete('Delete','@(Model.idR19)','R19')">Eliminar</a>
+                            }
+                            else
+                            {
+                                <button class="btn btn-primary pull-right" data-toggle="modal" data-target="#idModalConfirmCrear" type="button">Guardar</button>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section topLevel{
+    @{Html.RenderPartial("_RenderConfirm.Modal"); }
+}
+
+
+<div id="modalMostrar" class="modal fade draggable-modal modalx" tabindex="-1" data-keyboard="false" role="alertdialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div id="modal-content" class="modal-content">
+            <div class="modal-header">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4 class="modal-title">R19</h4>
+                    </div>
+                    <div class="col-md-6">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div id="mostrar"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary pull-left" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" id="idModalConfirmCrear">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Confirmar</h4>
+            </div>
+            <div class="modal-body text-center">
+                <p>¿Esta seguro que desea guardar el formulario?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="idBotonEnviarFormulario" class="btn btn-primary">Aceptar</button>
+                <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts{
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+        $(document).ready(function () {
+            $(function () {
+                if ('@Model.idR19' === '0') {
+                    $("#formularios").sortable();
+                    $("#formularios").disableSelection();
+                }
+            });
+            $('#btnMostrar').click(function () {
+                $('#mostrar').html($('#formularios').html());
+                $('#mostrar .row').children().show()
+                $.each($('#mostrar').children().children('.col-md-4'), function (key, value) {
+                    value.remove();
+                });
+                $('#modalMostrar').modal({ keyboard: true }, 'show');
+            });
+            $('#idBotonEnviarFormulario').click(function () {
+                var contador = 0;
+                var data = {
+                    idComercializacion: @Model.comercializacion.idComercializacion,
+                    formularios: []
+                };
+                $.each($('#formularios').find('input'), function () {
+                    if ($(this).attr('name') == 'formulario') {
+                        formulario = {
+                            idFormulario: $(this).val(),
+                            posicion: contador,
+                            encuestaRelator: $(this).attr("relator")
+                        };
+                        data.formularios.push(formulario);
+                        contador++;
+                    }
+                });
+                $.ajax("@Url.Action("GuardarR19", "R19")", {
+                    method: 'post',
+                    contentType: 'application/json',
+                    data: JSON.stringify(data),
+                    traditional: true,
+                    success: function (d) {
+                        document.location.href = "/Participante/List/@Model.comercializacion.idComercializacion";
+                    }
+                });
+            });
+        });
+        function eliminarFormulario(componente) {
+            componente.parent('div').parent('div').parent('.row').remove();
+        };
+        function encuestaRelator(componente) {
+            componente.parent('div').parent('div').parent('.row').children().children('input').attr('relator', 'true');
+            $('.encuestaRelator').hide()
+            componente.attr('disabled', 'disabled')
+            componente.show()
+        };
+    </script>
+}

@@ -1,0 +1,148 @@
+﻿@model List<SGC.Models.ViewModelComercializacionFeedback>
+@using SGC.Models.Feedback
+
+<style>
+    #table-wrapper {
+        position: relative;
+    }
+
+    #table-scroll {
+        overflow: auto;
+    }
+
+    #table-wrapper table {
+        width: 100%;
+    }
+
+    #table-wrapper td {
+        white-space: nowrap;
+    }
+
+    #table-wrapper th {
+        white-space: nowrap;
+    }
+
+    th {
+        background-color: yellow;
+    }
+</style>
+
+<div id="table-wrapper">
+    <div id="table-scroll">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>@Html.DisplayName("Codigo")</th>
+                    <th>@Html.DisplayName("Curso")</th>
+                    <th>@Html.DisplayName("Tipo de Ejecución")</th>
+                    <th>@Html.DisplayName("Cliente")</th>
+                    <th>@Html.DisplayName("Relator")</th>
+                    <th>@Html.DisplayName("Comercial")</th>
+                    <th>@Html.DisplayName("Fecha Inicio")</th>
+                    <th>@Html.DisplayName("Fecha Termino")</th>
+                    @foreach (string type in Enum.GetNames(typeof(TipoFeedbackItem)))
+                    {
+                        <th>@Html.DisplayName(type)</th>
+                    }
+                    <th>@Html.DisplayName("Total")</th>
+                    <th>@Html.DisplayName("Comentario")</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var feedback in Model.Where(x => x.feedback.feedbackItemCommentMoodle.Count() > 0))
+                {
+                    foreach (var comentario in feedback.feedback.feedbackItemCommentMoodle)
+                    {
+                        var curso = "";
+                        if (feedback.comercializacion.cotizacion.tipoCurso != "Duplicado Credencial" && feedback.comercializacion.cotizacion.tipoCurso != "Arriendo de Sala")
+                        {
+                            curso = feedback.comercializacion.cotizacion.curso.nombreCurso;
+                        }
+                        else
+                        {
+                            curso = feedback.comercializacion.cotizacion.tipoCurso;
+
+                        }
+                <tr>
+                    <th>@feedback.comercializacion.cotizacion.codigoCotizacion</th>
+                    <td>@curso</td>
+                    <td>@feedback.comercializacion.cotizacion.curso.tipoEjecucion</td>
+                    <td>@feedback.comercializacion.cotizacion.cliente.nombreEmpresa</td>
+                    <td>@String.Join(",", feedback.comercializacion.relatoresCursos.Select(x => x.relator.contacto.nombreCompleto))</td>
+                    <td>@feedback.comercializacion.usuarioCreador.nombreCompleto</td>
+                    <td data-cell-type="date" style="vertical-align:middle">@feedback.comercializacion.fechaInicio.ToString("MM-dd-yy")</td>
+                    <td data-cell-type="date" style="vertical-align:middle">@feedback.comercializacion.fechaTermino.ToString("MM-dd-yy")</td>
+                    @{
+                        double total = 0;
+                        double sumMaxPointTotal = 0;
+                        double totalPointTotal = 0;
+                        foreach (string type in Enum.GetNames(typeof(TipoFeedbackItem)))
+                        {
+
+                            var filter = feedback.feedback.feedbackItemMoodle.Where(x => x.typ == type).ToList();
+                            if (filter.Count() > 0)
+                            {
+                                var sumMaxPoint = 0;
+                                foreach (var item in filter)
+                                {
+                                    var valueMax = item.feedbackItemDataMoodle.Count() > 0 ? item.feedbackItemDataMoodle.Max(y => Convert.ToInt32(y.value)) : 0;
+                                    var maxPoint = valueMax * feedback.feedback.completedcount;
+                                    sumMaxPoint += maxPoint;
+                                    var porcent = Math.Round(item.feedbackItemDataMoodle.Sum(x => x.answercount * Convert.ToInt32(x.value)) * 100 / maxPoint, 2, MidpointRounding.ToEven);
+                                    var options = "";
+                                    item.feedbackItemDataMoodle.ForEach(x => options += " " + x.answertext + ": " + x.answercount);
+                                }
+
+                                var totalPoint = feedback.feedback.feedbackItemMoodle.Where(x => x.typ == type).Sum(x => x.feedbackItemDataMoodle.Sum(y => Convert.ToInt32(y.value) * y.answercount));
+
+                                double porcentTotal = 0;
+                                porcentTotal = Math.Round(totalPoint * 100 / ((sumMaxPoint / filter.Count()) * filter.Count()), 2, MidpointRounding.ToEven);
+                                totalPointTotal += totalPoint;
+                                sumMaxPointTotal += sumMaxPoint;
+                                var color = "#F0235A";
+                                if (porcentTotal >= 95)
+                                {
+                                    color = "#32B85B";
+                                }
+                                else if (porcentTotal < 95 && porcentTotal >= 80)
+                                {
+                                    color = "#F7DC34";
+                                }
+
+                                <th style="background-color:@color">
+                                    @porcentTotal %
+                                </th>
+                            }
+                            else
+                            {
+                                <td style="text-align: center">-</td>
+                            }
+                        }
+                        total = Math.Round(totalPointTotal * 100 / ((sumMaxPointTotal / feedback.feedback.feedbackItemMoodle.Count()) * feedback.feedback.feedbackItemMoodle.Count()), 2, MidpointRounding.ToEven);
+
+                        if (Double.IsNaN(total))
+                        {
+                            total = 0;
+                        }
+                        var colorTotal = "#F0235A";
+                        if (total >= 95)
+                        {
+                            colorTotal = "#32B85B";
+                        }
+                        else if (total < 95 && total >= 80)
+                        {
+                            colorTotal = "#F7DC34";
+                        }
+                        <th style="background-color:@colorTotal">
+                            @total %
+                        </th>
+                    }
+                    <td>@comentario.value</td>
+                </tr>
+                    }
+                }
+            </tbody>
+        </table>
+
+    </div>
+</div>

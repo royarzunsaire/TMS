@@ -1,0 +1,216 @@
+﻿@model SGC.Models.Relator
+
+@{
+                /**/
+
+                /**/
+
+                ViewBag.Title = "Mi Perfil";
+                Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles
+{
+    <style>
+        .container {
+            padding-left: 0;
+            position: relative;
+            width: 100%;
+        }
+
+            .container img {
+                height: auto;
+            }
+
+            .container .btn {
+                position: absolute;
+                top: 0%;
+                left: 0%;
+                transform: translate(3%, 3%);
+                background-color: #555;
+                border: none;
+            }
+
+                .container .btn:hover {
+                    background-color: black;
+                }
+    </style>
+}
+
+<h2>Mi Perfil</h2>
+
+@using (Html.BeginForm("Perfil", "Relator", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="portlet light bordered">
+        <div class="portlet-title">
+            <div class="caption">
+                Datos Personales
+            </div>
+            <div class="tools">
+                <a href="javascript:;" class="collapse"> </a>
+                <a href="javascript:;" class="fullscreen"> </a>
+            </div>
+            <div class="actions" style="margin-right: 15px">
+                @Html.ActionLink("Datos Bancarios", "DatosBancarios", new { id = Model.idRelator }, new { @class = "btn btn-default btn-circle" })
+                @Html.ActionLink("Datos Curriculares", "DatosCurriculares", new { id = Model.idRelator }, new { @class = "btn btn-default btn-circle" })
+                @Html.ActionLink("Experiencias Laborales", "ExperienciaLaboral", new { id = Model.idRelator }, new { @class = "btn btn-default btn-circle" })
+                @Html.ActionLink("Solicitar Cursos", "SolicitarCursos", "RelatorCursoSolicitado", new { id = Model.idRelator }, new { @class = "btn btn-default btn-circle" })
+                @Html.ActionLink("Cursos Habilitados", "CursosHablitados", new { id = Model.idRelator }, new { @class = "btn btn-default btn-circle" })
+                @Html.ActionLink("Cursos", "CursosRealizar", new { id = Model.idRelator }, new { @class = "btn btn-default btn-circle" })
+            </div>
+        </div>
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.idRelator)
+        <div class="portlet-body form">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.contacto.nombres)
+                        @Html.EditorFor(model => model.contacto.nombres, new { htmlAttributes = new { @class = "form-control nombre-propio" } })
+                        @Html.ValidationMessageFor(model => model.contacto.nombres, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.contacto.apellidoPaterno, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.contacto.apellidoPaterno, new { htmlAttributes = new { @class = "form-control nombre-propio" } })
+                        @Html.ValidationMessageFor(model => model.contacto.apellidoPaterno, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.contacto.apellidoMaterno, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.contacto.apellidoMaterno, new { htmlAttributes = new { @class = "form-control nombre-propio" } })
+                        @Html.ValidationMessageFor(model => model.contacto.apellidoMaterno, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.contacto.run, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.contacto.run, new { htmlAttributes = new { @class = "form-control", @id = "run" } })
+                        @Html.ValidationMessageFor(model => model.contacto.run, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.contacto.fechaNacimiento, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.contacto.fechaNacimiento, new { htmlAttributes = new { @class = "form-control datepicker datetimepicker" } })
+                        @Html.ValidationMessageFor(model => model.contacto.fechaNacimiento, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.contacto.telefono, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.contacto.telefono, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.contacto.telefono, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.contacto.correo, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.contacto.correo, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.contacto.correo, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.contacto.estadoCivil, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.contacto.estadoCivil, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.contacto.estadoCivil, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.contacto.direccion, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.contacto.direccion, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.contacto.direccion, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        @Html.Label("", "Imagen firma", htmlAttributes: new { @class = "control-label" })
+                        @if (Model.imagenFirma != null)
+                        {
+                        <div class="container">
+                            <img src="~/Files/@Model.imagenFirma.nombreArchivo" style="max-width:200px; max-height:200px;border:1px solid grey" />
+                            @Html.ActionLink(" ", "Descargar", new { id = Model.imagenFirma.idStorage }, new { @class = "btn btn-primary glyphicon glyphicon-save", style = "vertical-align:top" })
+                        </div>
+                        }
+                        <input type="file" name="fileImagenFirma" accept="image/png" style="padding-top:10px" />
+                        <small>Archivo .png sin fondo</small>
+                        @Html.ValidationMessage("imagenFirma", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="row">
+                        <div class="col-md-12">
+                            @Html.Label("", "Imagen cédula", htmlAttributes: new { @class = "control-label" })
+                        </div>
+                        <div class="col-md-12">
+                            @if (Model.imagenCedula != null)
+                            {
+                                <i class="fa fa-download"></i>
+                                @Html.ActionLink(Model.imagenCedula.nombreArchivo, "Descargar", new { id = Model.imagenCedula.idStorage }, new { })
+                            }
+                        </div>
+                        <div class="col-md-12">
+                            <input type="file" name="fileImagenCedula" accept="application/pdf" style="padding-top:10px" />
+                            @Html.ValidationMessage("imagenCedula", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <hr />
+                    <div class="row">
+                        <div class="col-md-12">
+                            @Html.Label("", "Documento autorización", htmlAttributes: new { @class = "control-label" })
+                        </div>
+                        <div class="col-md-12">
+                            @if (Model.imagenDocumentoAutorizacion != null)
+                            {
+                                <i class="fa fa-download"></i>
+                                @Html.ActionLink(Model.imagenDocumentoAutorizacion.nombreArchivo, "Descargar", new { id = Model.imagenDocumentoAutorizacion.idStorage }, new { })
+                            }
+                        </div>
+                        <div class="col-md-12">
+                            <input type="file" name="fileDocumentoAutorizacion" accept="application/pdf" style="padding-top:10px" />
+                            @Html.ValidationMessage("imagenDocumentoAutorizacion", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        @Html.Label("Vinculado con SENCE (CUS)", htmlAttributes: new { @class = "control-label" })
+                        <div class="checkbox">
+                            @Html.EditorFor(model => model.vinculadoSENCE, new { htmlAttributes = new { @style = "margin-left: -10px" } })
+                            @Html.ValidationMessageFor(model => model.vinculadoSENCE, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="row">
+                @*<div class="col-md-6">
+                        @Html.ActionLink("Volver", "Index", new { }, new { @class = "btn btn-default" })
+                    </div>*@
+                <div class="col-md-12 text-right">
+                    <input type="submit" value="Guardar" class="btn btn-primary" />
+                </div>
+            </div>
+        </div>
+    </div>
+}

@@ -1,0 +1,72 @@
+﻿@model SGC.Models.RoleViewModel
+@{
+    ViewBag.Title = "Crear Roles";    
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h3 class="page-title">
+    Administracion de Roles
+    
+</h3>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet light bordered">
+            <div class="portlet-title">
+                <div class="caption font-green">
+                    <i class="icon-pin font-green"></i>
+                    <span class="caption-subject bold uppercase">Nuevo Rol</span>
+                </div>
+                <div class="actions">
+                    <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""> </a>
+                </div>
+            </div>
+            <div class="portlet-body form">
+                @using (Html.BeginForm("Create", "AdminRoles", FormMethod.Post, new { @class = "form-horizontal", role = "form", @Id = "create-role" }))
+            {
+                    <div class="form-body">
+                        @Html.AntiForgeryToken()
+
+                        @Html.ValidationSummary("", new { @class = "text-error" })
+
+
+                        <div class="form-group  margin-top-20">
+
+                            <div class="form-group form-md-line-input has-info">
+                                @Html.LabelFor(m => m.Name, "Nombre ", new { @class = "col-md-2 control-label" })
+                                <div class="col-md-4">
+                                    @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+                                    <div class="form-control-focus"> </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group form-md-line-input has-info">
+                                @Html.LabelFor(model => model.Description, "Descripción ", new { @class = "control-label col-md-2" })
+                                <div class="col-md-4">
+                                    @Html.TextBoxFor(m => m.Description, new { @class = "form-control" })
+                                    <div class="form-control-focus"> </div>
+                                </div>
+                            </div>
+                           
+                            
+                        </div>
+
+                        <div class="form-actions">
+                            <div class="row">
+                                <div class="col-md-offset-2 col-md-10">
+                                    @Html.ActionLink("Regresar", "Index", null, new { @class = "btn btn-default" })
+                                    <input type="submit" class="btn btn-primary" value="Guardar" />
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                }
+            </div>
+
+        </div>
+    </div>
+</div>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

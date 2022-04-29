@@ -1,0 +1,260 @@
+﻿@model SGC.Models.viewModelAdministrarFormularios
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    ViewBag.Title = "Editar Formulario";
+}
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+<style>
+    #idRespuesta {
+        margin-right: 5px;
+    }
+
+    .modal {
+        text-align: center;
+        padding: 0 !important;
+    }
+
+        .modal:before {
+            content: '';
+            display: inline-block;
+            height: 100%;
+            vertical-align: middle;
+            margin-right: -4px;
+        }
+
+    .modal-dialog {
+        display: inline-block;
+        text-align: left;
+        /*vertical-align: middle;*/
+    }
+</style>
+
+<h2 class="page-title">Editar</h2>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="portlet light bordered">
+                <div class="portlet-title">
+                    <div class="caption">
+                        Formulario
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    @Html.HiddenFor(model => model.Formulario.idFormulario)
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.Formulario.nombre)
+                                @Html.EditorFor(model => model.Formulario.nombre, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Formulario.nombre, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                @Html.LabelFor(model => Model.Formulario.tipoFormulario)
+                                @Html.EnumDropDownListFor(model => model.Formulario.tipoFormulario, "Seleccionar", htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.Formulario.tipoFormulario, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.Formulario.descripcion)
+                                @Html.EditorFor(model => model.Formulario.descripcion, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Formulario.descripcion, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="row">
+                        <div class="col-md-10">
+                            <h4>Preguntas</h4>
+                            <hr />
+                        </div>
+                        <div class="col-md-12">
+                            <div id="idPreguntasCreadas">
+                                @foreach (var pregunta in Model.Formulario.preguntasFormularios.OrderBy(p => p.orden))
+                                {
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <div class="row">
+                                                    <div class="col-md-11">
+                                                        @if (pregunta.obligatoria)
+                                                        {
+                                                            <input type="text" name="pregunta" idPregunta="@pregunta.idPreguntasFormulario" class="form-control" value="@pregunta.pregunta">
+
+                                                        }
+                                                        else
+                                                        {
+                                                            <input type="text" name="pregunta" idPregunta="@pregunta.idPreguntasFormulario" class="form-control" value="@pregunta.pregunta">
+                                                        }
+                                                    </div>
+                                                    <div class="col-md-1" style="margin-bottom:25px; padding-left:0">
+                                                        *
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        @if (pregunta.tipo == SGC.Models.TipoPregunta.Abierta)
+                                                        {
+                                                            <textarea class="form-control" disabled></textarea>
+                                                            <input type="hidden" idRespuesta="@pregunta.respuestaFormulario.FirstOrDefault().idRespuestasFormulario" name="respuesta" tipo="Abierta" />
+                                                        }
+                                                        @if (pregunta.tipo == SGC.Models.TipoPregunta.Corta)
+                                                        {
+                                                            <textarea class="form-control" rows="1" disabled></textarea>
+                                                            <input type="hidden" idRespuesta="@pregunta.respuestaFormulario.FirstOrDefault().idRespuestasFormulario" name="respuesta" tipo="Corta" />
+                                                        }
+                                                        @if (pregunta.tipo == SGC.Models.TipoPregunta.Alternativa)
+                                                        {
+                                                            <span id="errorPuntaje" class="field-validation-error text-danger" hidden>El Puntaje debe se un número entre 0 y 100</span>
+                                                            <div class="form-group">
+                                                                @foreach (var respuesta in pregunta.respuestaFormulario)
+                                                                {
+                                                                    <div class="form-check">
+                                                                        <label class="form-check-label" style="width: 100%">
+                                                                            <input class="form-check-input" type="radio" value="optionCheckBoxUnique" style="width: 5%" disabled />
+                                                                            <input type="text" name="respuesta" idRespuesta="@respuesta.idRespuestasFormulario" tipo="Alternativa" style="border: 1px solid #c2cad8; padding: 6px 12px; color: #4d6b8a; width: 80%" value="@respuesta.respuesta">
+                                                                            <input type="number" name="puntaje" style="border: 1px solid #c2cad8; padding: 6px 12px; color: #4d6b8a; width: 15%" onchange="validarPuntaje($(this))" value="@respuesta.puntaje">
+                                                                        </label>
+                                                                    </div>
+                                                                }
+                                                            </div>
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="row">
+                        <div class="form-group">
+                            <div class="col-md-6">
+                                @Html.ActionLink("Volver", "Index", new { id = ViewBag.idComercializacion }, new { @class = "btn btn-default" })
+                            </div>
+                            <div class="col-md-6 text-right">
+                                <button class="btn btn-primary pull-right" data-toggle="modal" data-target="#idModalConfirmCrear" type="button">Guardar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" id="idModalConfirmCrear">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Confirmar</h4>
+            </div>
+            <div class="modal-body text-center">
+                <p>¿Esta seguro que desea guardar el formulario?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="idBotonEnviarFormulario" class="btn btn-primary">Aceptar</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="~/Content/js/Formulario.js"></script>
+    <script>
+        $('#idBotonEnviarFormulario').click(function () {
+            var contador = 0;
+            var contadorGeneral = 0;
+            var contadorRespuesta = 0;
+            var data = {
+                nombre: $('#Formulario_nombre').val(),
+                idFormulario: $('#Formulario_idFormulario').val(),
+                descripcion: $('#Formulario_descripcion').val(),
+                tipoFormulario: $('#Formulario_tipoFormulario').val(),
+                PreguntasFormularios: []
+            };
+            var PreguntasFormulario = new Object();
+            var RespuestaFormulario = new Object();
+            $.each($('#idPreguntasCreadas').find('input'), function () {
+                if ($(this).val() != "optionCheckBoxUnique") {
+                    if ($(this).attr('name') == 'pregunta') {
+                        if (contadorGeneral != 0) {
+                            data.PreguntasFormularios.push(PreguntasFormulario);
+                        } else {
+
+                        }
+                        PreguntasFormulario = new Object();
+                        PreguntasFormulario.pregunta = $(this).val();
+                        PreguntasFormulario.orden = contador
+                        //PreguntasFormulario.tipo = $(this).attr('tipo')
+                        //PreguntasFormulario.obligatoria = $(this).attr('obligatoria')
+                        PreguntasFormulario.idPreguntasFormulario = $(this).attr('idPregunta')
+                        PreguntasFormulario.RespuestaFormulario = [];
+                        contador++;
+                    } else if ($(this).attr('name') == 'respuesta') {
+                        RespuestaFormulario = new Object();
+                        RespuestaFormulario.orden = contadorRespuesta;
+                        RespuestaFormulario.idRespuestasFormulario = $(this).attr('idRespuesta')
+                        contadorRespuesta++;
+                        if ($(this).attr('tipo') == 'Abierta' || $(this).attr('tipo') == 'Corta') {
+                            //RespuestaFormulario.tipoRespuesta = $(this).val();
+                            RespuestaFormulario.respuesta = '';
+                            PreguntasFormulario.RespuestaFormulario.push(RespuestaFormulario);
+                        } else {
+                            RespuestaFormulario.respuesta = $(this).val();
+                            RespuestaFormulario.tipoRespuesta = 'Alternativa';
+                        }
+                    } else {
+                        RespuestaFormulario.orden = contadorRespuesta;
+                        RespuestaFormulario.puntaje = $(this).val();
+                        PreguntasFormulario.RespuestaFormulario.push(RespuestaFormulario);
+                    }
+                }
+                contadorGeneral++;
+            });
+            data.PreguntasFormularios.push(PreguntasFormulario);
+            $.ajax("@Url.Action("editarFormulario", "Formularios")", {
+                method: 'post',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                traditional: true,
+                success: function (response) {
+                    if (response.HasErrors) {
+                        showErrorMessages(response.Errors, 'Se produjo un error al guardar el formulario.');
+                        $('#idModalConfirmCrear').modal('hide');
+                    }
+                    else {
+                        document.location.href = "/Formularios";
+                    }
+                }
+            });
+        });
+
+        function showErrorMessages(errors, titulo) {
+            errores = "";
+            for (i = 0; i < errors.length; i++) {
+                errores = errores + "<br>" + errors[i].Value;
+            }
+            Swal.fire({
+                title: titulo,
+                html: errores
+            })
+        }
+    </script>
+}

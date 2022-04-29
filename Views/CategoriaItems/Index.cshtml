@@ -1,0 +1,55 @@
+﻿@model IEnumerable<SGC.Models.CategoriaItem>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Categoria</h2>
+
+<p>
+    @Html.ActionLink("Crear", "Create")
+</p>
+<table class="table dataTable">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.nombre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.fechaCreacion)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.usuarioCreador)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.vigencia)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.nombre)
+                </td>
+                <td data-sort="@item.fechaCreacion.ToString("MM/dd/yyyy")">
+                    @Html.DisplayFor(modelItem => item.fechaCreacion)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.usuarioCreador)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.vigencia)
+                </td>
+                <td>
+                    @Html.ActionLink(" ", "Edit", new { id = item.idCategoriaItem }, htmlAttributes:new { @class = "btn btn-warning  glyphicon glyphicon-edit", @datatoggle = "tooltip", @title = "Editar" }) 
+                    @Html.ActionLink(" ", "Details", new { id = item.idCategoriaItem }, htmlAttributes: new { @class = "btn btn-info glyphicon glyphicon-list", @datatoggle = "tooltip", @title = "Ver" })
+                    @Html.ActionLink(" ", "Delete", new { id = item.idCategoriaItem }, htmlAttributes: new { @class = "btn btn-danger glyphicon glyphicon-trash", @datatoggle = "tooltip", @title = "Borrar" })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

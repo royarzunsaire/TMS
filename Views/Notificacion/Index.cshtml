@@ -1,0 +1,84 @@
+﻿@model IEnumerable<SGC.Models.Notificacion>
+
+@{
+    ViewBag.Title = "Listado Notificacion";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Listado Notificacion @Html.ActionLink(" ", "Create","/Create",htmlAttributes: new { @class = "btn btn-primary btn-large glyphicon glyphicon-plus" , @datatoggle = "tooltip", @title = "Nuevo"})
+</h2>
+<p>
+   
+</p>
+<table class="table table-striped table-bordered table-hover dt-responsive dataTable no-footer">
+<thead>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.titulo)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.mensaje)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.url)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.tipo)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.fechaCreacion)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.color)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.estado)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.fechaCreacion)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.usuarioCreador)
+        </th>
+        <th></th>
+    </tr>
+</thead>
+	<tbody>
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.titulo)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.mensaje)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.url)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.tipo)
+        </td>
+        <td data-sort="@item.fechaCreacion.ToString(" MM /dd/yyyy")">
+            @Html.DisplayFor(modelItem => item.fechaCreacion)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.color)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.estado)
+        </td>
+        <td data-sort="@item.fechaCreacion.ToString("MM/dd/yyyy")">
+            @Html.DisplayFor(modelItem => item.fechaCreacion)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.usuarioCreador)
+        </td>
+        <td>
+            @Html.ActionLink(" ", "Edit", new { id=item.idNotificacion }, htmlAttributes: new { @class = "btn btn-warning  glyphicon glyphicon-edit", @datatoggle = "tooltip", @title = "Editar" }) 
+            @Html.ActionLink(" ", "Details", new { id=item.idNotificacion }, htmlAttributes: new { @class = "btn btn-info glyphicon glyphicon-list", @datatoggle = "tooltip", @title = "Ver" }) 
+            @Html.ActionLink(" ", "Delete", new { id=item.idNotificacion }, htmlAttributes: new { @class = "btn btn-danger glyphicon glyphicon-trash", @datatoggle = "tooltip", @title = "Borrar" })
+        </td>
+    </tr>
+}
+</tbody>
+</table>

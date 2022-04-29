@@ -1,0 +1,68 @@
+﻿@model IEnumerable<SGC.Models.SalidaTerreno>
+
+@{
+    ViewBag.Title = "Calendario";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles {
+    <link href='~/Content/plugins/fullcalendar-4.2.0/fullcalendar/core/main.css' rel='stylesheet' />
+    <link href='~/Content/plugins/fullcalendar-4.2.0/fullcalendar/daygrid/main.css' rel='stylesheet' />
+}
+
+<br />
+<div class="row">
+    <div class="col-md-offset-1 col-md-10">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-calendar"></i>
+                    Salidas a Terreno
+                </div>
+                <div class="actions">
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div id='calendar'></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src='~/Content/plugins/fullcalendar-4.2.0/fullcalendar/core/main.js'></script>
+    <script src='~/Content/plugins/fullcalendar-4.2.0/fullcalendar/daygrid/main.js'></script>
+    <script src='~/Content/plugins/fullcalendar-4.2.0/fullcalendar/core/locales/es.js'></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            calendarEl = document.getElementById('calendar');
+
+            eventos = JSON.parse('@Html.Raw(ViewBag.eventosJson)');
+            @*eventos = "@ViewBag.eventosJson";
+            eventos = eventos.replace(/&quot;/g, '"');
+            eventos = JSON.parse(eventos);*@
+
+            calendar = new FullCalendar.Calendar(calendarEl, {
+                locale: 'es',
+                plugins: ['dayGrid'],
+                defaultView: 'dayGridMonth',
+                defaultDate: new Date(),
+                eventClick: function (info) {
+                    descripcion = info.event.extendedProps.description;
+                    if (descripcion.resumen === null) {
+                        descripcion.resumen = "";
+                    }
+                    bootbox.alert({
+                        message: '<strong>Cliente: </strong>' + info.event.title + '<br>' + '<strong>Vendedor: </strong>' + descripcion.vendedor + '<br>' + '<strong>Estado: </strong>' + descripcion.estado + '<br>' + '<strong>Motivo: </strong>' + descripcion.motivo + '<br>' + '<strong>Resumen: </strong>' + descripcion.resumen,
+                        title: "Salida a Terreno",
+                    });
+                },
+                events: eventos
+            });
+
+            calendar.render();
+        });
+    </script>
+}
+

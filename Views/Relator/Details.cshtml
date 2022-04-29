@@ -1,0 +1,461 @@
+﻿@model SGC.Models.Relator
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles
+{
+    <style>
+        .container {
+            padding-left: 0;
+            position: relative;
+            width: 100%;
+        }
+
+            .container img {
+                height: auto;
+            }
+
+            .container .btn {
+                position: absolute;
+                top: 0%;
+                left: 0%;
+                transform: translate(3%, 3%);
+                background-color: #555;
+                border: none;
+            }
+
+                .container .btn:hover {
+                    background-color: black;
+                }
+    </style>
+}
+
+<h2>Detalles del Relator</h2>
+
+<div class="portlet light bordered">
+    <div class="portlet-title">
+        <div class="caption">
+            Datos Personales
+        </div>
+        <div class="tools">
+            <a href="javascript:;" class="collapse"> </a>
+            <a href="javascript:;" class="fullscreen"> </a>
+        </div>
+        <div class="actions" style="margin-right: 15px">
+            @*@Html.ActionLink("Capacitación Administrativa", "R16", new { id = Model.idRelator }, new { @class = "btn btn-default btn-circle" })*@
+            @*@Html.ActionLink("Cursos Habilitados", "CursosHablitados", new { id = Model.idRelator }, new { @class = "btn btn-default btn-circle" })*@
+            @*@Html.ActionLink("Clases", "CursosRealizar", new { id = Model.idRelator }, new { @class = "btn btn-default btn-circle" })*@
+        </div>
+    </div>
+    <div class="portlet-body form">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.contacto.nombres)
+                    @Html.EditorFor(model => model.contacto.nombres, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", @style = "border: 0px" } })
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.contacto.apellidoPaterno, htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.contacto.apellidoPaterno, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", @style = "border: 0px" } })
+                    @Html.ValidationMessageFor(model => model.contacto.apellidoPaterno, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.contacto.apellidoMaterno, htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.contacto.apellidoMaterno, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", @style = "border: 0px" } })
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.contacto.run, htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.contacto.run, new { htmlAttributes = new { @class = "form-control", @id = "run", @readonly = "readonly", @style = "border: 0px" } })
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.contacto.fechaNacimiento, htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.contacto.fechaNacimiento, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", @style = "border: 0px" } })
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.contacto.telefono, htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.contacto.telefono, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", @style = "border: 0px" } })
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.contacto.correo, htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.contacto.correo, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", @style = "border: 0px" } })
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.contacto.estadoCivil, htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.contacto.estadoCivil, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", @style = "border: 0px" } })
+                </div>
+            </div>
+            @*<div class="col-md-4">
+                <div class="form-group">
+                    @Html.Label("Usuario", htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.contacto.usuario.UserName, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", @style = "border: 0px" } })
+                </div>
+            </div>*@
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.contacto.direccion, htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.contacto.direccion, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", @style = "border: 0px" } })
+                </div>
+            </div>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.Label("", "Imagen firma", htmlAttributes: new { @class = "control-label" })
+                    @if (Model.imagenFirma != null)
+                    {
+                        <div class="container">
+                            <img src="~/Files/@Model.imagenFirma.nombreArchivo" style="max-width:200px; max-height:200px;border:1px solid grey" />
+                            @Html.ActionLink(" ", "Descargar", new { id = Model.imagenFirma.idStorage }, new { @class = "btn btn-primary glyphicon glyphicon-save", style = "vertical-align:top" })
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="row">
+                    <div class="col-md-12">
+                        @Html.Label("", "Imagen cédula", htmlAttributes: new { @class = "control-label" })
+                    </div>
+                    <div class="col-md-12">
+                        @if (Model.imagenCedula != null)
+                        {
+                            <i class="fa fa-download"></i>
+                            @Html.ActionLink(Model.imagenCedula.nombreArchivo, "Descargar", new { id = Model.imagenCedula.idStorage }, new { })
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <hr />
+                <div class="row">
+                    <div class="col-md-12">
+                        @Html.Label("", "Documento autorización", htmlAttributes: new { @class = "control-label" })
+                    </div>
+                    <div class="col-md-12">
+                        @if (Model.imagenDocumentoAutorizacion != null)
+                        {
+                            <i class="fa fa-download"></i>
+                            @Html.ActionLink(Model.imagenDocumentoAutorizacion.nombreArchivo, "Descargar", new { id = Model.imagenDocumentoAutorizacion.idStorage }, new { })
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr />
+        <div class="form-group">
+            @Html.Label("Vinculado con SENCE (CUS)", htmlAttributes: new { @class = "control-label" })
+            <div class="checkbox">
+                @Html.EditorFor(model => model.vinculadoSENCE, new { htmlAttributes = new { @style = "margin-left: -10px", disabled = "disabled" } })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="portlet light bordered">
+    <div class="portlet-title">
+        <div class="caption">
+            Datos Bancarios
+        </div>
+        <div class="tools">
+            <a href="javascript:;" class="collapse"> </a>
+            <a href="javascript:;" class="fullscreen"> </a>
+        </div>
+    </div>
+    <div class="portlet-body form">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.datosBancarios.numeroCuenta, htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.datosBancarios.numeroCuenta, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", @style = "border: 0px" } })
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.datosBancarios.nombreBanco, htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.datosBancarios.nombreBanco, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", @style = "border: 0px" } })
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.datosBancarios.tipoCuenta, htmlAttributes: new { @class = "control-label" })
+                    @if (Model.datosBancarios != null)
+                    {
+                        if (Model.datosBancarios.tipoCuenta == SGC.Models.TipoCuenta.VISTA)
+                        {
+                            <input type="text" name="tipoCuenta" class="form-control" value="Cuenta Vista" readonly style="border: 0px" />
+                        }
+                        if (Model.datosBancarios.tipoCuenta == SGC.Models.TipoCuenta.CTA_CTE)
+                        {
+                            <input type="text" name="tipoCuenta" class="form-control" value="Cuenta Corriente" readonly style="border: 0px" />
+                        }
+                        if (Model.datosBancarios.tipoCuenta == SGC.Models.TipoCuenta.AHORRO)
+                        {
+                            <input type="text" name="tipoCuenta" class="form-control" value="Cuenta Ahorro" readonly style="border: 0px" />
+                        }
+                    }
+                    else
+                    {
+                        <input type="text" name="tipoCuenta" class="form-control" value="" readonly style="border: 0px" />
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="portlet light bordered">
+    <div class="portlet-title">
+        <div class="caption">
+            Datos Curriculares
+        </div>
+        <div class="tools">
+            <a href="javascript:;" class="collapse"> </a>
+            <a href="javascript:;" class="fullscreen"> </a>
+        </div>
+    </div>
+    <div class="portlet-body form">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4>
+                            Estudios Universitarios
+                        </h4>
+                    </div>
+                </div>
+                <table class="table">
+                    <tbody>
+                        @foreach (var item in Model.tituloCurricular)
+                        {
+                            if (@item.nombreTitulo == SGC.Models.TipoTitulo.UNIVERSITARIO)
+                            {
+                                <tr>
+                                    <td style="width:10%">
+                                        @Html.DisplayFor(modelItem => item.fecha)
+                                    </td>
+                                    <td style="width:30%">
+                                        @Html.DisplayFor(modelItem => item.descripcion)
+                                    </td>
+                                    <td style="width:30%">
+                                        @Html.DisplayFor(modelItem => item.institucion)
+                                    </td>
+                                    <td style="width:30%">
+                                        @if (item.documento != null)
+                                        {
+                                            <i class="fa fa-download"></i>
+                                            @Html.ActionLink(item.documento.nombreArchivo, "Descargar", new { id = item.documento.idStorage }, new { })
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4>
+                            Estudios Técnicos
+                        </h4>
+                    </div>
+                </div>
+                <table class="table">
+                    <tbody>
+                        @foreach (var item in Model.tituloCurricular)
+                        {
+                            if (@item.nombreTitulo == SGC.Models.TipoTitulo.TECNICO)
+                            {
+                                <tr>
+                                    <td data-sort="@DateTime.Parse(item.fecha).ToString("MM/dd/yyyy")"  style="width:10%">
+                                        @Html.DisplayFor(modelItem => item.fecha)
+                                    </td>
+                                    <td style="width:30%">
+                                        @Html.DisplayFor(modelItem => item.descripcion)
+                                    </td>
+                                    <td style="width:30%">
+                                        @Html.DisplayFor(modelItem => item.institucion)
+                                    </td>
+                                    <td style="width:30%">
+                                        @if (item.documento != null)
+                                        {
+                                            <i class="fa fa-download"></i>
+                                            @Html.ActionLink(item.documento.nombreArchivo, "Descargar", new { id = item.documento.idStorage }, new { })
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4>
+                            Cursos de Capacitación
+                        </h4>
+                    </div>
+                </div>
+                <table class="table">
+                    <tbody>
+                        @foreach (var item in Model.tituloCurricular)
+                        {
+                            if (@item.nombreTitulo == SGC.Models.TipoTitulo.CAPACITACION)
+                            {
+                                <tr>
+                                    <td data-sort="@DateTime.Parse(item.fecha).ToString("MM/dd/yyyy")"  style="width:10%">
+                                        @Html.DisplayFor(modelItem => item.fecha)
+                                    </td>
+                                    <td style="width:30%">
+                                        @Html.DisplayFor(modelItem => item.descripcion)
+                                    </td>
+                                    <td style="width:30%">
+                                        @Html.DisplayFor(modelItem => item.institucion)
+                                    </td>
+                                    <td style="width:30%">
+                                        @if (item.documento != null)
+                                        {
+                                            <i class="fa fa-download"></i>
+                                            @Html.ActionLink(item.documento.nombreArchivo, "Descargar", new { id = item.documento.idStorage }, new { })
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="portlet light bordered">
+    <div class="portlet-title">
+        <div class="caption">
+            Experiencia Laboral
+        </div>
+        <div class="tools">
+            <a href="javascript:;" class="collapse"> </a>
+            <a href="javascript:;" class="fullscreen"> </a>
+        </div>
+    </div>
+    <div class="portlet-body form">
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayName("Inicio")
+                            </th>
+                            <th>
+                                @Html.DisplayName("Término")
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.experienciaLaboral.FirstOrDefault().cargo)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.experienciaLaboral.FirstOrDefault().empresa)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.experienciaLaboral.FirstOrDefault().faena)
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.experienciaLaboral)
+                        {
+                            <tr>
+                                <td  >
+                                    @Html.DisplayFor(modelItem => item.fechaInicio)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.fechaTermino)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.cargo)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.empresa)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.faena)
+                                </td>
+                                <td>
+                                    @if (item.documento != null)
+                                    {
+                                        <i class="fa fa-download"></i>
+                                        @Html.ActionLink(item.documento.nombreArchivo, "Descargar", new { id = item.documento.idStorage }, new { })
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+@*<div class="portlet light bordered">
+    <div class="portlet-title">
+        <div class="caption">
+            Cursos Habilitados
+        </div>
+        <div class="tools">
+            <a href="javascript:;" class="collapse"> </a>
+            <a href="javascript:;" class="fullscreen"> </a>
+        </div>
+    </div>
+    <div class="portlet-body form">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        Curso
+                    </th>
+                    <th>
+                        Código SENCE
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.relatorCurso)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.curso.nombreCurso)
+                        </td>
+                        <td>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>*@
+<div>
+    <button type="button" class="btn btn-default" onclick="javascript:history.back()">Volver</button>
+</div>

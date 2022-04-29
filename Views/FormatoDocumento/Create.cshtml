@@ -1,0 +1,62 @@
+﻿@model SGC.Models.ViewModelFormatoDocumento
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    List<SelectListItem> listItemTipoDocumento = new List<SelectListItem>();
+    if (Model.tiposArchivos != null)
+    {
+        foreach (var item in Model.tiposArchivos)
+        {
+            listItemTipoDocumento.Add(new SelectListItem
+            {
+                Text = item,
+                Value = item
+            });
+        }
+    }
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Create</title>
+</head>
+<body>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+
+    @using (Html.BeginForm("Create", "FormatoDocumento", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-horizontal">
+            <h4>FormatoDocumento</h4>
+            <hr />
+            <div class="form-group">
+                <div class="col-md-6">
+                    @Html.LabelFor(model => model.formatoDocumento.tipoArchivo, htmlAttributes: new { @class = "control-label col-md-2" })
+
+                    @Html.DropDownListFor(x => Model.formatoDocumento.tipoArchivo, listItemTipoDocumento, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.formatoDocumento.tipoArchivo, "", new { @class = "text-danger" })
+                </div>
+                <div class="col-md-6">
+                    <span>Select File:</span>
+                    <input type="file" name="postedFiles" multiple="multiple" accept=".doc,.docx,.xml,.dotx" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Create" class="btn btn-default" />
+                </div>
+            </div>
+        </div>
+    }
+
+    <div>
+        @Html.ActionLink("Back to List", "Index")
+    </div>
+</body>
+</html>

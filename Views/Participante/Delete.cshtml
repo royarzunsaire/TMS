@@ -1,0 +1,25 @@
+﻿@model SGC.Models.Participante
+
+@{
+    ViewBag.Title = "Delete | Eliminar";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Confirmar eliminación</h2>
+
+<h3>Debe confirmar la eliminación de Participante </h3>
+<div>
+
+    <hr />
+    <dl class="dl-horizontal">
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Eliminar" class="btn btn-danger" /> |
+            @Html.ActionLink("Volver", "Index",new {@class= "btn btn-default" })
+        </div>
+    }
+</div>

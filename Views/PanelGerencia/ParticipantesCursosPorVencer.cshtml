@@ -1,0 +1,72 @@
+﻿@model IEnumerable<SGC.Models.Participante>
+@using SGC.Models;
+@using System.Data.Entity;
+@using System.Collections.Generic;
+@{
+    var data = Model.ToList();
+}
+
+<style>
+    #table-wrapper {
+        position: relative;
+    }
+
+    #table-scroll {
+        overflow: auto;
+    }
+
+    #table-wrapper table {
+        width: 100%;
+    }
+
+    #table-wrapper td {
+        white-space: nowrap;
+    }
+
+    #table-wrapper th {
+        white-space: nowrap;
+    }
+
+    th {
+        background-color: yellow;
+    }
+</style>
+
+<div id="table-wrapper">
+    <div id="table-scroll">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>@Html.DisplayName("Codigo")</th>
+                    <th>@Html.DisplayName("Empresa")</th>
+                    <th>@Html.DisplayName("Curso")</th>
+                    <th>@Html.DisplayName("Nombre Participante")</th>
+                    <th>@Html.DisplayName("RUT Participante")</th>
+                    <th>@Html.DisplayName("Nombre Contacto")</th>
+                    <th>@Html.DisplayName("Teléfono Contacto")</th>
+                    <th>@Html.DisplayName("Correo Contacto")</th>
+                    <th>@Html.DisplayName("Comercial")</th>
+                    <th>@Html.DisplayName("Fecha de Vencimiento")</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var participante in data.OrderBy(x => x.comercializacion.fechaTermino.AddMonths(x.comercializacion.vigenciaCredenciales))
+                    .ThenBy(x => x.comercializacion.cotizacion.nombreEmpresa).ThenBy(x => x.comercializacion.cotizacion.curso.nombreCurso).ThenBy(x => x.contacto.nombreCompleto))
+                {
+                    <tr>
+                        <td>@participante.comercializacion.cotizacion.codigoCotizacion</td>
+                        <td>@participante.comercializacion.cotizacion.nombreEmpresa</td>
+                        <td>@participante.comercializacion.cotizacion.curso.nombreCurso</td>
+                        <td>@participante.contacto.nombreCompleto</td>
+                        <td>@participante.contacto.runCompleto</td>
+                        <td>@participante.comercializacion.cotizacion.cliente.clienteContactos.Select(x => x.contacto.nombreCompleto).FirstOrDefault()</td>
+                        <td>@participante.comercializacion.cotizacion.cliente.clienteContactos.Select(x => x.contacto.telefono).FirstOrDefault()</td>
+                        <td>@participante.comercializacion.cotizacion.cliente.clienteContactos.Select(x => x.contacto.correo).FirstOrDefault()</td>
+                        <td>@participante.comercializacion.cotizacion.usuarioCreador.nombreCompleto</td>
+                        <td>@participante.comercializacion.fechaTermino.AddMonths(participante.comercializacion.vigenciaCredenciales).ToShortDateString()</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

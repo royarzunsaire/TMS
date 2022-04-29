@@ -1,0 +1,172 @@
+﻿@model SGC.Models.ViewModelPanelGerencia
+
+@{
+    ViewBag.Title = "Panel de Gerencia";
+
+}
+
+
+
+
+<div class="row">
+    <div class="col-md-12 col-sm-6 col-xs-12">
+        <div class="row">
+            <div class="col-md-6" id="tipos-ventas">
+                <div class="portlet light ">
+                    <div class="portlet-title">
+                        <div class="caption caption-md">
+                            <i class="icon-bar-chart font-dark hide"></i>
+                            <span class="caption-subject bold uppercase">Ventas del mes por sucursal</span>
+                        </div>
+                        <div class="actions">
+                            <button id="btn-detalles-tipos-ventas" type="button" class="btn btn-default btn-sm boton-sin-borde" title="Detalles"><i class="fa fa-eye verde"></i></button>
+                            <button id="btn-ocultar-tipos-ventas" type="button" class="btn btn-default btn-sm boton-sin-borde" title="Ocultar" style="display: none"><i class="fa fa-eye-slash verde"></i></button>
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        <div class="table-scrollable table-scrollable-borderless">
+                            <div class="scroll">
+                                <div id="table-wrapper">
+                                    <div id="table-scroll">
+                                        <table class="table table-hover table-light">
+                                            <thead>
+                                                <tr class="uppercase">
+                                                    <th> Sucursal </th>
+                                                    <th class="tipos-ventas" hidden> Curso </th>
+                                                    <th class="tipos-ventas" hidden> Monto Curso </th>
+                                                    <th class="tipos-ventas" hidden> Recertificación </th>
+                                                    <th class="tipos-ventas" hidden> Monto Recertificación </th>
+                                                    <th class="tipos-ventas" hidden> Precontrato </th>
+                                                    <th class="tipos-ventas" hidden> Monto Precontrato </th>
+                                                    <th class="tipos-ventas" hidden> Comunitario </th>
+                                                    <th class="tipos-ventas" hidden> Monto Comunitario </th>
+                                                    <th class="tipos-ventas" hidden> Duplicado Credencial </th>
+                                                    <th class="tipos-ventas" hidden> Monto Duplicado Credencial </th>
+                                                    <th class="tipos-ventas" hidden> Arriendo </th>
+                                                    <th class="tipos-ventas" hidden> Monto Arriendo </th>
+                                                    <th class="text-right"> Total </th>
+                                                    <th class="text-right"> Monto Total </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var item in Model.sucursal)
+                                                {
+                                                    <tr>
+                                                        <td> @item.nombre </td>
+                                                        <td class="tipos-ventas text-right" hidden> @item.VentasCurso </td>
+                                                        <td class="tipos-ventas text-right" hidden> @String.Format("{0:C}", item.VentasCursoMonto) </td>
+                                                        <td class="tipos-ventas text-right" hidden> @item.VentasRecertificacion </td>
+                                                        <td class="tipos-ventas text-right" hidden> @String.Format("{0:C}", item.VentasRecertificacionMonto) </td>
+                                                        <td class="tipos-ventas text-right" hidden> @item.VentasPrecontrato </td>
+                                                        <td class="tipos-ventas text-right" hidden> @String.Format("{0:C}", item.VentasPrecontratoMonto) </td>
+                                                        <td class="tipos-ventas text-right" hidden> @item.VentasComunitario </td>
+                                                        <td class="tipos-ventas text-right" hidden> @String.Format("{0:C}", item.VentasComunitarioMonto) </td>
+                                                        <td class="tipos-ventas text-right" hidden> @item.VentasDuplicadoCredencial </td>
+                                                        <td class="tipos-ventas text-right" hidden> @String.Format("{0:C}", item.VentasDuplicadoCredencialMonto) </td>
+                                                        <td class="tipos-ventas text-right" hidden> @item.VentasArriendo </td>
+                                                        <td class="tipos-ventas text-right" hidden> @String.Format("{0:C}", item.VentasArriendoMonto) </td>
+                                                        <td class="text-right"> @item.VentasTotal </td>
+                                                        <td class="text-right"> @String.Format("{0:C}", item.VentasTotalMonto) </td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="portlet light ">
+                    <div class="portlet-title">
+                        <div class="caption caption-md">
+                            <i class="icon-bar-chart font-dark hide"></i>
+                            <span class="caption-subject bold uppercase">Ventas no Finalizadas</span>
+                        </div>
+                        <div class="actions">
+                            <ul class="nav nav-tabs" style="padding-bottom:0">
+                                <li class="active">
+                                    <a href="#tab_ventas_no_terminadas_sucursal_mes" data-toggle="tab" style="padding-left:10px;padding-right:10px;"> Mes </a>
+                                </li>
+                                <li>
+                                    <a href="#tab_ventas_no_terminadas_sucursal_anio" data-toggle="tab" style="padding-left:10px;padding-right:10px;"> Año </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="tab_ventas_no_terminadas_sucursal_mes">
+                                <div class="table-scrollable table-scrollable-borderless">
+                                    <div class="scroll">
+                                        <div id="table-wrapper">
+                                            <div id="table-scroll">
+                                                <table class="table table-hover table-light">
+                                                    <thead>
+                                                        <tr class="uppercase">
+                                                            <th> Sucursal </th>
+                                                            <th class="text-right"> Ventas </th>
+                                                            <th class="text-right"> Monto </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach (var item in Model.ventasNoTerminadasSucursal)
+                                                        {
+                                                            <tr>
+                                                                <td> @item.nombre </td>
+                                                                <td class="text-right"> @item.cantVentasMensuales </td>
+                                                                <td class="text-right"> @String.Format("{0:C}", item.montoMensual) </td>
+                                                            </tr>
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="tab_ventas_no_terminadas_sucursal_anio">
+                                <div class="table-scrollable table-scrollable-borderless">
+                                    <div class="scroll">
+                                        <div id="table-wrapper">
+                                            <div id="table-scroll">
+                                                <table class="table table-hover table-light">
+                                                    <thead>
+                                                        <tr class="uppercase">
+                                                            <th> Sucursal </th>
+                                                            <th class="text-right"> Ventas </th>
+                                                            <th class="text-right"> Monto </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach (var item in Model.ventasNoTerminadasSucursal)
+                                                        {
+                                                            <tr>
+                                                                <td> @item.nombre </td>
+                                                                <td class="text-right"> @item.cantVentasAnuales </td>
+                                                                <td class="text-right"> @String.Format("{0:C}", item.montoAnual) </td>
+                                                            </tr>
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+         
+
+
+
+        </div>
+    </div>
+
+</div>
+
+

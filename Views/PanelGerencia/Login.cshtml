@@ -1,0 +1,47 @@
+﻿@model IEnumerable<SGC.Models.ViewModelAspNetUsersHistorial>
+@using SGC.Models;
+@using System.Data.Entity;
+@using System.Collections.Generic;
+@{
+    var data = Model.ToList();
+    List<AspNetUsersHistorial> historial = ViewBag.historial;
+    var run = "";
+}
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>@Html.DisplayName("Empresa")</th>
+            <th>@Html.DisplayName("Nombre")</th>
+            <th>@Html.DisplayName("Correo")</th>
+            <th>@Html.DisplayName("Cantidad de Accesos")</th>
+            <th>@Html.DisplayName("Último Acceso")</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (ViewModelAspNetUsersHistorial usuario in data)
+        {
+            if (run == usuario.Usuarios.run)
+            {
+                continue;
+            }
+            <tr>
+                <td>@usuario.Clientes.nombreEmpresa</td>
+                <td>@usuario.Usuarios.nombreCompleto</td>
+                <td>@usuario.Usuarios.Email</td>
+                <td>@historial.Where(x => x.usuario.Id == usuario.Usuarios.Id).Count()</td>
+                @if (usuario.Usuarios.AspNetUsersHistorial.Select(x => x.FechaLogin).LastOrDefault().ToShortDateString() != "01-01-0001")
+                {
+                    <td>@usuario.Usuarios.AspNetUsersHistorial.Select(x => x.FechaLogin).LastOrDefault().ToShortDateString()</td>
+                }
+                else
+                {
+                    <td>Sin registros</td>
+                }
+            </tr>
+            run = usuario.Usuarios.run;
+        }
+    </tbody>
+</table>

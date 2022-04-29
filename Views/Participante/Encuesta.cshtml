@@ -1,0 +1,195 @@
+﻿@model SGC.Models.Feedback.FeedbackMoodle
+@using SGC.Models.Feedback
+@{
+    ViewBag.Title = "Encuesta Participantes";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+<div class="page-title" style="margin-bottom: 0">
+    <div class="row">
+        <div class="col-md-12">
+            Administrar Participantes
+        </div>
+        <div class="col-md-4">
+            <small>Curso: @Model.comercializacion.cotizacion.curso.nombreCurso</small>
+        </div>
+        <div class="col-md-4">
+            <small>Comercialización: @Model.comercializacion.cotizacion.codigoCotizacion</small>
+        </div>
+    </div>
+</div>
+
+<div class="portlet light bordered col-md-12">
+    <div class="portlet-title">
+        <div class="caption">
+            Encuestas
+        </div>
+        <div class="tools">
+            <a href="javascript:;" class="collapse"> </a>
+            <a href="javascript:;" class="fullscreen"> </a>
+        </div>
+        <div class="actions">
+            <div class="inputs pull-right">
+                <a href="@Url.Action("GetFeedback", new { id = Model.comercializacion.idComercializacion }) " class="btn btn-sm btn-default" style="margin-right:10px;">
+                    Actualizar Encuestas
+                </a>
+            </div>
+            <div class="inputs pull-right">
+                <a href="@Url.Action("GetQuizAprendizaje", new { id = Model.comercializacion.idComercializacion }) " class="btn btn-sm btn-default" style="margin-right:10px;">
+                    Obtener Quiz Aprendizaje
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="portlet-body ">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="scrollmenu">
+            Respuestas enviadas: <strong>@Model.completedcount</strong> <br />
+            Preguntas: <strong>@Model.itemscount</strong> <br />
+            <table class="table table-striped table-bordered table-hover dt-responsive " cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.DisplayName("Preguntas")
+                        </th>
+                        <th>
+                            @Html.DisplayName("Respuestas")
+                        </th>
+                        <th>
+                            @Html.DisplayName("Puntos")
+                        </th>
+
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @{double sumMaxPointTotal = 0;
+                        double totalPointTotal = 0;
+                    }
+                    @foreach (string type in Enum.GetNames(typeof(TipoFeedbackItem)))
+                    {
+                        <tr>
+                            <th colspan="3">
+                                @type
+                            </th>
+                        </tr>
+                        var filter = Model.feedbackItemMoodle.Where(x => x.typ == type).ToList();
+                        if (filter.Count() > 0)
+                        {
+                            var sumMaxPoint = 0;
+                            foreach (var item in filter)
+                            {
+                                var valueMax = 0;
+                                if (item.feedbackItemDataMoodle.Count() > 0)
+                                {
+                                    valueMax = item.feedbackItemDataMoodle.Max(y => Convert.ToInt32(y.value));
+                                }
+                                var maxPoint = valueMax * Model.completedcount;
+                                sumMaxPoint += maxPoint;
+                                var porcent = Math.Round(item.feedbackItemDataMoodle.Sum(x => x.answercount * Convert.ToInt32(x.value)) * 100 / maxPoint, 2, MidpointRounding.ToEven);
+                                var options = "";
+                                item.feedbackItemDataMoodle.ForEach(x => options += " " + x.answertext + ": " + x.answercount);
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.name)
+                                    </td>
+                                    <td>
+                                        @options
+                                    </td>
+                                    <td>
+                                        @item.feedbackItemDataMoodle.Sum(x => x.answercount * Convert.ToInt32(x.value))/@maxPoint (@porcent %)
+                                    </td>
+                                </tr>
+                            }
+
+                            var totalPoint = Model.feedbackItemMoodle.Where(x => x.typ == type).Sum(x => x.feedbackItemDataMoodle.Sum(y => Convert.ToInt32(y.value) * y.answercount));
+
+                            double porcentTotal = 0;
+                            porcentTotal = Math.Round(totalPoint * 100 / ((sumMaxPoint / filter.Count()) * filter.Count()), 2, MidpointRounding.ToEven);
+                            totalPointTotal += totalPoint;
+                            sumMaxPointTotal += sumMaxPoint;
+                            var color = "#F0235A";
+                            if (porcentTotal >= 95)
+                            {
+                                color = "#32B85B";
+                            }
+                            else if (porcentTotal < 95 && porcentTotal >= 80)
+                            {
+                                color = "#F7DC34";
+                            }
+                            <tr style="background-color:@color">
+                                <th colspan="2">
+                                    Total:
+                                </th>
+                                <th>
+                                    @porcentTotal %
+                                </th>
+                            </tr>
+
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="3">
+                                    Sin elementos
+                                </td>
+                            </tr>
+                        }
+
+                    }
+                    @{
+                        double total = Math.Round(totalPointTotal * 100 / ((sumMaxPointTotal / Model.feedbackItemMoodle.Count()) * Model.feedbackItemMoodle.Count()), 2, MidpointRounding.ToEven);
+                        if (Double.IsNaN(total))
+                        {
+                            total = 0;
+                        }
+                        var colorTotal = "#F0235A";
+                        if (total >= 95)
+                        {
+                            colorTotal = "#32B85B";
+                        }
+                        else if (total < 95 && total >= 80)
+                        {
+                            colorTotal = "#F7DC34";
+                        }
+                    }
+                    <tr style="background-color:@colorTotal">
+                        <th colspan="2">
+                            Total de la comercialización:
+                        </th>
+
+                        <th>
+
+                            @total %
+                        </th>
+                    </tr>
+                    <tr>
+                        <th colspan="3">
+                            Comentarios
+                        </th>
+
+                    </tr>
+                    @foreach (var comment in Model.feedbackItemCommentMoodle)
+                    {
+                        <tr>
+                            <td colspan="3">
+                                @comment.value
+                            </td>
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+
+        </div>
+
+
+
+        @Html.ActionLink("Volver", "List", new { id = Model.comercializacion.idComercializacion }, new { @class = "btn btn-default" })
+
+    </div>
+</div>
+

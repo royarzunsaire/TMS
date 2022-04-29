@@ -1,0 +1,40 @@
+﻿@model SGC.Models.Comercializacion
+
+
+
+
+
+
+
+    <div class="input-group-btn">
+        @Html.CheckBox(" ", Model.clientFactura, new { @id = Model.idComercializacion + "_download", @class = "clientDownload btn btn-info btn-sm glyphicon glyphicon-ok-circle sence" })
+
+        @if (Model.cotizacion.tipoCurso != "Duplicado Credencial" && Model.cotizacion.tipoCurso != "Arriendo de Sala" && Model.cotizacion.tipoCurso != "Tramitación Licencia")
+        {
+            if (Model.cotizacion.codigoSence != null && Model.cotizacion.codigoSence != "" && Model.cotizacion.tieneCodigoSence != "on")
+            {
+                @Html.Label(" ", htmlAttributes: new { @class = "btn btn-info btn-sm glyphicon glyphicon-ok-circle sence", @datatoggle = "tooltip", @title = "SENCE" })
+
+            }
+            else
+            {
+                @Html.Label(" ", htmlAttributes: new { @class = "btn btn-info btn-sm glyphicon glyphicon-ok-circle no_sence", @datatoggle = "tooltip", @title = "NO SENCE" })
+
+            }
+        }
+        else
+        {
+            @Html.Label(" ", htmlAttributes: new { @class = "btn btn-info btn-sm glyphicon glyphicon-home arriendo", @datatoggle = "tooltip", @title = "Arriendo" })
+
+        }
+
+
+
+
+        @Html.ActionLink(" ", "VerR24", "DocumentoCompromiso", new { id = Model.idComercializacion }, htmlAttributes: new { @class = "btn btn-default btn-sm glyphicon glyphicon glyphicon-book", @datatoggle = "tooltip", @title = "Ver R24" })
+
+        @Html.ActionLink(" ", "Facturas", new { id = Model.idComercializacion }, htmlAttributes: new { @class = "btn btn-default btn-sm glyphicon glyphicon-usd", @datatoggle = "tooltip", @title = "Facturas" })
+        @Html.ActionLink(" ", "DocumentosCompromisoComercializacion", "DocumentoCompromiso", new { id = Model.idComercializacion }, htmlAttributes: new { @class = "btn btn-default btn-sm glyphicon glyphicon-file", @datatoggle = "tooltip", @title = "Documentos de Compromiso" })
+        @Html.ActionLink(" ", "ReiniciarEstadoComercializacion", "Factura", new { id = Model.idComercializacion }, new { @class = "btn btn-default btn-sm glyphicon glyphicon-ban-circle", @datatoggle = "tooltip", @title = "Reiniciar Estados Comercialización", @onclick = "return confirm('Está seguro que desea cambiar el estado a En Proceso de la comercialización: " + Model.cotizacion.codigoCotizacion + "?');" })
+    </div>
+

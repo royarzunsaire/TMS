@@ -1,0 +1,131 @@
+﻿@model IEnumerable<SGC.Models.ViewModelComercializacionDocComromiso>
+
+<style>
+    #table-wrapper {
+        position: relative;
+    }
+
+    #table-scroll {
+        overflow: auto;
+    }
+
+    #table-wrapper table {
+        width: 100%;
+    }
+
+    #table-wrapper td {
+        white-space: nowrap;
+    }
+
+    #table-wrapper th {
+        white-space: nowrap;
+    }
+
+    th {
+        background-color: yellow;
+    }
+</style>
+
+<div id="table-wrapper">
+    <div id="table-scroll">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayName("Código Comercialización")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Cliente")
+                    </th>
+                    <th>
+                        @Html.DisplayName("RUT Cliente")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Curso")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Tipo de Ejecución")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Fecha Inicio")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Fecha Término")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Sucursal")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Estado Facturación")
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                <tr>
+                    @{
+
+                    }
+                    <td>
+                        @Html.DisplayFor(modelItem => item.comercializacion.cotizacion.codigoCotizacion)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.comercializacion.cotizacion.cliente.nombreEmpresa)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.comercializacion.cotizacion.cliente.rut)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.comercializacion.cotizacion.curso.nombreCurso)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.comercializacion.cotizacion.curso.tipoEjecucion)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.comercializacion.fechaInicio)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.comercializacion.fechaTermino)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.comercializacion.cotizacion.sucursal.nombre)
+                    </td>
+                    <td>
+                        @{
+                            var menorEstado = 999;
+                            var nombreMenorEstado = SGC.Models.EstadoFactura.No_Facturado;
+                            foreach (var itemDoc in item.comercializacion.cotizacion.documentosCompromiso.Where(dc => dc.softDelete == false))
+                            {
+                                if (itemDoc.factura != null)
+                                {
+                                    if (itemDoc.factura.softDelete == false)
+                                    {
+                                        if ((int)itemDoc.factura.estados.LastOrDefault().estado < menorEstado)
+                                        {
+                                            menorEstado = (int)itemDoc.factura.estados.LastOrDefault().estado;
+                                            nombreMenorEstado = itemDoc.factura.estados.LastOrDefault().estado;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        menorEstado = (int)SGC.Models.EstadoFactura.No_Facturado;
+                                        nombreMenorEstado = SGC.Models.EstadoFactura.No_Facturado;
+                                    }
+                                }
+                                else
+                                {
+                                    menorEstado = (int)SGC.Models.EstadoFactura.No_Facturado;
+                                    nombreMenorEstado = SGC.Models.EstadoFactura.No_Facturado;
+                                }
+                            }
+                        }
+                        @nombreMenorEstado
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+

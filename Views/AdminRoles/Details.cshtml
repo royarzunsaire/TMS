@@ -1,0 +1,119 @@
+﻿@model SGC.Models.ApplicationRole
+
+@{
+    ViewBag.Title = "Ver Detalles";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h3 class="page-title">
+    Administración de Roles
+    <small> Security</small>
+</h3>
+
+
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="icon-pin"></i>
+                    <span class="caption-subject bold">Detalles de Usuario:<strong> @Html.DisplayFor(model => model.Name)</strong></span>
+                </div>
+                <div class="tools">
+                    <a class="collapse" href="javascript:;" data-original-title="" title=""> </a>
+                    <a class="fullscreen" href="javascript:;" data-original-title="" title=""> </a>
+                </div>
+                <div class="actions">
+                    @Html.ActionLink("Editar", "Edit", new { id = Model.Id }, new { @class = "btn btn-default" })
+                    @Html.ActionLink("Regresar", "Index", null, new { @class = "btn btn-default" })
+
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="row">
+                    <div class="col-md-10">
+
+
+                        <dl class="dl-horizontal">
+                            <dt>
+                                @Html.DisplayNameFor(model => model.Id)
+                            </dt>
+
+                            <dd>
+                                @Html.DisplayFor(model => model.Id)
+                            </dd>
+
+                            <dt>
+                                @Html.DisplayNameFor(model => model.Name)
+                            </dt>
+
+                            <dd>
+                                @Html.DisplayFor(model => model.Name)
+                            </dd>
+                            <dt>
+                                @Html.DisplayNameFor(model => model.Description)
+
+                            </dt>
+
+                            <dd>
+                                @Html.DisplayFor(model => model.Description)
+                            </dd>
+
+
+                        </dl>
+                        <h4>Lista de usuarios en este Rol</h4>
+                                               
+                        @if (ViewBag.UserCount == 0)
+                        {
+                            <hr />
+                            <p>No hay usuarios en este rol.</p>
+                        }
+                        else
+                        {
+
+                        <table  class="table table-striped table-bordered table-hover dt-responsive dataTable" >
+                            <thead>
+                                <tr>
+                                    <th scope="col">N°</th>
+                                    <th scope="col">Nombre Cuenta</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{ int i = 0;}
+                                @foreach (var item in ViewBag.Users)
+                                {
+
+                                    <tr>
+                                        <td>@i</td>
+                                        <td>@item.UserName</td>
+                                        @{ i++;}
+                                    </tr>
+
+                                }
+                            </tbody>
+                        </table>
+                        }
+
+                        @*<div class="col-md-4">
+            <table class="table table-striped table-bordered table-hover">
+                @foreach (var item in ViewBag.Users)
+                {
+                    <tr>
+                        <td>
+                            @item.UserName
+                        </td>
+                    </tr>
+                }
+            </table>
+        </div>*@
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
+</div>
+

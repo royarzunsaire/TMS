@@ -1,0 +1,336 @@
+﻿@model SGC.Models.Cliente
+@{
+    ViewBag.Title = "Nuevo";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Nuevo Cliente</h2>
+@{HtmlHelper.UnobtrusiveJavaScriptEnabled = true;}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Datos empresa</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <input id="girosSeleccionados" value="@ViewBag.girosSeleccionados" type="hidden" />
+        <input id="faenasSeleccionados" value="@ViewBag.faenasSeleccionados" type="hidden" />
+        <input id="encargadoPagosSeleccionados" value="@ViewBag.encargadoPagosSeleccionados" type="hidden" />
+        <input id="tipoDocumentoPagoSeleccionados" value="@ViewBag.tiposDocumentosPagoSeleccionados" type="hidden" />
+        <input id="representanteLegalSeleccionados" value="@ViewBag.representanteLegalSeleccionados" type="hidden" />
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.nombreEmpresa, "Nombre Empresa", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-8">
+                @Html.EditorFor(model => model.nombreEmpresa, new { htmlAttributes = new { @class = "form-control", placeholder = "ej .Constructora Cerro Castillo" } })
+                @Html.ValidationMessageFor(model => model.nombreEmpresa, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.razonSocial, "Razón social", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-8">
+                @Html.EditorFor(model => model.razonSocial, new { htmlAttributes = new { @class = "form-control", placeholder = "ej .Constructora Cerro Castillo S.A." } })
+                @Html.ValidationMessageFor(model => model.razonSocial, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.idMandante, "Empresa mandante", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-8">
+                @Html.DropDownListFor(x => Model.idMandante, (SelectList)ViewBag.Mandante, "Seleccionar", htmlAttributes: new { @class = "form-control select2", id = "idMandante" })
+            </div>
+            <div class="col-md-2">
+                <div class="btn btn-primary btn-large glyphicon glyphicon-plus"
+                     onclick="return loadModal('myModal', 'myModalContent', '/Mandante/NewModalCreate', {idDropDownList:'idMandante'});" alt="Crear mandante"></div>
+
+                @*@Html.ActionLink(" ", "EditResources", "NicheSites", new { ViewBag.dbc, item.locale, ViewBag.domainId, domainName = ViewBag.domaiName }, new { @class = "glyphicon glyphicon-edit" })*@
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.rut, "R.U.T.", htmlAttributes: new { @class = "control-label col-md-2 run" })
+            <div class="col-md-8">
+                @Html.EditorFor(model => model.rut, new { htmlAttributes = new { @class = "form-control", placeholder = "99999999" } })
+                @Html.ValidationMessageFor(model => model.rut, "", new { @class = "text-danger" })
+            </div>
+
+        </div>
+        <div class="form-group">
+            @Html.Label("Faena", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-8">
+                @Html.DropDownList("faena", (MultiSelectList)ViewBag.faenas, htmlAttributes: new { @class = "form-control select2", id = "idFaena", multiple = "multiple" })
+                @Html.ValidationMessage("faena", new { @class = "text-danger" })
+            </div>
+
+        </div>
+
+
+
+        <div class="form-group">
+            @Html.Label("Giros", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-8">
+                @Html.DropDownList("giros", (MultiSelectList)ViewBag.Giros, htmlAttributes: new { @class = "form-control select2", id = "idGiro", multiple = "multiple" })
+                @Html.ValidationMessage("giros", new { @class = "text-danger" })
+            </div>
+
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.telefonoCorporativo, "Teléfono corporativo", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-8">
+                @Html.EditorFor(model => model.telefonoCorporativo, new { htmlAttributes = new { @class = "form-control", placeholder = "55-2 551234" } })
+                @Html.ValidationMessageFor(model => model.telefonoCorporativo, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+    <div class="form-horizontal">
+        <h4>Facturación</h4>
+        <hr />
+        <div class="form-group">
+            @Html.Label("Encargado de Pagos", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-8">
+                @Html.DropDownList("encargadosPagos", (MultiSelectList)ViewBag.EncargadoPagos, htmlAttributes: new { @class = "form-control select2", id = "idEncargadoPago", multiple = "multiple" })
+                @Html.ValidationMessage("encargadosPagos", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-2">
+                <div class="btn btn-primary btn-large glyphicon glyphicon-plus"
+                     onclick="return loadModal('myModal', 'myModalContent', '/Contacto/NewModalCreate', {idDropDownList:'idEncargadoPago'});" alt="Crear Encargado Pago"></div>
+
+                @*@Html.ActionLink(" ", "EditResources", "NicheSites", new { ViewBag.dbc, item.locale, ViewBag.domainId, domainName = ViewBag.domaiName }, new { @class = "glyphicon glyphicon-edit" })*@
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("Tipo documento de pago", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-8">
+                @Html.DropDownList("tiposDocumentosPagos", (MultiSelectList)ViewBag.TiposDocumentosPago, htmlAttributes: new { @class = "form-control select2", id = "idTiposDocumentosPago", multiple = "multiple" })
+                @Html.ValidationMessage("tiposDocumentosPagos", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.direccion, "Dirección", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-8">
+                @Html.EditorFor(model => model.direccion, new { htmlAttributes = new { @class = "form-control", placeholder = "Azapa #123456, Antofagasta" } })
+                @Html.ValidationMessageFor(model => model.direccion, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <h4>Representantes Legales</h4>
+        <hr />
+        <div class="form-group">
+            @Html.Label("Representante legal", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-8">
+                @Html.DropDownList("representantesLegales", (MultiSelectList)ViewBag.RepresentanteLegal, htmlAttributes: new { @class = "form-control select2", id = "idRepresentanteLegal", multiple = "multiple" })
+                @Html.ValidationMessage("representantesLegales", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-2">
+
+                @*<div class="btn btn-default btn-large glyphicon glyphicon-plus glyphicon-user"*@
+                <div class="btn btn-primary btn-large glyphicon glyphicon-plus"
+                     onclick="return loadModal('myModal', 'myModalContent', '/Contacto/NewModalCreate', {idDropDownList:'idRepresentanteLegal'});" alt="Crear Encargado Pago"></div>
+
+            </div>
+        </div>
+
+
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.portalNotasExterno, "Portal Notas Externo", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-8">
+                @Html.EditorFor(model => model.portalNotasExterno, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.portalNotasExterno, "", new { @class = "text-danger" })
+                <small>Debe ingresar la URL del sitio</small>
+            </div>
+        </div>
+
+
+
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.descEspecial, "Descripción especial", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-8">
+                @Html.EditorFor(model => model.descEspecial, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.descEspecial, "", new { @class = "text-danger" })
+                <small>Ingresar una descripción especial</small>
+            </div>
+        </div>
+
+
+        <div class="form-group" hidden>
+            @Html.LabelFor(model => model.situacionComercial, "Situación comercial", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-8">
+                @Html.EnumDropDownListFor(x => x.situacionComercial, "Seleccionar", new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.situacionComercial, "", new { @class = "text-danger" })
+                <small>Estado comercial en que se encuentra el cliente</small>
+            </div>
+        </div>
+    </div>
+
+    <h4>Líderes Comerciales</h4>
+    <hr />
+    <div class="form-horizontal">
+        <div class="form-group">
+            @Html.Label("Líderes Comerciales Asignados", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-8">
+                @Html.DropDownList("usuarios", (MultiSelectList)ViewBag.Usuarios, htmlAttributes: new { @class = "form-control select2", id = "idUsuario", multiple = "multiple" })
+                @Html.ValidationMessage("usuarios", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+
+    <h4>Envío de correo</h4>
+    <hr />
+    <div class="form-group col-md-12">
+        <div class="form-group">
+            @Html.LabelFor(model => model.cantDiasEnvioCorreo, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-2">
+                @Html.EditorFor(model => model.cantDiasEnvioCorreo, new { htmlAttributes = new { @class = "form-control", @id = "cantDiasEnvioCorreo", @min = 1, @max = 30 } })
+                @Html.ValidationMessageFor(model => model.cantDiasEnvioCorreo, "", new { @class = "text-danger" })
+
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.enviarResumenEnvioCorreo, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-2">
+                @Html.EditorFor(model => model.enviarResumenEnvioCorreo, new { htmlAttributes = new { @class = "form-control", @id = "enviarResumen" } })
+                @Html.ValidationMessageFor(model => model.enviarResumenEnvioCorreo, "", new { @class = "text-danger" })
+
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.enviarCapacitacionRealizadaEnvioCorreo, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-2">
+                @Html.EditorFor(model => model.enviarCapacitacionRealizadaEnvioCorreo, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.enviarCapacitacionRealizadaEnvioCorreo, "", new { @class = "text-danger" })
+
+            </div>
+        </div>
+    </div>
+
+
+    <div class="form-group">
+        <div class="row">
+            <div class="col-md-6">
+                @Html.ActionLink("Volver", "Index", new { }, new { @class = "btn btn-default" })
+            </div>
+            <div class="col-md-6">
+                <input type="submit" value="Guardar" class="btn btn-primary pull-right" />
+            </div>
+        </div>
+    </div>
+}
+
+<div id='myModal' class='modal'>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body" id='myModalContent'>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            // Mostrar las opciones que ya estaban seleccionadas
+            girosOpciones = $("#idGiro option");
+            girosSeleccionados = JSON.parse($('#girosSeleccionados').val());
+            console.log(girosSeleccionados);
+            for (i = 0; i < girosOpciones.length; i++) {
+                for (j = 0; j < girosSeleccionados.length; j++) {
+                    if (girosOpciones[i].value === girosSeleccionados[j].toString()) {
+                        girosOpciones[i].selected = "true";
+                    }
+                }
+            }
+            faenasOpciones = $("#idFaena option");
+            faenasSeleccionados = JSON.parse($('#faenasSeleccionados').val());
+            console.log(faenasSeleccionados);
+            for (i = 0; i < faenasOpciones.length; i++) {
+                for (j = 0; j < faenasSeleccionados.length; j++) {
+                    if (faenasOpciones[i].value === faenasSeleccionados[j].toString()) {
+                        faenasOpciones[i].selected = "true";
+                    }
+                }
+            }
+
+            encargadoPagosOpciones = $("#idEncargadoPago option");
+            encargadoPagosSeleccionados = JSON.parse($('#encargadoPagosSeleccionados').val());
+            for (i = 0; i < encargadoPagosOpciones.length; i++) {
+                for (j = 0; j < encargadoPagosSeleccionados.length; j++) {
+                    if (encargadoPagosOpciones[i].value === encargadoPagosSeleccionados[j].toString()) {
+                        encargadoPagosOpciones[i].selected = "true";
+                    }
+                }
+            }
+            tipoDocumentoPagoOpciones = $("#idTiposDocumentosPago option");
+            tipoDocumentoPagoSeleccionados = JSON.parse($('#tipoDocumentoPagoSeleccionados').val());
+            for (i = 0; i < tipoDocumentoPagoOpciones.length; i++) {
+                for (j = 0; j < tipoDocumentoPagoSeleccionados.length; j++) {
+                    if (tipoDocumentoPagoOpciones[i].value === tipoDocumentoPagoSeleccionados[j].toString()) {
+                        tipoDocumentoPagoOpciones[i].selected = "true";
+                    }
+                }
+            }
+            representanteLegalOpciones = $("#idRepresentanteLegal option");
+            representanteLegalSeleccionados = JSON.parse($('#representanteLegalSeleccionados').val());
+            for (i = 0; i < representanteLegalOpciones.length; i++) {
+                for (j = 0; j < representanteLegalSeleccionados.length; j++) {
+                    if (representanteLegalOpciones[i].value === representanteLegalSeleccionados[j].toString()) {
+                        representanteLegalOpciones[i].selected = "true";
+                    }
+                }
+            }
+            $('#idEncargadoPago option').live('mousedown', function (e) {
+                e.preventDefault();
+                $(this).prop('selected', !$(this).prop('selected'));
+                return false;
+            });
+            $('#idRepresentanteLegal option').live('mousedown', function (e) {
+                e.preventDefault();
+                $(this).prop('selected', !$(this).prop('selected'));
+                return false;
+            });
+            //$('#idEncargadoPago option').mousedown(function (e) {
+            //    e.preventDefault();
+            //    $(this).prop('selected', !$(this).prop('selected'));
+            //    return false;
+            //});
+            //$('#idRepresentanteLegal option').mousedown(function (e) {
+            //    e.preventDefault();
+            //    $(this).prop('selected', !$(this).prop('selected'));
+            //    return false;
+            //});
+            $('#idGiro option').mousedown(function (e) {
+                e.preventDefault();
+                $(this).prop('selected', !$(this).prop('selected'));
+                return false;
+            });
+            $('#idTiposDocumentosPago option').mousedown(function (e) {
+                e.preventDefault();
+                $(this).prop('selected', !$(this).prop('selected'));
+                return false;
+            });
+
+            $(document).ready(function () {
+                $('#enviarResumen').trigger("change");
+            });
+
+            $('#enviarResumen').on("change", function () {
+                var value = $('#enviarResumen').is(':checked');
+                document.getElementById("cantDiasEnvioCorreo").disabled = !value;
+
+            });
+
+        });
+    </script>
+}

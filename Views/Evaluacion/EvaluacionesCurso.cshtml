@@ -1,0 +1,96 @@
+﻿@model SGC.Models.Curso
+
+@{
+    ViewBag.Title = "Evaluaciones";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="page-title" style="margin-bottom: 0">
+    <div class="row">
+        <div class="col-md-12">
+            Administrar Cursos
+        </div>
+        <div class="col-md-12">
+            <small>Curso @Model.nombreCurso</small>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-dark">
+            <div class="portlet-title">
+                <div class="caption">
+                    Evaluaciones
+                </div>
+                <div class="tools">
+                    <a href="javascript:;" class="collapse"> </a>
+                    <a href="javascript:;" class="fullscreen"> </a>
+                </div>
+                <div class="actions">
+                    <a href="@Url.Action("ObtenerEvaluacionesMoodle", new { id = Model.idCurso })" class="btn btn-circle btn-sm btn-default">
+                        Obtener Evaluaciones Moodle
+                    </a>
+                    <a href="@Url.Action("Create", new { id = Model.idCurso })" class="btn btn-circle btn-sm btn-default" style="margin-right:10px;">
+                        <i class="fa fa-plus-circle"></i> Nuevo
+                    </a>
+                </div>
+            </div>
+            <div class="portlet-body">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="row">
+                    <div class="col-md-12">
+                        <table class="table table-striped table-bordered table-hover dt-responsive dataTable" id="sys-table" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        @Html.DisplayName("Evaluación")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("Modalidad")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("Tipo")
+                                    </th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.evaluaciones.Where(e => e.softDelete == false))
+                                {
+                                    <tr>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.nombre)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.tipo)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.categoria)
+                                        </td>
+                                        <td class="text-center">
+                                            @using (Html.BeginForm("Delete", "Evaluacion", FormMethod.Post, new { @id = "notificationForm_" + @item.idEvaluacion }))
+                                            {
+                                                <div class="input-group-btn">
+                                                    @*@Html.ActionLink(" ", "Edit", new { id = item.idEvaluacion }, htmlAttributes: new { @class = "btn btn-warning btn-sm glyphicon glyphicon-edit", @datatoggle = "tooltip", @title = "Editar" })*@
+                                                    @*@Html.ActionLink(" ", "Detalis", new { id = item.idEvaluacion }, htmlAttributes: new { @class = "btn btn-info btn-sm glyphicon glyphicon-list", @datatoggle = "tooltip", @title = "Ver" })*@
+                                                    @Html.AntiForgeryToken()
+                                                    <a class="btn btn-danger btn-sm glyphicon glyphicon-trash" href="javascript:confirmDelete('Delete','@(item.idEvaluacion)','Evaluacion')" title="Eliminar"></a>
+                                                </div>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@Html.ActionLink("Volver", "Index", "Curso", new { }, new { @class = "btn btn-default" })
+
+@section topLevel{
+    @{Html.RenderPartial("_RenderConfirm.Modal"); }
+}

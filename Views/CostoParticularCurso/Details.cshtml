@@ -1,0 +1,264 @@
+﻿@model SGC.Models.ViewModelCostoParticularCurso
+
+@section Styles{
+    <style>
+        textarea {
+            resize: none;
+        }
+
+        .modal {
+            text-align: center;
+            padding: 0 !important;
+        }
+
+            .modal:before {
+                content: '';
+                display: inline-block;
+                height: 100%;
+                vertical-align: middle;
+                margin-right: -4px;
+            }
+
+        .modal-dialog {
+            display: inline-block;
+            text-align: left;
+            vertical-align: middle;
+        }
+    </style>
+}
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    ViewBag.Title = "Precio Unitario";
+
+}
+
+<h2>R12</h2>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+<div class="portlet light bordered">
+    <div class="portlet-title">
+        <div class="caption">
+            Analisis Precios Unitarios
+        </div>
+        <div class="tools">
+            <a href="javascript:;" class="collapse"> </a>
+            <a href="javascript:;" class="fullscreen"> </a>
+        </div>
+        <div class="actions">
+            <div class="inputs pull-right">
+                @Html.ActionLink("Editar", "Edit", new { id = Model.idCostoCursoR12 }, new { @class = "btn btn-default btn-circle btn-sm", style = "margin-right: 10px" })
+            </div>
+        </div>
+    </div>
+    <div class="portlet-body">
+        <div class="form-horizontal">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="form-group">
+                <div class="col-md-12">
+                    @Html.LabelFor(model => model.idCurso, "Curso", htmlAttributes: new { @class = "control-label" })
+                    <input type="text" class="form-control" value="@ViewBag.nombreCurso" readonly style="border: 0px" />
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-12">
+                    <table id="costoParticularCursosManoDeObra" class="table table-striped table-bordered table-hover dt-responsive">
+                        <thead>
+                            <tr>
+                                <th class="col-md-6"> Mano de obra categorias</th>
+                                <th class="col-md-1">P/P</th>
+                                <th class="col-md-1">Unidad</th>
+                                <th class="col-md-1">Cantidad</th>
+                                <th class="col-md-2">Costo Unitario</th>
+                                <th class="col-md-2">SubTotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.costoParticularCursosManoDeObra != null)
+                            {
+                                var i = 0;
+                                foreach (var costoParticular in Model.costoParticularCursosManoDeObra)
+                                {
+                                    <tr>
+                                        <td contenteditable='true' class="detalleEditable">
+                                            @Html.DisplayFor(modelItem => costoParticular.detalle)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => costoParticular.porPersona)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => costoParticular.unidad)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => costoParticular.cantidad)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => costoParticular.costo)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => costoParticular.subTotal)
+                                        </td>
+                                    </tr>
+                                    i++;
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-12">
+                    <table id="costoParticularCursosEquiposYHerramientas" class="table table-striped table-bordered table-hover dt-responsive">
+                        <thead>
+                            <tr>
+                                <th class="col-md-6">Equipos y Herramientas</th>
+                                <th class="col-md-1">P/P</th>
+                                <th class="col-md-1">Unidad</th>
+                                <th class="col-md-1">Cantidad</th>
+                                <th class="col-md-2">Costo Unitario</th>
+                                <th class="col-md-2">SubTotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.costoParticularCursosEquiposYHerramientas != null)
+                            {
+                                var i = 0;
+                                foreach (var costoParticular in Model.costoParticularCursosEquiposYHerramientas)
+                                {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => costoParticular.detalle)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => costoParticular.porPersona)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => costoParticular.unidad)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => costoParticular.cantidad)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => costoParticular.costo)
+                                </td>
+
+                                <td>
+                                    @Html.DisplayFor(modelItem => costoParticular.subTotal)
+                                </td>
+                            </tr>
+                                    i++;
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-12">
+                    <table id="costoParticularCursosMateriales" class="table table-striped table-bordered table-hover dt-responsive">
+                        <thead>
+                            <tr>
+                                <th class="col-md-6">Materiales</th>
+                                <th class="col-md-1">P/P</th>
+                                <th class="col-md-1">Unidad</th>
+                                <th class="col-md-1">Cantidad</th>
+                                <th class="col-md-2">Costo Unitario</th>
+                                <th class="col-md-2">SubTotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.costoParticularCursosMateriales != null)
+                            {
+                                var i = 0;
+                                foreach (var costoParticular in Model.costoParticularCursosMateriales)
+                                {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => costoParticular.detalle)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => costoParticular.porPersona)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => costoParticular.unidad)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => costoParticular.cantidad)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => costoParticular.costo)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => costoParticular.subTotal)
+                                </td>
+                            </tr>
+                                    i++;
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-12">
+                    <table id="costoParticularCursosOtrosGastos" class="table table-striped table-bordered table-hover dt-responsive">
+                        <thead>
+                            <tr>
+                                <th class="col-md-6">Otros Gastos</th>
+                                <th class="col-md-1">P/P</th>
+                                <th class="col-md-1">Unidad</th>
+                                <th class="col-md-1">Cantidad</th>
+                                <th class="col-md-2">Costo Unitario</th>
+                                <th class="col-md-2">SubTotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.costoParticularCursosOtrosGastos != null)
+                            {
+                                var i = 0;
+                                foreach (var costoParticular in Model.costoParticularCursosOtrosGastos)
+                                {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => costoParticular.detalle)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => costoParticular.porPersona)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => costoParticular.unidad)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => costoParticular.cantidad)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => costoParticular.costo)
+                                </td>
+
+                                <td>
+                                    @Html.DisplayFor(modelItem => costoParticular.subTotal)
+                                </td>
+                            </tr>
+                                    i++;
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div>
+            @Html.ActionLink("Volver", "Index", "Curso", new { }, new { @class = "btn btn-default" })
+        </div>
+    </div>
+</div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

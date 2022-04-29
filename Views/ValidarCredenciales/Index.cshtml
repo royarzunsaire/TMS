@@ -1,0 +1,56 @@
+﻿@model SGC.Models.Participante
+
+@{
+    ViewBag.Title = "Validar Credenciales";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h2 class="page-title">Validar Credenciales</h2>
+
+@using (Html.BeginForm("Validar", "ValidarCredenciales", FormMethod.Get, new { }))
+{
+    <div class="row">
+        <div class="col-md-4">
+            <div class="portlet light bordered">
+                <div class="portlet-body">
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                @Html.Label("RUT", htmlAttributes: new { @class = "control-label" })
+                                @if (Model != null)
+                                {
+                                    <input type="text" name="id2" class="form-control" value="@Model.contacto.run" />
+                                }
+                                else
+                                {
+                                    <input type="text" name="id2" class="form-control" value="" />
+                                }
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                @Html.Label("Código", htmlAttributes: new { @class = "control-label" })
+                                @if (Model != null)
+                                {
+                                    <input type="text" name="id" class="form-control" value="@Model.comercializacion.cotizacion.codigoCotizacion" />
+                                }
+                                else
+                                {
+                                    <input type="text" name="id" class="form-control" value="" />
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="row">
+                        <div class="form-group">
+                            <div class="col-md-12 text-right">
+                                <input type="submit" value="Validar" class="btn btn-primary" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

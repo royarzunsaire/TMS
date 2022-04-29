@@ -1,0 +1,39 @@
+﻿.nav-tabs > li.active > a, .nav-tabs > li.active > a:focus, .nav-tabs > li.active > a:hover {
+    /*border: 1px solid #2ab4c0;*/
+    border: 0px;
+    /*border-bottom-color: transparent;*/
+    border-bottom: 1px solid #2ab4c0;
+}
+
+.nav > li > a {
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+
+.nav-tabs {
+    border-bottom: 0px solid #2ab4c0;
+    font-size: 10px;
+}
+
+.portlet > .portlet-title {
+    border-bottom: 1px solid #2ab4c0;
+}
+
+.verde {
+    color: #2ab4c0;
+}
+
+.boton-sin-borde {
+    border: 0px;
+}
+
+div.scroll {
+    height: 165px;
+    /*max-height: 165px;*/
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.portlet-title {
+    height: 54px;
+}

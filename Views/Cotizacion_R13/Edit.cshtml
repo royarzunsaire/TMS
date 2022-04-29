@@ -1,0 +1,1346 @@
+﻿@model SGC.Models.ViewModelCotizacion
+@using SGC.Models
+@{
+
+    String action = Convert.ToString(ViewContext.RouteData.Values["Action"]);
+    var labelBotton = "Guardar";
+    var title = "Editar";
+    if (action == "Recotizar")
+    {
+        labelBotton = "Recotizar";
+        title = labelBotton;
+    }
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    ViewBag.Title = title + " Cotizacion";
+
+
+    InsecapContext db = new InsecapContext();
+    string edit = "";
+
+    if (action == "Edit")
+    {
+
+        Comercializacion comercializacion = db.Comercializacion.Where(x => x.cotizacion.idCotizacion_R13 == Model.cotizacion.idCotizacion_R13).FirstOrDefault();
+        if (comercializacion != null && (comercializacion.participantes.Count() != 0 || comercializacion.idGrupoMoodle != null))
+        {
+            edit = "disabled";
+
+        }
+    }
+
+
+}
+<style>
+    div[disabled] {
+        pointer-events: none;
+        opacity: 0.6;
+        filter: alpha(opacity=50);
+        zoom: 1;
+        -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
+        -moz-opacity: 0.5;
+        -khtml-opacity: 0.5;
+    }
+
+    textarea {
+        resize: none;
+    }
+
+    .modal {
+        text-align: center;
+        padding: 0 !important;
+    }
+
+        .modal:before {
+            content: '';
+            display: inline-block;
+            height: 100%;
+            vertical-align: middle;
+            margin-right: -4px;
+        }
+
+    .modal-dialog {
+        display: inline-block;
+        text-align: left;
+        vertical-align: middle;
+    }
+
+    div.scroll {
+        height: 297px;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+</style>
+
+
+
+
+
+<h2>@title Cotización R13</h2>
+
+
+@using (
+
+    Html.BeginForm(@action, "Cotizacion_R13", FormMethod.Post, new { @id = "form" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.Hidden("idCotizacion_R13", Convert.ToString(Model.cotizacion.idCotizacion_R13), new { @id = "idCotizacion_R13" })
+
+    <div class="form-horizontal">
+        <h4>Informacion de la cotizacion</h4>
+        <hr />
+        <div class="form-group">
+
+            <div class="col-md-6">
+                <h2>   @Model.cotizacion.codigoCotizacion</h2>
+
+                @Html.EditorFor(model => model.cotizacion.idCotizacion_R13, new { htmlAttributes = new { @class = "form-control hidden", @readonly = "readonly" } })
+
+
+                @Html.LabelFor(model => model.cotizacion.sucursal.idSucursal, "Sucursal", htmlAttributes: new { @class = "control-label" })
+                @Html.DropDownListFor(model => model.cotizacion.sucursal.idSucursal, (SelectList)ViewBag.sucursales, "Seleccionar", htmlAttributes: new { @class = "form-control", @id = "idSucursal" })
+                @Html.ValidationMessageFor(model => model.cotizacion.sucursal.idSucursal, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-6"><h2>Datos Cliente </h2></div>
+                    <div class="col-md-3">
+                        <button style="margin-top:26px; display:none;" id="idClienteDeudor" class="btn btn-danger form-control" disabled>Cliente con Facturas Pendientes</button>
+                    </div>
+                    <div class="col-md-3">
+                        <button style="margin-top:26px; display:none;" id="idClienteOCPendiente" class="btn btn-danger form-control" disabled>Cliente OC Pediente</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <label class="control-label">RUT</label>
+                <select class="form-control select2-allow-clear" id="idSelectRut" data-live-search="true" name="cotizacion.idCliente">
+                    <option disabled data-tokens="" selected> Selecciona un RUT cliente </option>
+                    @foreach (var itemCliente in Model.clientes)
+                    {
+                        if (Model.cotizacion != null)
+                        {
+                            if (Model.cotizacion.idCliente == itemCliente.idCliente)
+                            {
+                                <option data-tokens="@itemCliente.rut" value="@itemCliente.idCliente" selected> @itemCliente.rut | @itemCliente.nombreEmpresa | @itemCliente.direccion</option>
+                            }
+                            else
+                            {
+                                <option data-tokens="@itemCliente.rut" value="@itemCliente.idCliente"> @itemCliente.rut | @itemCliente.nombreEmpresa</option>
+                            }
+                        }
+                        else
+                        {
+                            <option data-tokens="@itemCliente.rut" value="@itemCliente.idCliente"> @itemCliente.rut | @itemCliente.nombreEmpresa</option>
+                        }
+                    }
+                </select>
+                @Html.ValidationMessageFor(model => model.cotizacion.nombreEmpresa, "El campo debe ser obligatorio", new { @class = "text-danger" })
+            </div>
+
+            <div class="col-md-6" disabled>
+                @Html.LabelFor(model => model.cotizacion.nombreEmpresa, htmlAttributes: new { @class = "control-label" })
+                @Html.EditorFor(model => model.cotizacion.nombreEmpresa, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                @Html.ValidationMessageFor(model => model.cotizacion.nombreEmpresa, "El campo debe ser obligatorio", new { @class = "text-danger" })
+            </div>
+
+            <div class="col-md-12" disabled>
+                @Html.LabelFor(model => model.cotizacion.razonSocial, htmlAttributes: new { @class = "control-label" })
+                @Html.EditorFor(model => model.cotizacion.razonSocial, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                @Html.ValidationMessageFor(model => model.cotizacion.razonSocial, "El campo debe ser obligatorio", new { @class = "text-danger" })
+            </div>
+
+            <div class="col-md-6">
+                @Html.LabelFor(model => model.cotizacion.giro, htmlAttributes: new { @class = "control-label" })
+                <select class="form-control" id="idSelectGiro" data-live-search="true" name="cotizacion.giro"></select>
+                @Html.ValidationMessageFor(model => model.cotizacion.giro, "El campo debe ser obligatorio", new { @class = "text-danger" })
+            </div>
+
+            <div class="col-md-6" id="faena-container" style="display: none;">
+                @Html.Label("Faena", htmlAttributes: new { @class = "control-label" })
+                <select class="form-control" id="idFaena" data-live-search="true" name="idfaena"></select>
+                @Html.ValidationMessage("Faena", new { @class = "text-danger" })
+            </div>
+
+            <div class="col-md-6" disabled>
+                @Html.LabelFor(model => model.cotizacion.telefonoCorporativo, htmlAttributes: new { @class = "control-label" })
+                @Html.EditorFor(model => model.cotizacion.telefonoCorporativo, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                @Html.ValidationMessageFor(model => model.cotizacion.telefonoCorporativo, "El campo debe ser obligatorio", new { @class = "text-danger" })
+            </div>
+
+            <div class="col-md-12"><h2>Facturacion </h2></div>
+
+            <div class="col-md-6">
+                <label class="control-label">Encargado de Pago</label>
+                <span class="input-group">
+                    <select class="form-control" id="idSelectEncargadoPago" data-live-search="true" name="cotizacion.contactoEncargadoPago"></select>
+                    <span class="input-group-btn" disabled>
+                        <div class="btn btn-primary btn-large glyphicon glyphicon-plus"
+                             onclick="return loadModal('myModal', 'myModalContent', '/Contacto/NewModalCreate', {idDropDownList:'idSelectEncargadoPago', idCliente: $('#idSelectRut').val()});" alt="Crear Encargado Pago"></div>
+                    </span>
+                </span>
+                @Html.ValidationMessageFor(model => model.cotizacion.contactoEncargadoPago, "El campo debe ser obligatorio", new { @class = "text-danger" })
+            </div>
+
+            <div class="col-md-6" disabled>
+                @Html.LabelFor(model => model.cotizacion.direccion, htmlAttributes: new { @class = "control-label" })
+                @Html.EditorFor(model => model.cotizacion.direccion, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                @Html.ValidationMessageFor(model => model.cotizacion.direccion, "El campo debe ser obligatorio", new { @class = "text-danger" })
+            </div>
+
+            <div class="col-md-6">
+                <label class="control-label">Contacto</label>
+                <span class="input-group">
+                    <select class="form-control" id="idSelectContacto" data-live-search="true" name="cotizacion.Contacto"></select>
+                    <span class="input-group-btn">
+                        <div class="btn btn-primary btn-large glyphicon glyphicon-plus"
+                             onclick="return loadModal('myModal', 'myModalContent', '/Contacto/NewModalCreate', {idDropDownList:'idSelectContacto', idCliente: $('#idSelectRut').val()});" alt="Crear Representante Legal"></div>
+                    </span>
+                </span>
+                @Html.ValidationMessageFor(model => model.cotizacion.contacto, "El campo debe ser obligatorio", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-6"></div>
+        </div>
+        <div class="row" @edit>
+            <div class="col-md-12"><h2>Datos Venta </h2></div>
+            <div class="col-md-6">
+                <label class="control-label">Tipo</label>
+                <select class="form-control" id="idSelectTipoCurso" data-live-search="true" name="cotizacion.tipoCurso">
+                    @*<option disabled data-tokens="" selected> Seleccionar </option>*@
+                    @if (Model.cotizacion != null)
+                    {
+                        if (Model.cotizacion.tipoCurso == "Curso")
+                        {
+                            <option selected>Curso</option>
+                            <option>Recertificación</option>
+                            <option>Pre Contrato</option>
+                            <option>Social</option>
+                            <option>Duplicado Credencial</option>
+                            <option>Arriendo de Sala</option>
+                            <option>Tramitación Licencia</option>
+                        }
+                        else if (Model.cotizacion.tipoCurso == "Recertificación")
+                        {
+                            <option>Curso</option>
+                            <option selected>Recertificación</option>
+                            <option>Pre Contrato</option>
+                            <option>Social</option>
+                            <option>Duplicado Credencial</option>
+                            <option>Arriendo de Sala</option>
+                            <option>Tramitación Licencia</option>
+                        }
+                        else if (Model.cotizacion.tipoCurso == "Pre Contrato")
+                        {
+                            <option>Curso</option>
+                            <option>Recertificación</option>
+                            <option selected>Pre Contrato</option>
+                            <option>Social</option>
+                            <option>Duplicado Credencial</option>
+                            <option>Arriendo de Sala</option>
+                            <option>Tramitación licencia</option>
+                        }
+                        else if (Model.cotizacion.tipoCurso == "Social")
+                        {
+                            <option>Curso</option>
+                            <option>Recertificación</option>
+                            <option>Pre Contrato</option>
+                            <option selected>Social</option>
+                            <option>Duplicado Credencial</option>
+                            <option>Arriendo de Sala</option>
+                            <option>Tramitación Licencia</option>
+                        }
+                        else if (Model.cotizacion.tipoCurso == "Duplicado Credencial")
+                        {
+                            <option>Curso</option>
+                            <option>Recertificación</option>
+                            <option>Pre Contrato</option>
+                            <option>Social</option>
+                            <option selected>Duplicado Credencial</option>
+                            <option>Arriendo de Sala</option>
+                            <option>Tramitación Licencia</option>
+                        }
+                        else if (Model.cotizacion.tipoCurso == "Arriendo de Sala")
+                        {
+                            <option>Curso</option>
+                            <option>Recertificación</option>
+                            <option>Pre Contrato</option>
+                            <option>Social</option>
+                            <option>Duplicado Credencial</option>
+                            <option selected>Arriendo de Sala</option>
+                            <option>Tramitación Licencia</option>
+                        }
+                        else if (Model.cotizacion.tipoCurso == "Tramitación Licencia")
+                        {
+                            <option>Curso</option>
+                            <option>Recertificación</option>
+                            <option>Pre Contrato</option>
+                            <option>Social</option>
+                            <option>Duplicado Credencial</option>
+                            <option>Arriendo de Sala</option>
+                            <option selected>Tramitación Licencia</option>
+                        }
+                        else
+                        {
+                            <option>Curso</option>
+                            <option>Recertificación</option>
+                            <option>Pre Contrato</option>
+                            <option>Social</option>
+                            <option>Duplicado Credencial</option>
+                            <option>Arriendo de Sala</option>
+                            <option>Tramitación Licencia</option>
+                        }
+                    }
+                    else
+                    {
+                        <option>Curso</option>
+                        <option>Recertificación</option>
+                        <option>Pre Contrato</option>
+                        <option>Social</option>
+                        <option>Duplicado Credencial</option>
+                        <option>Arriendo de Sala</option>
+                        <option>Tramitación Licencia</option>
+                    }
+                </select>
+                @Html.ValidationMessageFor(model => model.cotizacion.tipoCurso, "El campo debe ser obligatorio", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                @Html.LabelFor(model => model.cotizacion.fechaInicio)
+                @Html.EditorFor(model => model.cotizacion.fechaInicio, new { htmlAttributes = new { @class = "form-control datepicker", autocomplete = "off" } })
+                @Html.ValidationMessageFor(model => model.cotizacion.fechaInicio, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-6">
+                @Html.LabelFor(model => model.cotizacion.fechaTermino)
+                @Html.EditorFor(model => model.cotizacion.fechaTermino, new { htmlAttributes = new { @class = "form-control datepicker", autocomplete = "off" } })
+                @Html.ValidationMessageFor(model => model.cotizacion.fechaTermino, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="row" id="idDatosVentaDiv">
+            <div class="col-md-12"><h2>Datos Curso </h2></div>
+            <div class="col-md-8">
+                <div @edit>
+                    <div class="col-md-6">
+                        <label class="control-label">Modalidad</label>
+                        <select class="form-control" data-live-search="true" id="idSelectModalidadCurso" name="cotizacion.Modalidad" disabled>
+                            <option disabled data-tokens="" selected> Seleccionar </option>
+                            @if (Model.cotizacion != null)
+                            {
+                                if (Model.cotizacion.modalidad == "Abierto")
+                                {
+                                    <option selected>Abierto</option>
+                                    <option>Cerrado</option>
+                                }
+                                else if (Model.cotizacion.modalidad == "Cerrado")
+                                {
+                                    <option>Abierto</option>
+                                    <option selected>Cerrado</option>
+                                }
+                                else
+                                {
+                                    <option>Abierto</option>
+                                    <option>Cerrado</option>
+                                }
+                            }
+                            else
+                            {
+                                <option>Abierto</option>
+                                <option>Cerrado</option>
+                            }
+                        </select>
+                        @Html.ValidationMessageFor(model => model.cotizacion.modalidad, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-6">
+                        @Html.LabelFor(model => model.tipoEjecucion, htmlAttributes: new { @class = "control-label" })
+                        @Html.EnumDropDownListFor(model => model.tipoEjecucion, htmlAttributes: new { @class = "form-control", id = "tipoEjecucion" })
+                        @Html.ValidationMessageFor(model => model.tipoEjecucion, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-9">
+                        <label class="control-label">Cursos</label>
+                        <select class="form-control select2" id="idSelectCursos" data-live-search="true" name="cotizacion.idCurso"></select>
+                        @Html.ValidationMessageFor(model => model.cotizacion.idCurso, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div style="margin-top:26px; margin-bottom:0px; padding-bottom:6px; padding-top:7px; display:none; background-color:#add8e6" id="idButtonSENCE" class="alert alert-default text-center">SENCE</div>
+                </div>
+                <div class="col-md-3">
+                    <button style="margin-top:26px; display:none;" id="idButtonR51" class="btn btn-warning form-control" disabled>Solo tiene R51</button>
+                </div>
+                <div class="col-md-12">
+                    @Html.LabelFor(model => model.cotizacion.nombreDiploma, htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.cotizacion.nombreDiploma, new { htmlAttributes = new { @class = "form-control", @id = "idNombreDiploma" } })
+                    @Html.ValidationMessageFor(model => model.cotizacion.nombreDiploma, "", new { @class = "text-danger" })
+                </div>
+                <div class="col-md-4">
+                    @Html.LabelFor(model => model.cotizacion.lugarRealizacion, htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.cotizacion.lugarRealizacion, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.cotizacion.lugarRealizacion, "", new { @class = "text-danger" })
+                </div>
+                <div class="col-md-3">
+                    <label style="margin-top:26px" class="control-label">Proceso Practico:</label>
+                    @Html.EditorFor(model => model.cotizacion.procesoPractico, new { htmlAttributes = new { @class = "form-control" } }) <br />
+
+                </div>
+                <div class="col-md-4">
+                    @Html.LabelFor(model => model.cotizacion.vigenciaCredenciales, htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.cotizacion.vigenciaCredenciales, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.cotizacion.vigenciaCredenciales, "", new { @class = "text-danger" })
+                </div>
+                <div class="col-md-12"><h2>SENCE </h2></div>
+                <div class="col-md-6" disabled>
+                    <label class="control-label">Código SENCE:</label>
+                    <input class="form-control" id="idCodigoSENCE" name="cotizacion.codigoSence" value="@Model.cotizacion.codigoSence" />
+                </div>
+                <div class="col-md-6">
+                    <label style="margin-top:26px" class="control-label">Sin Código SENCE:</label>
+                    <input id="idCheckBoxCodigoSENCE" name="tieneCodigoSence" type="checkbox" /> <br />
+                    @Html.HiddenFor(model => model.cotizacion.tieneCodigoSence)
+                </div>
+            </div>
+            <div class="col-md-4">
+                <h4>Aportes de Capacitación</h4>
+                <div class="portlet light bordered" style="margin-bottom:0px">
+                    <div class="portlet-body">
+                        @if (ViewBag.aportesCapacitacion != null)
+                        {
+                            <div class="scroll">
+                                <table id="aporteCapacitacinPresencial" class="table">
+                                    <tbody id="tbodyPresencial">
+                                        @{ var contAportesPresenciales = 0;}
+                                        @foreach (var aporte in (List<SGC.Models.AporteCapacitacion>)ViewBag.aportesCapacitacion)
+                                        {
+                                            if (aporte.tipo == SGC.Models.TipoEjecucion.Presencial)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        <div class="row">
+                                                            <div class="col-md-12">
+                                                                @aporte.nombre
+                                                            </div>
+                                                            <input type="hidden" name="cotizacionAporteCapacitacionPresencial[@contAportesPresenciales].idAporteCapacitacion" value="@aporte.idAporteCapacitacion" />
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-md-12" style="padding-left:7px">
+                                                                <div class="form-group form-md-line-input has-info" style="margin-bottom:0">
+                                                                    <div class="col-md-12">
+                                                                        <label class="control-label" style="margin-right: 13px;">
+                                                                            @if (Model.cotizacionAporteCapacitacion != null)
+                                                                            {
+                                                                                if (Model.cotizacionAporteCapacitacion.Where(x => x.idAporteCapacitacion == aporte.idAporteCapacitacion).FirstOrDefault() != null)
+                                                                                {
+                                                                                    if (Model.cotizacionAporteCapacitacion.Where(x => x.idAporteCapacitacion == aporte.idAporteCapacitacion).FirstOrDefault().aCargo == SGC.Models.ACargo.Insecap)
+                                                                                    {
+                                                                                        <input type="radio" name="cotizacionAporteCapacitacionPresencial[@contAportesPresenciales].ACargo" value="0" class="icheck" data-checkbox="icheckbox_square-blue" checked="checked" />
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        <input type="radio" name="cotizacionAporteCapacitacionPresencial[@contAportesPresenciales].ACargo" value="0" class="icheck" data-checkbox="icheckbox_square-blue" />
+                                                                                    }
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    <input type="radio" name="cotizacionAporteCapacitacionPresencial[@contAportesPresenciales].ACargo" value="0" class="icheck" data-checkbox="icheckbox_square-blue" checked="checked" />
+                                                                                }
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <input type="radio" name="cotizacionAporteCapacitacionPresencial[@contAportesPresenciales].ACargo" value="0" class="icheck" data-checkbox="icheckbox_square-blue" checked="checked" />
+                                                                            }
+                                                                            Insecap
+                                                                        </label>
+                                                                        <label class="control-label" style="margin-right: 13px;">
+                                                                            @if (Model.cotizacionAporteCapacitacion != null)
+                                                                            {
+                                                                                if (Model.cotizacionAporteCapacitacion.Where(x => x.idAporteCapacitacion == aporte.idAporteCapacitacion).FirstOrDefault() != null)
+                                                                                {
+                                                                                    if (Model.cotizacionAporteCapacitacion.Where(x => x.idAporteCapacitacion == aporte.idAporteCapacitacion).FirstOrDefault().aCargo == SGC.Models.ACargo.Cliente)
+                                                                                    {
+                                                                                        <input type="radio" name="cotizacionAporteCapacitacionPresencial[@contAportesPresenciales].ACargo" value="1" class="icheck" data-checkbox="icheckbox_square-blue" checked="checked" />
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        <input type="radio" name="cotizacionAporteCapacitacionPresencial[@contAportesPresenciales].ACargo" value="1" class="icheck" data-checkbox="icheckbox_square-blue" />
+                                                                                    }
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    <input type="radio" name="cotizacionAporteCapacitacionPresencial[@contAportesPresenciales].ACargo" value="1" class="icheck" data-checkbox="icheckbox_square-blue" />
+                                                                                }
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <input type="radio" name="cotizacionAporteCapacitacionPresencial[@contAportesPresenciales].ACargo" value="1" class="icheck" data-checkbox="icheckbox_square-blue" />
+                                                                            }
+                                                                            Cliente
+                                                                        </label>
+                                                                        <label class="control-label">
+                                                                            @if (Model.cotizacionAporteCapacitacion != null)
+                                                                            {
+                                                                                if (Model.cotizacionAporteCapacitacion.Where(x => x.idAporteCapacitacion == aporte.idAporteCapacitacion).FirstOrDefault() != null)
+                                                                                {
+                                                                                    if (Model.cotizacionAporteCapacitacion.Where(x => x.idAporteCapacitacion == aporte.idAporteCapacitacion).FirstOrDefault().aCargo == SGC.Models.ACargo.No_Aplica)
+                                                                                    {
+                                                                                        <input type="radio" name="cotizacionAporteCapacitacionPresencial[@contAportesPresenciales].ACargo" value="2" class="icheck" data-checkbox="icheckbox_square-blue" checked="checked" />
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        <input type="radio" name="cotizacionAporteCapacitacionPresencial[@contAportesPresenciales].ACargo" value="2" class="icheck" data-checkbox="icheckbox_square-blue" />
+                                                                                    }
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    <input type="radio" name="cotizacionAporteCapacitacionPresencial[@contAportesPresenciales].ACargo" value="2" class="icheck" data-checkbox="icheckbox_square-blue" />
+                                                                                }
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <input type="radio" name="cotizacionAporteCapacitacionPresencial[@contAportesPresenciales].ACargo" value="2" class="icheck" data-checkbox="icheckbox_square-blue" />
+                                                                            }
+                                                                            No Aplica
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                contAportesPresenciales++;
+                                            }
+                                        }
+                                    </tbody>
+                                    <tbody id="tbodySincrono" hidden>
+                                        @{ var contAportesSincronos = 0;}
+                                        @foreach (var aporte in (List<SGC.Models.AporteCapacitacion>)ViewBag.aportesCapacitacion)
+                                        {
+                                            if (aporte.tipo == SGC.Models.TipoEjecucion.Elearning_Sincrono)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        <div class="row">
+                                                            <div class="col-md-12">
+                                                                @aporte.nombre
+                                                            </div>
+                                                            <input type="hidden" name="cotizacionAporteCapacitacionSincronico[@contAportesSincronos].idAporteCapacitacion" value="@aporte.idAporteCapacitacion" />
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-md-12" style="padding-left:7px">
+                                                                <div class="form-group form-md-line-input has-info" style="margin-bottom:0">
+                                                                    <div class="col-md-12">
+                                                                        <label class="control-label" style="margin-right: 13px;">
+                                                                            @if (Model.cotizacionAporteCapacitacion != null)
+                                                                            {
+                                                                                if (Model.cotizacionAporteCapacitacion.Where(x => x.idAporteCapacitacion == aporte.idAporteCapacitacion).FirstOrDefault() != null)
+                                                                                {
+                                                                                    if (Model.cotizacionAporteCapacitacion.Where(x => x.idAporteCapacitacion == aporte.idAporteCapacitacion).FirstOrDefault().aCargo == SGC.Models.ACargo.Insecap)
+                                                                                    {
+                                                                                        <input type="radio" name="cotizacionAporteCapacitacionSincronico[@contAportesSincronos].ACargo" value="0" class="icheck" data-checkbox="icheckbox_square-blue" checked="checked" />
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        <input type="radio" name="cotizacionAporteCapacitacionSincronico[@contAportesSincronos].ACargo" value="0" class="icheck" data-checkbox="icheckbox_square-blue" />
+                                                                                    }
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    <input type="radio" name="cotizacionAporteCapacitacionSincronico[@contAportesSincronos].ACargo" value="0" class="icheck" data-checkbox="icheckbox_square-blue" checked="checked" />
+                                                                                }
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <input type="radio" name="cotizacionAporteCapacitacionSincronico[@contAportesSincronos].ACargo" value="0" class="icheck" data-checkbox="icheckbox_square-blue" checked="checked" />
+                                                                            }
+                                                                            Insecap
+                                                                        </label>
+                                                                        <label class="control-label" style="margin-right: 13px;">
+                                                                            @if (Model.cotizacionAporteCapacitacion != null)
+                                                                            {
+                                                                                if (Model.cotizacionAporteCapacitacion.Where(x => x.idAporteCapacitacion == aporte.idAporteCapacitacion).FirstOrDefault() != null)
+                                                                                {
+                                                                                    if (Model.cotizacionAporteCapacitacion.Where(x => x.idAporteCapacitacion == aporte.idAporteCapacitacion).FirstOrDefault().aCargo == SGC.Models.ACargo.Cliente)
+                                                                                    {
+                                                                                        <input type="radio" name="cotizacionAporteCapacitacionSincronico[@contAportesSincronos].ACargo" value="1" class="icheck" data-checkbox="icheckbox_square-blue" checked="checked" />
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        <input type="radio" name="cotizacionAporteCapacitacionSincronico[@contAportesSincronos].ACargo" value="1" class="icheck" data-checkbox="icheckbox_square-blue" />
+                                                                                    }
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    <input type="radio" name="cotizacionAporteCapacitacionSincronico[@contAportesSincronos].ACargo" value="1" class="icheck" data-checkbox="icheckbox_square-blue" />
+                                                                                }
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <input type="radio" name="cotizacionAporteCapacitacionSincronico[@contAportesSincronos].ACargo" value="1" class="icheck" data-checkbox="icheckbox_square-blue" />
+                                                                            }
+                                                                            Cliente
+                                                                        </label>
+                                                                        <label class="control-label">
+                                                                            @if (Model.cotizacionAporteCapacitacion != null)
+                                                                            {
+                                                                                if (Model.cotizacionAporteCapacitacion.Where(x => x.idAporteCapacitacion == aporte.idAporteCapacitacion).FirstOrDefault() != null)
+                                                                                {
+                                                                                    if (Model.cotizacionAporteCapacitacion.Where(x => x.idAporteCapacitacion == aporte.idAporteCapacitacion).FirstOrDefault().aCargo == SGC.Models.ACargo.No_Aplica)
+                                                                                    {
+                                                                                        <input type="radio" name="cotizacionAporteCapacitacionSincronico[@contAportesSincronos].ACargo" value="2" class="icheck" data-checkbox="icheckbox_square-blue" checked="checked" />
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        <input type="radio" name="cotizacionAporteCapacitacionSincronico[@contAportesSincronos].ACargo" value="2" class="icheck" data-checkbox="icheckbox_square-blue" />
+                                                                                    }
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    <input type="radio" name="cotizacionAporteCapacitacionSincronico[@contAportesSincronos].ACargo" value="2" class="icheck" data-checkbox="icheckbox_square-blue" />
+                                                                                }
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <input type="radio" name="cotizacionAporteCapacitacionSincronico[@contAportesSincronos].ACargo" value="2" class="icheck" data-checkbox="icheckbox_square-blue" />
+                                                                            }
+                                                                            No Aplica
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                contAportesSincronos++;
+                                            }
+                                        }
+                                    </tbody>
+                                    <tbody id="tbodyAsincrono" hidden>
+                                        @{ var contAportesAsincronos = 0;}
+                                        @foreach (var aporte in (List<SGC.Models.AporteCapacitacion>)ViewBag.aportesCapacitacion)
+                                        {
+                                            if (aporte.tipo == SGC.Models.TipoEjecucion.Elearning_Asincrono)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        <div class="row">
+                                                            <div class="col-md-12">
+                                                                @aporte.nombre
+                                                            </div>
+                                                            <input type="hidden" name="cotizacionAporteCapacitacionAsincronico[@contAportesAsincronos].idAporteCapacitacion" value="@aporte.idAporteCapacitacion" />
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-md-12" style="padding-left:7px">
+                                                                <div class="form-group form-md-line-input has-info" style="margin-bottom:0">
+                                                                    <div class="col-md-12">
+                                                                        <label class="control-label" style="margin-right: 13px;">
+                                                                            @if (Model.cotizacionAporteCapacitacion != null)
+                                                                            {
+                                                                                if (Model.cotizacionAporteCapacitacion.Where(x => x.idAporteCapacitacion == aporte.idAporteCapacitacion).FirstOrDefault() != null)
+                                                                                {
+                                                                                    if (Model.cotizacionAporteCapacitacion.Where(x => x.idAporteCapacitacion == aporte.idAporteCapacitacion).FirstOrDefault().aCargo == SGC.Models.ACargo.Insecap)
+                                                                                    {
+                                                                                        <input type="radio" name="cotizacionAporteCapacitacionAsincronico[@contAportesAsincronos].ACargo" value="0" class="icheck" data-checkbox="icheckbox_square-blue" checked="checked" />
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        <input type="radio" name="cotizacionAporteCapacitacionAsincronico[@contAportesAsincronos].ACargo" value="0" class="icheck" data-checkbox="icheckbox_square-blue" />
+                                                                                    }
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    <input type="radio" name="cotizacionAporteCapacitacionAsincronico[@contAportesAsincronos].ACargo" value="0" class="icheck" data-checkbox="icheckbox_square-blue" checked="checked" />
+                                                                                }
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <input type="radio" name="cotizacionAporteCapacitacionAsincronico[@contAportesAsincronos].ACargo" value="0" class="icheck" data-checkbox="icheckbox_square-blue" checked="checked" />
+                                                                            }
+                                                                            Insecap
+                                                                        </label>
+                                                                        <label class="control-label" style="margin-right: 13px;">
+                                                                            @if (Model.cotizacionAporteCapacitacion != null)
+                                                                            {
+                                                                                if (Model.cotizacionAporteCapacitacion.Where(x => x.idAporteCapacitacion == aporte.idAporteCapacitacion).FirstOrDefault() != null)
+                                                                                {
+                                                                                    if (Model.cotizacionAporteCapacitacion.Where(x => x.idAporteCapacitacion == aporte.idAporteCapacitacion).FirstOrDefault().aCargo == SGC.Models.ACargo.Cliente)
+                                                                                    {
+                                                                                        <input type="radio" name="cotizacionAporteCapacitacionAsincronico[@contAportesAsincronos].ACargo" value="1" class="icheck" data-checkbox="icheckbox_square-blue" checked="checked" />
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        <input type="radio" name="cotizacionAporteCapacitacionAsincronico[@contAportesAsincronos].ACargo" value="1" class="icheck" data-checkbox="icheckbox_square-blue" />
+                                                                                    }
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    <input type="radio" name="cotizacionAporteCapacitacionAsincronico[@contAportesAsincronos].ACargo" value="1" class="icheck" data-checkbox="icheckbox_square-blue" />
+                                                                                }
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <input type="radio" name="cotizacionAporteCapacitacionAsincronico[@contAportesAsincronos].ACargo" value="1" class="icheck" data-checkbox="icheckbox_square-blue" />
+                                                                            }
+                                                                            Cliente
+                                                                        </label>
+                                                                        <label class="control-label">
+                                                                            @if (Model.cotizacionAporteCapacitacion != null)
+                                                                            {
+                                                                                if (Model.cotizacionAporteCapacitacion.Where(x => x.idAporteCapacitacion == aporte.idAporteCapacitacion).FirstOrDefault() != null)
+                                                                                {
+                                                                                    if (Model.cotizacionAporteCapacitacion.Where(x => x.idAporteCapacitacion == aporte.idAporteCapacitacion).FirstOrDefault().aCargo == SGC.Models.ACargo.No_Aplica)
+                                                                                    {
+                                                                                        <input type="radio" name="cotizacionAporteCapacitacionAsincronico[@contAportesAsincronos].ACargo" value="2" class="icheck" data-checkbox="icheckbox_square-blue" checked="checked" />
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        <input type="radio" name="cotizacionAporteCapacitacionAsincronico[@contAportesAsincronos].ACargo" value="2" class="icheck" data-checkbox="icheckbox_square-blue" />
+                                                                                    }
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    <input type="radio" name="cotizacionAporteCapacitacionAsincronico[@contAportesAsincronos].ACargo" value="2" class="icheck" data-checkbox="icheckbox_square-blue" />
+                                                                                }
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <input type="radio" name="cotizacionAporteCapacitacionAsincronico[@contAportesAsincronos].ACargo" value="2" class="icheck" data-checkbox="icheckbox_square-blue" />
+                                                                            }
+                                                                            No Aplica
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                contAportesAsincronos++;
+                                            }
+                                        }
+                                    </tbody>
+                                    <tbody id="tbodyRecertificacion" hidden>
+                                        @{ var contAportesRecertificacion = 0;}
+                                        @foreach (var aporte in (List<SGC.Models.AporteCapacitacion>)ViewBag.aportesCapacitacion)
+                                        {
+                                            if (aporte.tipo == SGC.Models.TipoEjecucion.Recertificacion)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        <div class="row">
+                                                            <div class="col-md-12">
+                                                                @aporte.nombre
+                                                            </div>
+                                                            <input type="hidden" name="cotizacionAporteCapacitacionRecertificacion[@contAportesRecertificacion].idAporteCapacitacion" value="@aporte.idAporteCapacitacion" />
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-md-12" style="padding-left:7px">
+                                                                <div class="form-group form-md-line-input has-info" style="margin-bottom:0">
+                                                                    <div class="col-md-12">
+                                                                        <label class="control-label" style="margin-right: 13px;">
+                                                                            @if (Model.cotizacionAporteCapacitacion != null)
+                                                                            {
+                                                                                if (Model.cotizacionAporteCapacitacion.Where(x => x.idAporteCapacitacion == aporte.idAporteCapacitacion).FirstOrDefault() != null)
+                                                                                {
+                                                                                    if (Model.cotizacionAporteCapacitacion.Where(x => x.idAporteCapacitacion == aporte.idAporteCapacitacion).FirstOrDefault().aCargo == SGC.Models.ACargo.Insecap)
+                                                                                    {
+                                                                                        <input type="radio" name="cotizacionAporteCapacitacionRecertificacion[@contAportesRecertificacion].ACargo" value="0" class="icheck" data-checkbox="icheckbox_square-blue" checked="checked" />
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        <input type="radio" name="cotizacionAporteCapacitacionRecertificacion[@contAportesRecertificacion].ACargo" value="0" class="icheck" data-checkbox="icheckbox_square-blue" />
+                                                                                    }
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    <input type="radio" name="cotizacionAporteCapacitacionRecertificacion[@contAportesRecertificacion].ACargo" value="0" class="icheck" data-checkbox="icheckbox_square-blue" checked="checked" />
+                                                                                }
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <input type="radio" name="cotizacionAporteCapacitacionRecertificacion[@contAportesRecertificacion].ACargo" value="0" class="icheck" data-checkbox="icheckbox_square-blue" checked="checked" />
+                                                                            }
+                                                                            Insecap
+                                                                        </label>
+                                                                        <label class="control-label" style="margin-right: 13px;">
+                                                                            @if (Model.cotizacionAporteCapacitacion != null)
+                                                                            {
+                                                                                if (Model.cotizacionAporteCapacitacion.Where(x => x.idAporteCapacitacion == aporte.idAporteCapacitacion).FirstOrDefault() != null)
+                                                                                {
+                                                                                    if (Model.cotizacionAporteCapacitacion.Where(x => x.idAporteCapacitacion == aporte.idAporteCapacitacion).FirstOrDefault().aCargo == SGC.Models.ACargo.Cliente)
+                                                                                    {
+                                                                                        <input type="radio" name="cotizacionAporteCapacitacionRecertificacion[@contAportesRecertificacion].ACargo" value="1" class="icheck" data-checkbox="icheckbox_square-blue" checked="checked" />
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        <input type="radio" name="cotizacionAporteCapacitacionRecertificacion[@contAportesRecertificacion].ACargo" value="1" class="icheck" data-checkbox="icheckbox_square-blue" />
+                                                                                    }
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    <input type="radio" name="cotizacionAporteCapacitacionRecertificacion[@contAportesRecertificacion].ACargo" value="1" class="icheck" data-checkbox="icheckbox_square-blue" />
+                                                                                }
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <input type="radio" name="cotizacionAporteCapacitacionRecertificacion[@contAportesRecertificacion].ACargo" value="1" class="icheck" data-checkbox="icheckbox_square-blue" />
+                                                                            }
+                                                                            Cliente
+                                                                        </label>
+                                                                        <label class="control-label">
+                                                                            @if (Model.cotizacionAporteCapacitacion != null)
+                                                                            {
+                                                                                if (Model.cotizacionAporteCapacitacion.Where(x => x.idAporteCapacitacion == aporte.idAporteCapacitacion).FirstOrDefault() != null)
+                                                                                {
+                                                                                    if (Model.cotizacionAporteCapacitacion.Where(x => x.idAporteCapacitacion == aporte.idAporteCapacitacion).FirstOrDefault().aCargo == SGC.Models.ACargo.No_Aplica)
+                                                                                    {
+                                                                                        <input type="radio" name="cotizacionAporteCapacitacionRecertificacion[@contAportesRecertificacion].ACargo" value="2" class="icheck" data-checkbox="icheckbox_square-blue" checked="checked" />
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        <input type="radio" name="cotizacionAporteCapacitacionRecertificacion[@contAportesRecertificacion].ACargo" value="2" class="icheck" data-checkbox="icheckbox_square-blue" />
+                                                                                    }
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    <input type="radio" name="cotizacionAporteCapacitacionRecertificacion[@contAportesRecertificacion].ACargo" value="2" class="icheck" data-checkbox="icheckbox_square-blue" />
+                                                                                }
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <input type="radio" name="cotizacionAporteCapacitacionRecertificacion[@contAportesRecertificacion].ACargo" value="2" class="icheck" data-checkbox="icheckbox_square-blue" />
+                                                                            }
+                                                                            No Aplica
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                contAportesRecertificacion++;
+                                            }
+                                        }
+                                    </tbody>
+                                    <tbody id="tbodyRecertificacionSincronica" hidden>
+                                        @{ var contAportesRecertificacionSincronica = 0;}
+                                        @foreach (var aporte in (List<SGC.Models.AporteCapacitacion>)ViewBag.aportesCapacitacion)
+                                        {
+                                            if (aporte.tipo == SGC.Models.TipoEjecucion.Recertificacion_Sincronica)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        <div class="row">
+                                                            <div class="col-md-12">
+                                                                @aporte.nombre
+                                                            </div>
+                                                            <input type="hidden" name="cotizacionAporteCapacitacionRecertificacionSincrono[@contAportesRecertificacionSincronica].idAporteCapacitacion" value="@aporte.idAporteCapacitacion" />
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-md-12" style="padding-left:7px">
+                                                                <div class="form-group form-md-line-input has-info" style="margin-bottom:0">
+                                                                    <div class="col-md-12">
+                                                                        <label class="control-label" style="margin-right: 13px;">
+                                                                            @if (Model.cotizacionAporteCapacitacion != null)
+                                                                            {
+                                                                                if (Model.cotizacionAporteCapacitacion.Where(x => x.idAporteCapacitacion == aporte.idAporteCapacitacion).FirstOrDefault() != null)
+                                                                                {
+                                                                                    if (Model.cotizacionAporteCapacitacion.Where(x => x.idAporteCapacitacion == aporte.idAporteCapacitacion).FirstOrDefault().aCargo == SGC.Models.ACargo.Insecap)
+                                                                                    {
+                                                                                        <input type="radio" name="cotizacionAporteCapacitacionRecertificacionSincrono[@contAportesRecertificacionSincronica].ACargo" value="0" class="icheck" data-checkbox="icheckbox_square-blue" checked="checked" />
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        <input type="radio" name="cotizacionAporteCapacitacionRecertificacionSincrono[@contAportesRecertificacionSincronica].ACargo" value="0" class="icheck" data-checkbox="icheckbox_square-blue" />
+                                                                                    }
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    <input type="radio" name="cotizacionAporteCapacitacionRecertificacionSincrono[@contAportesRecertificacionSincronica].ACargo" value="0" class="icheck" data-checkbox="icheckbox_square-blue" checked="checked" />
+                                                                                }
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <input type="radio" name="cotizacionAporteCapacitacionRecertificacionSincrono[@contAportesRecertificacionSincronica].ACargo" value="0" class="icheck" data-checkbox="icheckbox_square-blue" checked="checked" />
+                                                                            }
+                                                                            Insecap
+                                                                        </label>
+                                                                        <label class="control-label" style="margin-right: 13px;">
+                                                                            @if (Model.cotizacionAporteCapacitacion != null)
+                                                                            {
+                                                                                if (Model.cotizacionAporteCapacitacion.Where(x => x.idAporteCapacitacion == aporte.idAporteCapacitacion).FirstOrDefault() != null)
+                                                                                {
+                                                                                    if (Model.cotizacionAporteCapacitacion.Where(x => x.idAporteCapacitacion == aporte.idAporteCapacitacion).FirstOrDefault().aCargo == SGC.Models.ACargo.Cliente)
+                                                                                    {
+                                                                                        <input type="radio" name="cotizacionAporteCapacitacionRecertificacionSincrono[@contAportesRecertificacionSincronica].ACargo" value="1" class="icheck" data-checkbox="icheckbox_square-blue" checked="checked" />
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        <input type="radio" name="cotizacionAporteCapacitacionRecertificacionSincrono[@contAportesRecertificacionSincronica].ACargo" value="1" class="icheck" data-checkbox="icheckbox_square-blue" />
+                                                                                    }
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    <input type="radio" name="cotizacionAporteCapacitacionRecertificacionSincrono[@contAportesRecertificacionSincronica].ACargo" value="1" class="icheck" data-checkbox="icheckbox_square-blue" />
+                                                                                }
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <input type="radio" name="cotizacionAporteCapacitacionRecertificacionSincrono[@contAportesRecertificacionSincronica].ACargo" value="1" class="icheck" data-checkbox="icheckbox_square-blue" />
+                                                                            }
+                                                                            Cliente
+                                                                        </label>
+                                                                        <label class="control-label">
+                                                                            @if (Model.cotizacionAporteCapacitacion != null)
+                                                                            {
+                                                                                if (Model.cotizacionAporteCapacitacion.Where(x => x.idAporteCapacitacion == aporte.idAporteCapacitacion).FirstOrDefault() != null)
+                                                                                {
+                                                                                    if (Model.cotizacionAporteCapacitacion.Where(x => x.idAporteCapacitacion == aporte.idAporteCapacitacion).FirstOrDefault().aCargo == SGC.Models.ACargo.No_Aplica)
+                                                                                    {
+                                                                                        <input type="radio" name="cotizacionAporteCapacitacionRecertificacionSincrono[@contAportesRecertificacionSincronica].ACargo" value="2" class="icheck" data-checkbox="icheckbox_square-blue" checked="checked" />
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        <input type="radio" name="cotizacionAporteCapacitacionRecertificacionSincrono[@contAportesRecertificacionSincronica].ACargo" value="2" class="icheck" data-checkbox="icheckbox_square-blue" />
+                                                                                    }
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    <input type="radio" name="cotizacionAporteCapacitacionRecertificacionSincrono[@contAportesRecertificacionSincronica].ACargo" value="2" class="icheck" data-checkbox="icheckbox_square-blue" />
+                                                                                }
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <input type="radio" name="cotizacionAporteCapacitacionRecertificacionSincrono[@contAportesRecertificacionSincronica].ACargo" value="2" class="icheck" data-checkbox="icheckbox_square-blue" />
+                                                                            }
+                                                                            No Aplica
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                contAportesRecertificacionSincronica++;
+                                            }
+                                        }
+                                    </tbody>
+                                    <tbody id="tbodyRecertificacionAsincronica" hidden>
+                                        @{ var contAportesRecertificacionAsincronica = 0;}
+                                        @foreach (var aporte in (List<SGC.Models.AporteCapacitacion>)ViewBag.aportesCapacitacion)
+                                        {
+                                            if (aporte.tipo == SGC.Models.TipoEjecucion.Recertificacion_Asincronica)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        <div class="row">
+                                                            <div class="col-md-12">
+                                                                @aporte.nombre
+                                                            </div>
+                                                            <input type="hidden" name="cotizacionAporteCapacitacionRecertificacionAsincronico[@contAportesRecertificacionAsincronica].idAporteCapacitacion" value="@aporte.idAporteCapacitacion" />
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-md-12" style="padding-left:7px">
+                                                                <div class="form-group form-md-line-input has-info" style="margin-bottom:0">
+                                                                    <div class="col-md-12">
+                                                                        <label class="control-label" style="margin-right: 13px;">
+                                                                            @if (Model.cotizacionAporteCapacitacion != null)
+                                                                            {
+                                                                                if (Model.cotizacionAporteCapacitacion.Where(x => x.idAporteCapacitacion == aporte.idAporteCapacitacion).FirstOrDefault() != null)
+                                                                                {
+                                                                                    if (Model.cotizacionAporteCapacitacion.Where(x => x.idAporteCapacitacion == aporte.idAporteCapacitacion).FirstOrDefault().aCargo == SGC.Models.ACargo.Insecap)
+                                                                                    {
+                                                                                        <input type="radio" name="cotizacionAporteCapacitacionRecertificacionAsincronico[@contAportesRecertificacionAsincronica].ACargo" value="0" class="icheck" data-checkbox="icheckbox_square-blue" checked="checked" />
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        <input type="radio" name="cotizacionAporteCapacitacionRecertificacionAsincronico[@contAportesRecertificacionAsincronica].ACargo" value="0" class="icheck" data-checkbox="icheckbox_square-blue" />
+                                                                                    }
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    <input type="radio" name="cotizacionAporteCapacitacionRecertificacionAsincronico[@contAportesRecertificacionAsincronica].ACargo" value="0" class="icheck" data-checkbox="icheckbox_square-blue" checked="checked" />
+                                                                                }
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <input type="radio" name="cotizacionAporteCapacitacionRecertificacionAsincronico[@contAportesRecertificacionAsincronica].ACargo" value="0" class="icheck" data-checkbox="icheckbox_square-blue" checked="checked" />
+                                                                            }
+                                                                            Insecap
+                                                                        </label>
+                                                                        <label class="control-label" style="margin-right: 13px;">
+                                                                            @if (Model.cotizacionAporteCapacitacion != null)
+                                                                            {
+                                                                                if (Model.cotizacionAporteCapacitacion.Where(x => x.idAporteCapacitacion == aporte.idAporteCapacitacion).FirstOrDefault() != null)
+                                                                                {
+                                                                                    if (Model.cotizacionAporteCapacitacion.Where(x => x.idAporteCapacitacion == aporte.idAporteCapacitacion).FirstOrDefault().aCargo == SGC.Models.ACargo.Cliente)
+                                                                                    {
+                                                                                        <input type="radio" name="cotizacionAporteCapacitacionRecertificacionAsincronico[@contAportesRecertificacionAsincronica].ACargo" value="1" class="icheck" data-checkbox="icheckbox_square-blue" checked="checked" />
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        <input type="radio" name="cotizacionAporteCapacitacionRecertificacionAsincronico[@contAportesRecertificacionAsincronica].ACargo" value="1" class="icheck" data-checkbox="icheckbox_square-blue" />
+                                                                                    }
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    <input type="radio" name="cotizacionAporteCapacitacionRecertificacionAsincronico[@contAportesRecertificacionAsincronica].ACargo" value="1" class="icheck" data-checkbox="icheckbox_square-blue" />
+                                                                                }
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <input type="radio" name="cotizacionAporteCapacitacionRecertificacionAsincronico[@contAportesRecertificacionAsincronica].ACargo" value="1" class="icheck" data-checkbox="icheckbox_square-blue" />
+                                                                            }
+                                                                            Cliente
+                                                                        </label>
+                                                                        <label class="control-label">
+                                                                            @if (Model.cotizacionAporteCapacitacion != null)
+                                                                            {
+                                                                                if (Model.cotizacionAporteCapacitacion.Where(x => x.idAporteCapacitacion == aporte.idAporteCapacitacion).FirstOrDefault() != null)
+                                                                                {
+                                                                                    if (Model.cotizacionAporteCapacitacion.Where(x => x.idAporteCapacitacion == aporte.idAporteCapacitacion).FirstOrDefault().aCargo == SGC.Models.ACargo.No_Aplica)
+                                                                                    {
+                                                                                        <input type="radio" name="cotizacionAporteCapacitacionRecertificacionAsincronico[@contAportesRecertificacionAsincronica].ACargo" value="2" class="icheck" data-checkbox="icheckbox_square-blue" checked="checked" />
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        <input type="radio" name="cotizacionAporteCapacitacionRecertificacionAsincronico[@contAportesRecertificacionAsincronica].ACargo" value="2" class="icheck" data-checkbox="icheckbox_square-blue" />
+                                                                                    }
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    <input type="radio" name="cotizacionAporteCapacitacionRecertificacionAsincronico[@contAportesRecertificacionAsincronica].ACargo" value="2" class="icheck" data-checkbox="icheckbox_square-blue" />
+                                                                                }
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <input type="radio" name="cotizacionAporteCapacitacionRecertificacionAsincronico[@contAportesRecertificacionAsincronica].ACargo" value="2" class="icheck" data-checkbox="icheckbox_square-blue" />
+                                                                            }
+                                                                            No Aplica
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                contAportesRecertificacionAsincronica++;
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                    </div>
+                </div>
+                @Html.ValidationMessage("cotizacionAporteCapacitacion", "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="row">
+            <div id="idCostosCursoDiv" hidden>
+                <div class="col-md-12"><h2>Costos </h2></div>
+                <div class="col-md-6">
+                    <label class="control-label">Cantidad Participantes</label>
+                    @Html.EditorFor(model => model.cotizacion.cantidadParticipante, new { htmlAttributes = new { @class = "form-control", @id = "cantParticipantes" } })
+                    @Html.ValidationMessageFor(model => model.cotizacion.cantidadParticipante, "", new { @class = "text-danger" })
+                </div>
+                <div class="col-md-6">
+                    <label class="control-label">Condiciones de Pago</label>
+                    <select class="form-control" data-live-search="true" name="cotizacion.condicionesDePago">
+                        <option disabled data-tokens="" selected> Seleccionar </option>
+                        @if (Model.cotizacion != null)
+                        {
+                            if (Model.cotizacion.condicionesDePago == "Contado")
+                            {
+                                <option selected>Contado</option>
+                                <option>Transferencia</option>
+                                <option>OC</option>
+                                <option>Estado de Pago</option>
+                            }
+                            else if (Model.cotizacion.condicionesDePago == "Transferencia")
+                            {
+                                <option>Contado</option>
+                                <option selected>Transferencia</option>
+                                <option>OC</option>
+                                <option>Estado de Pago</option>
+                            }
+                            else if (Model.cotizacion.condicionesDePago == "OC")
+                            {
+                                <option>Contado</option>
+                                <option>Transferencia</option>
+                                <option selected>OC</option>
+                                <option>Estado de Pago</option>
+                            }
+                            else if (Model.cotizacion.condicionesDePago == "Estado de Pago")
+                            {
+                                <option>Contado</option>
+                                <option>Transferencia</option>
+                                <option>OC</option>
+                                <option selected>Estado de Pago</option>
+                            }
+                            else
+                            {
+                                <option>Contado</option>
+                                <option>Transferencia</option>
+                                <option>OC</option>
+                                <option>Estado de Pago</option>
+                            }
+                        }
+                        else
+                        {
+                            <option>Contado</option>
+                            <option>Transferencia</option>
+                            <option>OC</option>
+                            <option>Estado de Pago</option>
+                        }
+                    </select>
+                    @Html.ValidationMessageFor(model => model.cotizacion.condicionesDePago, "", new { @class = "text-danger" })
+                </div>
+                <div class="col-md-6">
+                    <label class="control-label">Tipo Menu</label>
+                    <select class="form-control" data-live-search="true" name="cotizacion.tipoMenu">
+                        <option disabled data-tokens="" selected> Seleccionar </option>
+                        @if (Model.cotizacion != null)
+                        {
+                            if (Model.cotizacion.tipoMenu == "Colación")
+                            {
+                                <option selected>Colación</option>
+                                <option>Colación Aumentada</option>
+                                <option>Almuerzo</option>
+                                <option>No Aplica</option>
+                            }
+                            else if (Model.cotizacion.tipoMenu == "Colación Aumentada")
+                            {
+                                <option>Colación</option>
+                                <option selected>Colación Aumentada</option>
+                                <option>Almuerzo</option>
+                                <option>No Aplica</option>
+                            }
+                            else if (Model.cotizacion.tipoMenu == "Almuerzo")
+                            {
+                                <option>Colación</option>
+                                <option>Colación Aumentada</option>
+                                <option selected>Almuerzo</option>
+                                <option>No Aplica</option>
+                            }
+                            else if (Model.cotizacion.tipoMenu == "No Aplica")
+                            {
+                                <option>Colación</option>
+                                <option>Colación Aumentada</option>
+                                <option>Almuerzo</option>
+                                <option selected>No Aplica</option>
+                            }
+                            else
+                            {
+                                <option>Colación</option>
+                                <option>Colación Aumentada</option>
+                                <option>Almuerzo</option>
+                                <option>No Aplica</option>
+                            }
+                        }
+                        else
+                        {
+                            <option>Colación</option>
+                            <option>Colación Aumentada</option>
+                            <option>Almuerzo</option>
+                            <option>No Aplica</option>
+                        }
+                    </select>
+                    @Html.ValidationMessageFor(model => model.cotizacion.tipoMenu, "", new { @class = "text-danger" })
+                </div>
+                <div class="col-md-12">
+                    <p id="idValorPorParticipante" style="float: right; margin: 0; font-size: 20px;">$0</p>
+                    <p style="float: right; font-weight: bold; margin: 0 10px; font-size: 20px;">Valor por Participante:</p>
+                </div>
+                <div class="col-md-12" style="margin-top: 20px">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th class="col-md-6">
+                                    Detalle
+                                </th>
+                                <th class="col-md-2">
+                                    Cantidad
+                                </th>
+                                <th class="col-md-2">
+                                    Valor
+                                </th>
+                                <th class="col-md-2">
+                                    Total
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody id="idTableCostoDatos">
+                            @if (Model.cotizacion != null)
+                            {
+                                if (!Model.cotizacion.isValorUnico)
+                                {
+                                    var cont = 0;
+                                    if (Model.cotizacion.costo != null)
+                                    {
+                                        foreach (var item in Model.cotizacion.costo)
+                                        {
+                                            <tr>
+                                                <td style="border: 1px solid #e7ecf1;">
+                                                    @Html.Raw(item.detalle)
+                                                    <input id="costo_detalle" type="hidden" name="cotizacion.costo[@cont].detalle" value="@Html.Raw(item.detalle)">
+                                                    <input type="hidden" name="cotizacion.costo[@cont].valorMinimo" value="@item.valorMinimo">
+                                                    <input type="hidden" name="cotizacion.costo[@cont].valorMaximo" value="@item.valorMaximo">
+                                                </td>
+                                                <td>
+                                                    <input class="form-control tdCantidad" onchange="cambioCantidad(this)" type="number" min="-1" max="99999" name="cotizacion.costo[@cont].cantidad" value="@item.cantidad">
+                                                </td>
+                                                <td>
+                                                    <input class="form-control tdValor currency" onchange="cambioValor(this)" type="text" min="@item.valorMinimo" max="@item.valorMaximo" name="cotizacion.costo[@cont].valor" value="@item.valor">
+                                                </td>
+                                                <td>
+                                                    <input readonly="" class="form-control tdTotal currency" type="text" name="cotizacion.costo[@cont].total" value="@item.total">
+                                                </td>
+                                            </tr>
+                                            cont++;
+                                        }
+                                    }
+                                }
+                            }
+                        </tbody>
+                    </table>
+                    <small style="margin-left: 10px;">* Costo P/P</small>
+                    <h2 id="idTotalTotal" style="float:right; margin-right: 10px;"></h2>
+                </div>
+            </div>
+            <div id="idCostosCursoDivCorto" hidden>
+                <div class="col-md-12"><h2>Costos </h2></div>
+                <div class="col-md-6">
+                    <label class="control-label">Valor</label>
+                    @if (Model.cotizacion != null)
+                    {
+                        <input class="form-control currency" type="text" name="cotizacion.valorUnico" value="@Model.cotizacion.valorUnico" />
+                    }
+                    else
+                    {
+                        <input class="form-control currency" type="text" name="cotizacion.valorUnico" />
+                    }
+                    @Html.ValidationMessageFor(model => model.cotizacion.valorUnico, "", new { @class = "text-danger" })
+                    <input class="form-control" value="true" name="cotizacion.isValorUnico" style="display: none;" />
+                </div>
+            </div>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-md-12">
+                <!--<input type="submit" value="Cancelar" class="btn btn-danger" />-->
+                @Html.ActionLink("Volver", "Index", new { }, new { @class = "btn btn-default" })
+
+                <img id="loading-save" style="position:relative; top: 5px; left: 0; margin-left: auto;float:right" ; margin-right: auto; right: 0; border: 0;width:15px;display:block" src="data:image/gif;base64,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" />
+
+
+
+
+
+                <button id="saveButton" class="btn btn-primary" style="display:none; float:right" data-toggle="modal" data-target="#idModalConfirmCotizacionCrear" type="button">@labelBotton</button>
+                <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" id="idModalConfirmCotizacionCrear">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title" id="myModalLabel">Confirmar</h4>
+                            </div>
+                            <div class="modal-body">
+                                <p>¿Esta seguro que desea confirmar la creación de la cotizacion?</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary">Aceptar</button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id='myModal' class='modal'>
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body" id='myModalContent'>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@if (Model.cotizacion != null)
+{
+    <input type="hidden" id="cotizacionNoNull" value="true" />
+    <input type="hidden" id="clienteCotizacion" value="@Model.cotizacion.idCliente" />
+    <input type="hidden" id="modalidadCotizacionNoNUll" value="true" />
+    <input type="hidden" id="idCursoCotizacion" value="@Model.cotizacion.idCurso" />
+    <input type="hidden" id="giroCotizacion" value='@Html.Raw(Model.cotizacion.giro)' />
+    if (Model.cotizacion.faena != null)
+    {
+        <input type="hidden" id="clienteFaena" value='@Model.cotizacion.faena.idFaena' />
+    }
+    else
+    {
+        <input type="hidden" id="clienteFaena" value='-1' />
+    }
+    <input type="hidden" id="contactoEncargadoPago" value="@Model.cotizacion.contactoEncargadoPago" />
+    <input type="hidden" id="contactoCotizacion" value="@Model.cotizacion.contacto" />
+    <input type="hidden" id="idCursoCotizacion" value="@Model.cotizacion.idCurso" />
+    <input type="hidden" id="tieneCodigoSenceCotizacion" value="@Model.cotizacion.tieneCodigoSence" />
+    <input type="hidden" id="cursoTieneCodigoSenceCotizacion" value="@Model.cotizacion.codigoSence" />
+    <input type="hidden" id="tipoEjecucionCotizacion" value="@Model.tipoEjecucion" />
+    <input type="hidden" id="esPractico" value="@Model.cotizacion.procesoPractico" />
+}
+else
+{
+    <input type="hidden" id="cotizacionNoNull" value="false" />
+    <input type="hidden" id="clienteCotizacion" value="" />
+    <input type="hidden" id="modalidadCotizacionNoNUll" value="false" />
+    <input type="hidden" id="cursoCotizacion" value="" />
+    <input type="hidden" id="giroCotizacion" value="" />
+    <input type="hidden" id="clienteFaena" value="" />
+    <input type="hidden" id="contactoEncargadoPago" value="" />
+    <input type="hidden" id="contactoCotizacion" value="" />
+    <input type="hidden" id="idCursoCotizacion" value="" />
+    <input type="hidden" id="tieneCodigoSenceCotizacion" value="" />
+    <input type="hidden" id="cursoTieneCodigoSenceCotizacion" value="" />
+    <input type="hidden" id="tipoEjecucionCotizacion" value="" />
+}
+
+<input type="hidden" id="clientesArray" value='@Html.Raw(Json.Encode(Model.clientes.Select(x =>new Cliente {
+                                              idCliente = x.idCliente,
+                                              nombreEmpresa = x.nombreEmpresa,
+                                              razonSocial = x.razonSocial,
+                                              clienteGiros = x.clienteGiros,
+                                              telefonoCorporativo = x.telefonoCorporativo,
+                                              encargadoPagos = x.encargadoPagos ,
+                                              direccion = x.direccion,
+                                              clienteTipoDocumentosPagos = x.clienteTipoDocumentosPagos,
+                                              rut = x.rut,
+                                              representanteLegals = x.representanteLegals,
+                                              descEspecial = x.descEspecial,
+                                              clienteContactos = x.clienteContactos,
+                                              clienteContactoCotizacion = x.clienteContactoCotizacion,
+                                              mandante = x.mandante,
+                                              idMandante = x.idMandante
+                                          })))' />
+
+<input type="hidden" id="urlObtenerGiro" value="@Url.Action("ObtenerGiro", "Cotizacion_R13")" />
+<input type="hidden" id="urlObtenerFaena" value="@Url.Action("ObtenerFaena", "Cotizacion_R13")" />
+<input type="hidden" id="urlObtenerEncargadoDePago" value="@Url.Action("ObtenerEncargadoDePago", "Cotizacion_R13")" />
+<input type="hidden" id="urlObtenerContacto" value="@Url.Action("ObtenerContacto", "Cotizacion_R13")" />
+<input type="hidden" id="urlObtenerClienteDeudor" value="@Url.Action("ObtenerClienteDeudor", "Cotizacion_R13")" />
+<input type="hidden" id="urlObtenerClienteOCPendiente" value="@Url.Action("ObtenerClienteOCPendiente", "Cotizacion_R13")" />
+<input type="hidden" id="urlObtenerCursos" value="@Url.Action("ObtenerCursos", "Cotizacion_R13")" />
+<input type="hidden" id="urlObtenerDatosCurso" value="@Url.Action("ObtenerDatosCurso", "Cotizacion_R13")" />
+<input type="hidden" id="urlObtenerCostos" value="@Url.Action("ObtenerCostos", "Cotizacion_R13")" />
+
+@section Scripts {
+    <script src="~/Content/js/Cotizacion/Crear-v2.js"></script>
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+
+
+    </script>
+
+}
+

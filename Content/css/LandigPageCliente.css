@@ -1,0 +1,6 @@
+﻿div.scroll {
+    height: 622px;
+    /*max-height: 165px;*/
+    overflow-x: hidden;
+    overflow-y: auto;
+}

@@ -1,0 +1,112 @@
+﻿@model IEnumerable<SGC.Models.RelatorCurso>
+
+<style>
+    #table-wrapper {
+        position: relative;
+    }
+
+    #table-scroll {
+        overflow: auto;
+    }
+
+    #table-wrapper table {
+        width: 100%;
+    }
+
+    #table-wrapper td {
+        white-space: nowrap;
+    }
+
+    #table-wrapper th {
+        white-space: nowrap;
+    }
+
+    th {
+        background-color: yellow;
+    }
+</style>
+
+<div id="table-wrapper">
+    <div id="table-scroll">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayName("Nombre Curso")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Tipo de Ejecución")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Nombre Relator")
+                    </th>
+                    <th>
+                        @Html.DisplayName("RUT Relator")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Correo Electrónico Relator")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Teléfono Relator")
+                    </th>
+                    <th>
+                        @Html.DisplayName("SENCE")
+                    </th>
+                    <th>
+                        @Html.DisplayName("REUF")
+                    </th>
+                    @*<th>
+                        @Html.DisplayName("Exámenes al Día")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Estrellas")
+                    </th>*@
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.curso.nombreCurso)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.curso.tipoEjecucion)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.relator.contacto.nombreCompleto)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.relator.contacto.run)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.relator.contacto.correo)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.relator.contacto.telefono)
+                        </td>
+                        @if (item.validoSence)
+                        {
+                            <td> Sí </td>
+                        }
+                        else
+                        {
+                            <td> No </td>
+                        }
+                        @if (item.reuf)
+                        {
+                            <td> Sí </td>
+                        }
+                        else
+                        {
+                            <td> No </td>
+                        }
+                        @*<td></td>
+                        <td></td>*@
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+

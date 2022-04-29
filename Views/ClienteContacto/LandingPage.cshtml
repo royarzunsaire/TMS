@@ -1,0 +1,1022 @@
+﻿@model SGC.Models.ViewModelLandingPageCliente
+@using SGC.Models
+
+@{
+    ViewBag.Title = "Bienvenido a INSECAP";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var i = 0;
+    List<Publicidad> publicidades = ViewBag.publicidades;
+}
+
+
+
+@section Styles{
+    <link href="~/Content/css/slider.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/css/LandigPageCliente.css" rel="stylesheet" type="text/css" />
+    @foreach (var item in publicidades)
+    {
+        var left = i * 100;
+        var left2 = left / 2;
+        i++;
+
+
+        <style>
+        body .slide:nth-child(@i) {
+            left: @left%;
+        }
+
+            body .slide:nth-child(@i) .slide__bg {
+                left: -@left2%;
+                background-image: url('@item.foto.urlArchivo');
+            }
+
+            body .slide:nth-child(@i) .slide__overlay-path {
+                fill: #485cc7;
+            }
+
+        @@media (max-width: 991px) {
+            body .slide:nth-child(@i) .slide__text {
+                background-color: rgba(233, 156, 126, 0.8);
+            }
+        }
+        </style>
+
+    }
+
+
+
+    <style>
+
+        .separar {
+            margin-bottom: 10px;
+        }
+    </style>
+}
+
+<h3 class="page-title text-center" style="font-size: 36px">
+    Bienvenido a INSECAP
+</h3>
+@if (publicidades.Count() > 0)
+{
+    <div class="row col-md-10 col-md-offset-1" style="overflow: hidden;margin-bottom:50px; height: 500px">
+
+        @{ Html.RenderAction("Slider", "Publicidad", new { publicidades = ViewBag.publicidades }); }
+
+    </div>
+}
+
+
+
+@if (Model.clienteContacto.cliente.encuestaSatisfaccion)
+{
+    <div class="row">
+        <div class="col-md-12">
+            <div class="portlet light bordered">
+                <div class="caption">
+                    <span class="uppercase"></span>
+                </div>
+                <div class="portlet-body text-center">
+                    <a href="@Url.Action("LlenarR43", "Cliente", new { id = 0, id2 = Model.clienteContacto.idCliente, id3 = SGC.Models.TipoFormulario.R43 })" class="btn btn-primary">
+                        Encuesta de Satisfacción
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@if (Model.clienteContacto.cliente.encuestaSatisfaccionElerning)
+{
+    <div class="row">
+        <div class="col-md-12">
+            <div class="portlet light bordered">
+                <div class="caption">
+                    <span class="uppercase"></span>
+                </div>
+                <div class="portlet-body text-center">
+                    <a href="@Url.Action("LlenarR43", "Cliente", new { id = 0, id2 = Model.clienteContacto.idCliente, id3 = SGC.Models.TipoFormulario.R43_E })" class="btn btn-primary">
+                        Encuesta de Satisfacción E-Learning
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="row">
+    <div class="col-md-12">
+
+        <div class="col-md-12  text-center">
+            <div class="col-md-3">
+                <strong>R22: </strong> Acta de entrega
+            </div>
+            <div class="col-md-2">
+                <strong>R23: </strong> Diplomas
+            </div>
+            <div class="col-md-3">
+                <strong>R24: </strong> Certificado de asistencia
+            </div>
+            <div class="col-md-4">
+                <strong>R50: </strong> Informe de actividad de capacitación
+            </div>
+        </div>
+
+        <div class="col-md-12  text-center">
+            <div class="col-md-3">
+                <spam type="button" class=" glyphicon glyphicon-user" title="Participantes"></spam>  Lista de participantes
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+    </br>
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet light bordered">
+            <div class="portlet-title" style="margin-bottom: 0;">
+                <div class="caption">
+                    <span class="uppercase">Cursos</span>
+                </div>
+                <div class="tools">
+                    <a href="javascript:;" class="collapse"> </a>
+                    <a href="javascript:;" class="fullscreen"> </a>
+                </div>
+                <div class="actions" style="padding-bottom: 10px;">
+                    <div class="row" style="margin-right: 0px;margin-left: 0px;">
+                        <div class="col-md-6 col-xs-12" style="padding-left: 5px;padding-right: 5px;">
+                            <div class="inputs pull-right" style="width:100%">
+                                <a href="@Url.Action("ParticipantesClienteExcel", "ClienteContacto", new { id = Model.clienteContacto.cliente.idCliente }) " class="btn btn-circle btn-default btn-group-lg" style="width:100%">
+                                    Exportar Participantes
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-xs-12" style="padding-left: 5px;padding-right: 5px;">
+                            <div class="portlet-input input-inline" style="margin-right:5px;">
+                                <div class="input-group">
+                                    <input type="text" class="form-control input-circle-left" id="inptSearchComercializaciones" placeholder="Buscar" title="Buscar">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-circle-right btn-default" type="button"><i class="fa fa-search"></i></button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @*<div class="portlet-input input-inline" style="margin-right:5px;">
+                            <div class="input-group">
+                                <input type="text" class="form-control input-circle-left" id="inptSearchComercializaciones" placeholder="Buscar" title="Buscar">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-circle-right btn-default" type="button"><i class="fa fa-search"></i></button>
+                                </span>
+                            </div>
+                        </div>*@
+                </div>
+            </div>
+            <div class="portlet-body">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <table class="table table-dataTable table-striped  table-hover dt-responsive" id="tableComercializaciones" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayName("Código")
+                            </th>
+                            <th>
+                                @Html.DisplayName("Número de orden de compra")
+                            </th>
+                            <th>
+                                @Html.DisplayName("Curso")
+                            </th>
+                            <th>
+                                @Html.DisplayName("Inicio")
+                            </th>
+                            <th>
+                                @Html.DisplayName("Término")
+                            </th>
+                            <th>
+                                @Html.DisplayName("Empresa")
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @foreach (var comercializacion in Model.comercializaciones)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => comercializacion.cotizacion.codigoCotizacion)
+                                </td>
+                                <td>
+                                    @string.Join(";", comercializacion.cotizacion.documentosCompromiso.Select(x => x.numeroSerie))
+                                </td>
+                                <td>
+                                    @if (comercializacion.cotizacion.tipoCurso != "Duplicado Credencial" && comercializacion.cotizacion.tipoCurso != "Arriendo de Sala" && comercializacion.cotizacion.tipoCurso != "Tramitación Licencia")
+                                    {
+                                        @Html.DisplayFor(modelItem => comercializacion.cotizacion.nombreDiploma)
+                                    }
+                                    else
+                                    {
+                                        @Html.DisplayFor(modelItem => comercializacion.cotizacion.tipoCurso)
+                                    }
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => comercializacion.fechaInicio)
+                                </td>
+
+                                <td>
+                                    @Html.DisplayFor(modelItem => comercializacion.fechaTermino)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => comercializacion.cotizacion.nombreEmpresa)
+                                </td>
+                                <td>
+
+                                    @if (comercializacion.cotizacion.tipoCurso != "Duplicado Credencial" && comercializacion.cotizacion.tipoCurso != "Arriendo de Sala" && comercializacion.cotizacion.tipoCurso != "Tramitación Licencia")
+                                    {
+                                        using (Html.BeginForm("GenerarPdfR23", "Comercializacions", FormMethod.Post))
+                                        {
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="id" value="@comercializacion.idComercializacion" />
+                                            <input type="hidden" name="id3" value="aprobados" />
+                                            <input type="hidden" name="id2" value="@comercializacion.relatoresCursos.FirstOrDefault().idRelator" /><input type="hidden" name="id3" value="Todos" /><input type="hidden" name="id4" value="cliente" /><div class="input-group-btn text-center">
+                                                @{
+                                                    //var docsCompromisoCostoEmpresa = comercializacion.cotizacion.documentosCompromiso
+                                                    //    .Where(x => x.tipoVenta.tipoPago == SGC.Models.TipoPago.CostoEmpresa)
+                                                    //    .Where(x => x.softDelete == false)
+                                                    //    .ToList();
+                                                    //var cont = 0;
+                                                    //if (docsCompromisoCostoEmpresa.Count() > 0)
+                                                    //{
+
+                                                    //    foreach (var docCompromiso in docsCompromisoCostoEmpresa)
+                                                    //    {
+                                                    //        if (docCompromiso.tipoDocCompromiso.nombre.ToLower().Contains("oc"))
+                                                    //        {
+                                                    //            cont++;
+                                                    //        }
+                                                    //    }
+                                                    //}
+
+                                                    //if (comercializacion.clientDownload || (!comercializacion.clientDownload && cont != 0))
+                                                    //{
+                                                    if (comercializacion.participantes.Any())
+                                                    {
+                                                        <a href="@Url.Action("GenerarReporteQR", "Comercializacions", new { id = comercializacion.idComercializacion}) " class="btn btn-sm btn-default  glyphicon glyphicon-file" title="QR"><strong>QR</strong></a>
+
+
+
+                                                    }
+
+
+                                                    if (!comercializacion.clientDownload || !comercializacion.clientFactura)
+
+                                                    {
+                                                        if (!comercializacion.clientFactura)
+                                                        {
+                                                            <span class="btn btn-warning btn-sm btn-circle glyphicon glyphicon-alert" data-toggle="tooltip" data-placement="top" title="Acceso Restringido por Facturación" style="color: black; margin-right: 5px" onclick="ocPendiente('@comercializacion.usuarioCreador.nombreCompleto', '@comercializacion.usuarioCreador.telefono', '@comercializacion.usuarioCreador.Email',' Acceso Restringido por Facturación favor contactarse con el ejecutivo Comercial')"> Click aquí</span>
+                                                        }
+                                                        if (!comercializacion.clientDownload)
+                                                        {
+                                                        }
+                                                        <span class="btn btn-warning btn-sm btn-circle glyphicon glyphicon-alert" data-toggle="tooltip" data-placement="top" title="Acceso Restringido por Orden de Compra Pendiente favor contactarse con su ejecutivo Comercial" style="color:black;  margin-right:5px" onclick="ocPendiente('@comercializacion.usuarioCreador.nombreCompleto', '@comercializacion.usuarioCreador.telefono', '@comercializacion.usuarioCreador.Email',' Acceso Restringido por Orden de Compra Pendiente favor contactarse con el ejecutivo Comercial')"> Click aquí</span>
+                                                    }
+                                                    else
+                                                    {
+
+                                                        if (comercializacion.participantes.Count() > 0)
+                                                        {
+                                                            @Html.ActionLink(" ", "GenerarPdfCredenciales", "Comercializacions", new { id = comercializacion.idComercializacion, id2 = "cliente" }, htmlAttributes: new { @datatoggle = "tooltip", @title = "Credenciales", @class = "btn btn-sm btn-default  glyphicon glyphicon-credit-card" })
+
+                                                            <a href="@Url.Action("GenerarPdfR22", "Comercializacions", new { id = comercializacion.idComercializacion, id2 = "cliente" }) " class="btn btn-sm btn-default  glyphicon glyphicon-file" title="Acta de Entrega de Certificados"><strong>R22</strong></a>
+
+
+                                                        }
+                                                        else
+                                                        {
+                                                            <a href="@Url.Action("GenerarPdfR22", "Comercializacions", new { id = comercializacion.idComercializacion, id2 = "cliente" }) " class="btn btn-sm btn-default  glyphicon glyphicon-file" title="Acta de Entrega de Certificados" onclick="return false;" disabled><strong>R22</strong></a>
+                                                        }
+                                                        if (comercializacion.participantes.Count() > 0)
+                                                        {
+                                                            <button type="submit" class="btn btn-sm btn-default glyphicon glyphicon-file" title="Diplomas"><strong>R23</strong></button>
+                                                        }
+                                                        else
+                                                        {
+                                                            <button type="submit" class="btn btn-sm btn-default glyphicon glyphicon-file" title="Diplomas" disabled><strong>R23</strong></button>
+                                                        }
+                                                        if (comercializacion.participantes.Count() > 0)
+                                                        {
+                                                            <a href="@Url.Action("GenerarPdfR24", "Comercializacions", new { id = comercializacion.idComercializacion, id2 = "cliente",type ="all" }) " class="btn btn-sm btn-default  glyphicon glyphicon-file" title="Certificado de Asistencia y Evaluación"><strong>R24</strong></a>
+                                                        }
+                                                        else
+                                                        {
+                                                            <a href="@Url.Action("GenerarPdfR24", "Comercializacions", new { id = comercializacion.idComercializacion, id2 = "cliente" }) " class="btn btn-sm btn-default  glyphicon glyphicon-file" title="Certificado de Asistencia y Evaluación" onclick="return false;" disabled><strong>R24</strong></a>
+                                                        }
+                                                        if (comercializacion.participantes.Count() > 0)
+                                                        {
+                                                            <a href="@Url.Action("GenerarPdfR50", "Comercializacions", new { id = comercializacion.idComercializacion, id3 = "cliente" }) " class="btn btn-sm btn-default  glyphicon glyphicon-file" title="Informe de Actividad de Capacitacion"><strong>R50</strong></a>
+                                                        }
+                                                        else
+                                                        {
+                                                            <a href="@Url.Action("GenerarPdfR50", "Comercializacions", new { id = comercializacion.idComercializacion, id3 = "cliente" }) " class="btn btn-sm btn-default  glyphicon glyphicon-file" title="Informe de Actividad de Capacitacion" onclick="return false;" disabled><strong>R50</strong></a>
+                                                        }
+                                                    }
+
+                                                    //}
+                                                    @* else
+                                                                  {
+
+                                                                        if (comercializacion.participantes.Count() > 0)
+                                                                        {
+                                                                <a href="@Url.Action("GenerarPdfR22", "Comercializacions", new { id = comercializacion.idComercializacion, id2 = "cliente" }) " class="btn btn-sm btn-default  glyphicon glyphicon-file" title="Acta de Entrega de Certificados"><strong>R22</strong> ggggg</a>
+                                                            }
+                                                            else
+                                                            {
+                                                                <a href="@Url.Action("GenerarPdfR22", "Comercializacions", new { id = comercializacion.idComercializacion, id2 = "cliente" }) " class="btn btn-sm btn-default  glyphicon glyphicon-file" title="Acta de Entrega de Certificados" onclick="return false;" disabled><strong>R22</strong></a>
+                                                            }
+                                                        if (comercializacion.participantes.Count() > 0)
+                                                        {
+                                                                <button type="submit" class="btn btn-sm btn-default glyphicon glyphicon-file" title="Diplomas"><strong>R23</strong></button>
+                                                            }
+                                                            else
+                                                        {
+                                                                <button type="submit" class="btn btn-sm btn-default glyphicon glyphicon-file" title="Diplomas" disabled><strong>R23</strong></button>
+                                                            }
+                                                            if (comercializacion.participantes.Count() > 0)
+                                                        {
+                                                                <a href="@Url.Action("GenerarPdfR24", "Comercializacions", new { id = comercializacion.idComercializacion, id2 = "cliente" }) " class="btn btn-sm btn-default  glyphicon glyphicon-file" title="Certificado de Asistencia y Evaluación"><strong>R24</strong></a>
+                                                            }
+                                                            else
+                                                        {
+                                                                <a href="@Url.Action("GenerarPdfR24", "Comercializacions", new { id = comercializacion.idComercializacion, id2 = "cliente" }) " class="btn btn-sm btn-default  glyphicon glyphicon-file" title="Certificado de Asistencia y Evaluación" onclick="return false;" disabled><strong>R24</strong></a>
+                                                            }
+                                                            if (comercializacion.participantes.Count() > 0)
+                                                        {
+                                                                <a href="@Url.Action("GenerarPdfR50", "Comercializacions", new { id = comercializacion.idComercializacion, id3 = "cliente" }) " class="btn btn-sm btn-default  glyphicon glyphicon-file" title="Informe de Actividad de Capacitacion"><strong>R50</strong></a>
+                                                            }
+                                                            else
+                                                        {
+                                                                <a href="@Url.Action("GenerarPdfR50", "Comercializacions", new { id = comercializacion.idComercializacion, id3 = "cliente" }) " class="btn btn-sm btn-default  glyphicon glyphicon-file" title="Informe de Actividad de Capacitacion" onclick="return false;" disabled><strong>R50</strong></a>
+                                                            }
+                                                        }*@
+                                                }
+                                                <button type="button" class="btn btn-default btn-sm glyphicon glyphicon-user" onclick="mostrarParticipantes('@(comercializacion.idComercializacion)')" title="Participantes"></button>
+                                                @* <a href="@Url.Action("CreatePorCliente", "Participante", new { id = comercializacion.idComercializacion }) " class="btn btn-default btn-sm glyphicon glyphicon-plus" title="Agregar Participante"></a>*@
+                                                <button type="button" class="btn btn-default btn-sm glyphicon glyphicon-list-alt" onclick="mostrarDetallesComercializacion('@(comercializacion.idComercializacion)')" title="Detalles"></button>
+                                            </div>
+                                        }
+
+                                    }
+                                    else
+                                    {
+                                        <div class="input-group-btn text-center">
+                                            <button type="button" class="btn btn-default btn-sm glyphicon glyphicon-list-alt" onclick="mostrarDetallesComercializacion('@(comercializacion.idComercializacion)')" title="Detalles"></button>
+                                        </div>
+                                    }
+                                    <div id="detallesComercializacion-@comercializacion.idComercializacion" hidden>
+                                        @if (comercializacion.cotizacion.tipoCurso != "Duplicado Credencial" && comercializacion.cotizacion.tipoCurso != "Arriendo de Sala" && comercializacion.cotizacion.tipoCurso != "Tramitación Licencia")
+                                        {
+                                            <div class="row">
+                                                <div class="col-md-12 separar">
+                                                    <label>Curso</label>
+                                                    <div class="form-control ver">@comercializacion.cotizacion.nombreDiploma</div>
+                                                </div>
+                                            </div>
+                                            <hr />
+                                        }
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <div class="col-md-12 separar">
+                                                        <label class="control-label">Código</label>
+                                                        <div class="form-control ver">@comercializacion.cotizacion.codigoCotizacion</div>
+                                                    </div>
+                                                    <div class="col-md-12 separar">
+                                                        <label class="control-label">Lider Comercial</label>
+                                                        <div class="form-control ver">@comercializacion.usuarioCreador.Email</div>
+                                                    </div>
+                                                    <div class="col-md-12 separar">
+                                                        <label class="control-label">Sucursal</label>
+                                                        <div class="form-control ver">@comercializacion.cotizacion.sucursal.nombre</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 vl">
+                                                <div class="row">
+                                                    <div class="col-md-12 separar">
+                                                        <label class="control-label">Fecha Inicio</label>
+                                                        <div class="form-control ver">@Html.DisplayFor(model => comercializacion.fechaInicio)</div>
+                                                    </div>
+                                                    <div class="col-md-12 separar">
+                                                        <label class="control-label">Fecha Termino</label>
+                                                        <div class="form-control ver">@Html.DisplayFor(model => comercializacion.fechaTermino)</div>
+                                                    </div>
+                                                    @if (comercializacion.cotizacion.tipoCurso != "Duplicado Credencial" && comercializacion.cotizacion.tipoCurso != "Arriendo de Sala" && comercializacion.cotizacion.tipoCurso != "Tramitación Licencia")
+                                                    {
+                                                        <div class="col-md-12 separar">
+                                                            <label class="control-label">Vigencia Credenciales</label>
+                                                            <div class="form-control ver">@Html.DisplayFor(model => comercializacion.vigenciaCredenciales)</div>
+                                                        </div>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <hr />
+                                        <div class="row">
+                                            <div class="col-md-6 separar">
+                                                <label class="control-label">Ciudad</label>
+                                                <div class="form-control ver">@comercializacion.ciudad.nombreCiudad</div>
+                                            </div>
+                                            @if (comercializacion.cotizacion.tipoCurso != "Duplicado Credencial" && comercializacion.cotizacion.tipoCurso != "Arriendo de Sala" && comercializacion.cotizacion.tipoCurso != "Tramitación Licencia")
+                                            {
+                                                <div class="col-md-6 separar">
+                                                    <label class="control-label">Cantidad de Participantes</label>
+                                                    <div class="form-control ver">@comercializacion.cotizacion.cantidadParticipante</div>
+                                                </div>
+                                                <div class="col-md-12 separar">
+                                                    <label class="control-label">Lugar de Realización</label>
+                                                    <div class="form-control ver">@comercializacion.cotizacion.lugarRealizacion</div>
+                                                </div>
+                                            }
+                                        </div>
+                                        <hr />
+                                        @if (comercializacion.cotizacion.tipoCurso != "Duplicado Credencial" && comercializacion.cotizacion.tipoCurso != "Arriendo de Sala" && comercializacion.cotizacion.tipoCurso != "Tramitación Licencia")
+                                        {
+                                            <div class="row">
+                                                <div class="col-md-12 separar">
+                                                    <label class="control-label">Relatores</label>
+                                                    <ul>
+                                                        @foreach (var relator in comercializacion.relatoresCursos)
+                                                        {
+                                                            <li>
+                                                                @relator.relator.contacto.nombreCompleto
+                                                            </li>
+                                                        }
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <hr />
+                                        }
+                                        <div class="row">
+                                            @if (comercializacion.cotizacion.tipoCurso != "Duplicado Credencial" && comercializacion.cotizacion.tipoCurso != "Arriendo de Sala" && comercializacion.cotizacion.tipoCurso != "Tramitación Licencia")
+                                            {
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        @if (comercializacion.cotizacion.codigoSence != null && comercializacion.cotizacion.tieneCodigoSence != "on")
+                                                        {
+                                                            <div class="col-md-6 separar">
+                                                                <label class="control-label">Código Sence</label>
+                                                                <div class="form-control ver">@comercializacion.cotizacion.codigoSence</div>
+                                                            </div>
+                                                        }
+                                                    </div>
+                                                </div>
+                                            }
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <div class="col-md-6 separar">
+                                                        <label class="control-label">Valor</label>
+                                                        <div class="form-control ver">@String.Format("{0:C}", (comercializacion.valorFinal - comercializacion.descuento))</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @*Estado: @comercializacion.comercializacionEstadoComercializacion.FirstOrDefault().EstadoComercializacion <br />*@
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="portlet light bordered">
+                    <div class="portlet-title" style="margin-bottom: 0">
+                        <div class="caption">
+                            <span class="uppercase">Cotizaciones</span>
+                        </div>
+                        <div class="tools">
+                            <a href="javascript:;" class="collapse"> </a>
+                            <a href="javascript:;" class="fullscreen"> </a>
+                        </div>
+                        <div class="actions" style="padding-bottom: 10px;">
+                            <div class="row" style="margin-right: 0px;margin-left: 0px;">
+                                <div class="col-md-8 col-xs-12" style="padding-left: 5px;padding-right: 5px;">
+                                    <div class="portlet-input input-inline pull-right">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control input-circle-left" id="inptSearchCotizaciones" placeholder="Buscar" title="Buscar">
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-circle-right btn-default" type="button"><i class="fa fa-search"></i></button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                @*<div class="col-md-4 col-xs-12" style="padding-left: 5px;padding-right: 5px;">
+                                        <div class="inputs pull-right" style="width:100%">
+                                            <a href="@Url.Action("CrearAutoCotizacion", "ClienteContacto") " class="btn btn-circle btn-default btn-group-lg" style="width:100%">
+                                                <i class="fa fa-plus-circle"></i> Nuevo
+                                            </a>
+                                        </div>
+                                    </div>*@
+                            </div>
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        <table id="tableCotizaciones" class="table table-dataTable table-striped table-hover dt-responsive" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        @Html.DisplayName("Fecha")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("Curso")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("Empresa")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("")
+                                    </th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var cotizacion in Model.cotizaciones)
+                                {
+                                    <tr>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => cotizacion.fechaCreacion)
+                                        </td>
+                                        <td>
+                                            @if (cotizacion.tipoCurso != "Duplicado Credencial" && cotizacion.tipoCurso != "Arriendo de Sala" && cotizacion.tipoCurso != "Tramitación Licencia")
+                                            {
+                                                @Html.DisplayFor(modelItem => cotizacion.nombreDiploma)
+                                            }
+                                            else
+                                            {
+                                                @Html.DisplayFor(modelItem => cotizacion.tipoCurso)
+                                            }
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => cotizacion.nombreEmpresa)
+                                        </td>
+                                        <td>
+                                            @if (cotizacion.isAutoCotizacion == 1)
+                                            {
+                                                <div>Auto-Cotización</div>
+                                            }
+                                        </td>
+                                        <td>
+                                            <div class="input-group-btn text-center">
+                                                <button type="button" class="btn btn-default btn-sm glyphicon glyphicon-list-alt" onclick="mostrarDetallesCotizacion('@(cotizacion.idCotizacion_R13)')" title="Detalles"></button>
+                                                @*<a href="@Url.Action("EditarAutoCotizacion", "ClienteContacto", new { id = cotizacion.idCotizacion_R13 }) " class="btn btn-sm btn-default glyphicon glyphicon-edit" title="Editar"></a>*@
+                                            </div>
+                                            <div id="detallesCotizacion-@cotizacion.idCotizacion_R13" hidden>
+                                                @if (cotizacion.tipoCurso != "Duplicado Credencial" && cotizacion.tipoCurso != "Arriendo de Sala" && cotizacion.tipoCurso != "Tramitación Licencia")
+                                                {
+                                                    <div class="row">
+                                                        <div class="col-md-12 separar">
+                                                            <label>Curso</label>
+                                                            <div class="form-control ver">@cotizacion.nombreDiploma</div>
+                                                        </div>
+                                                    </div>
+                                                    <hr />
+                                                }
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <div class="col-md-12 separar">
+                                                                <label class="control-label">Código</label>
+                                                                <div class="form-control ver">@cotizacion.codigoCotizacion</div>
+                                                            </div>
+                                                            <div class="col-md-12 separar">
+                                                                <label class="control-label">Lider Comercial</label>
+                                                                <div class="form-control ver">@cotizacion.usuarioCreador.Email</div>
+                                                            </div>
+                                                            <div class="col-md-12 separar">
+                                                                <label class="control-label">Sucursal</label>
+                                                                <div class="form-control ver">@cotizacion.sucursal.nombre</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6 vl">
+                                                        <div class="row">
+                                                            <div class="col-md-12 separar">
+                                                                <label class="control-label">Fecha Inicio</label>
+                                                                <div class="form-control ver">@Html.DisplayFor(model => cotizacion.fechaInicio)</div>
+                                                            </div>
+                                                            <div class="col-md-12 separar">
+                                                                <label class="control-label">Fecha Termino</label>
+                                                                <div class="form-control ver">@Html.DisplayFor(model => cotizacion.fechaTermino)</div>
+                                                            </div>
+                                                            @if (cotizacion.tipoCurso != "Duplicado Credencial" && cotizacion.tipoCurso != "Arriendo de Sala" && cotizacion.tipoCurso != "Tramitación Licencia")
+                                                            {
+                                                                <div class="col-md-12 separar">
+                                                                    <label class="control-label">Cantidad de Participantes</label>
+                                                                    <div class="form-control ver">@cotizacion.cantidadParticipante</div>
+                                                                </div>
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <hr />
+                                                @if (cotizacion.tipoCurso != "Duplicado Credencial" && cotizacion.tipoCurso != "Arriendo de Sala" && cotizacion.tipoCurso != "Tramitación Licencia")
+                                                {
+                                                    <div class="row">
+                                                        <div class="col-md-12 separar">
+                                                            <label class="control-label">Lugar de Realización</label>
+                                                            <div class="form-control ver">@cotizacion.lugarRealizacion</div>
+                                                        </div>
+                                                    </div>
+                                                    <hr />
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                @if (cotizacion.codigoSence != null && cotizacion.tieneCodigoSence != "on")
+                                                                {
+                                                                    <div class="col-md-6 separar">
+                                                                        <label class="control-label">Código Sence</label>
+                                                                        <div class="form-control ver">@cotizacion.codigoSence</div>
+                                                                    </div>
+                                                                }
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                <div class="col-md-6 separar">
+                                                                    <label class="control-label">Valor</label>
+                                                                    <div class="form-control ver">@String.Format("{0:C}", cotizacion.costo.Sum(x => x.total))</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                <div class="col-md-6 separar">
+                                                                    <label class="control-label">Valor</label>
+                                                                    <div class="form-control ver">@String.Format("{0:C}", cotizacion.valorUnico)</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="portlet light bordered">
+                    <div class="portlet-title" style="margin-bottom: 0">
+                        <div class="caption">
+                            <span class="uppercase">Visitas Programadas</span>
+                        </div>
+                        <div class="tools">
+                            <a href="javascript:;" class="collapse"> </a>
+                            <a href="javascript:;" class="fullscreen"> </a>
+                        </div>
+                        <div class="actions" style="padding-bottom: 5px;">
+                            <div class="portlet-input input-inline pull-right" style="margin-left:10px; margin-right: 10px">
+                                <div class="input-group">
+                                    <input type="text" class="form-control input-circle-left" id="inptSearchSalidasTerreno" placeholder="Buscar" title="Buscar">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-circle-right btn-default" type="button"><i class="fa fa-search"></i></button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        <table id="tableSalidasTerreno" class="table table-dataTable table-striped table-hover dt-responsive" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        @Html.DisplayName("Lider Comercial")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("Fecha")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("Hora")
+                                    </th>
+                                    @*<th></th>*@
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var salida in Model.salidasTerreno)
+                                {
+                                    <tr>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => salida.vendedor.Email)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => salida.fecha)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => salida.hora)
+                                        </td>
+                                        @*<td>
+                                                <div class="input-group-btn text-center">
+                                                    <button type="button" class="btn btn-default btn-sm glyphicon glyphicon-list-alt" onclick="mostrarDetallesSalidasTerreno('@(salida.idSalidaTerreno)')" title="Detalles"></button>
+                                                </div>
+                                                <div id="detallesSalidaTerreno-@salida.idSalidaTerreno" hidden>
+                                                    Lider Comercial: @salida.vendedor.UserName <br />
+                                                    Correo Electrónico Lider Comercial: @salida.vendedor.Email <br />
+                                                </div>
+                                            </td>*@
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="portlet light bordered">
+            <div class="portlet-title">
+                <div class="caption">
+                    <span class="uppercase">Avisos</span>
+                </div>
+                <div class="tools">
+                    <a href="javascript:;" class="collapse"> </a>
+                    <a href="javascript:;" class="fullscreen"> </a>
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="scroll">
+                    @{Html.RenderAction("Avisos", "Home");}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@using (Html.BeginForm("ModalParticipanteCliente", "ClienteContacto", FormMethod.Post, new { @id = ("form-ModalParticipanteCliente") }))
+{
+    @Html.AntiForgeryToken()
+
+    <input hidden type="idModalComercializacion" name="idBloque" value="" />
+}
+
+
+<div class="modal fade draggable-modal modalx"
+     id="modalParticipantes"
+     tabindex="-1"
+     data-keyboard="false"
+     role="dialog"
+     aria-labelledby="deleteLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="row">
+                    <div class="col-md-10">
+                        <h4 class="uppercase"> Participantes </h4>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                @*<table id="tableParticipantes" class="table table-dataTable-participante table-striped table-hover dt-responsive" cellspacing="0">
+                        <thead id="participantesHead"></thead>
+                        <tbody id="participantes"></tbody>
+                    </table>*@
+                <table id="participantes" class="table table-dataTable-participante table-striped table-hover dt-responsive" cellspacing="0">
+                </table>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-md-6 text-left">
+                        <button type="button" id="btnCerrarParticipantes" class="btn btn-default" data-dissmiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade draggable-modal modalx"
+     id="modalDetallesComercializacion"
+     tabindex="-1"
+     data-keyboard="false"
+     role="dialog"
+     aria-labelledby="deleteLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="row">
+                    <div class="col-md-10">
+                        <h4 class="uppercase"> Información del Curso </h4>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div id="detallesComercializacion"></div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-md-6 text-left">
+                        <button type="button" id="btnCerrarDetallesComercializacion" class="btn btn-default" data-dissmiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade draggable-modal modalx"
+     id="modalDetallesCotizacion"
+     tabindex="-1"
+     data-keyboard="false"
+     role="dialog"
+     aria-labelledby="deleteLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="row">
+                    <div class="col-md-10">
+                        <h4 class="uppercase"> Información de la Cotización </h4>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div id="detallesCotizacion"></div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-md-6 text-left">
+                        <button type="button" id="btnCerrarDetallesCotizacion" class="btn btn-default" data-dissmiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@*<div class="modal fade draggable-modal modalx"
+         id="modalDetallesSalidaTerreno"
+         tabindex="-1"
+         data-keyboard="false"
+         role="dialog"
+         aria-labelledby="deleteLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="row">
+                        <div class="col-md-10">
+                            <h4 class="uppercase"> Información Visita Programada </h4>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div id="detallesSalidaTerreno"></div>
+                </div>
+                <div class="modal-footer">
+                    <div class="row">
+                        <div class="col-md-6 text-left">
+                            <button type="button" id="btnCerrarDetallesSalidaTerreno" class="btn btn-default" data-dissmiss="modal">Cerrar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>*@
+
+
+@*<div class="modal fade draggable-modal modalx"
+         id="modalDetallesCursoDisponible"
+         tabindex="-1"
+         data-keyboard="false"
+         role="dialog"
+         aria-labelledby="deleteLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="row">
+                        <div class="col-md-10">
+                            <h4 class="uppercase"> Información Curso Disponible</h4>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div id="detallesCursoDisponible"></div>
+                </div>
+                <div class="modal-footer">
+                    <div class="row">
+                        <div class="col-md-6 text-left">
+                            <button type="button" id="btnCerrarDetallesCursoDisponible" class="btn btn-default" data-dissmiss="modal">Cerrar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>*@
+
+<div class="modal fade draggable-modal modalx"
+     id="modalOCPendiente"
+     tabindex="-1"
+     data-keyboard="false"
+     role="dialog"
+     aria-labelledby="deleteLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="row">
+                    <div class="col-md-10">
+                        <h4 class="modal-title">Alerta Orden de Compra Pendiente</h4>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4 id="ocPendienteEjecutivoError"> </h4><h3 id="ocPendienteEjecutivo"></h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section topLevel{
+    @{Html.RenderPartial("_RenderConfirm.Modal"); }
+}
+
+@section Scripts {
+    <script src="~/Content/js/LandingPageCliente.js" type="text/javascript"></script>
+    <script src="~/Content/js/slider.js" type="text/javascript"></script>
+
+    <script>
+        function ocPendiente(ocPendienteEjecutivo, telefono, correo, error) {
+
+            $("#ocPendienteEjecutivoError").html(error);
+            $("#ocPendienteEjecutivo").html("<a href=mailto:" + correo + ">" + ocPendienteEjecutivo + "</a>" + " (+56 " + telefono + ")");
+            $('#modalOCPendiente').modal({ keyboard: true }, 'show');
+        }
+    </script>
+
+
+
+
+
+    </script>
+}

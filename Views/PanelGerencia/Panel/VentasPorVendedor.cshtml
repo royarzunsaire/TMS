@@ -1,0 +1,227 @@
+﻿@model SGC.Models.ViewModelPanelGerencia
+
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="">
+            <ul class="nav nav-tabs pull-right">
+                <li class="active">
+                    <a href="#tab_ventas_vendedor_mes_icono" data-toggle="tab"> Mes </a>
+                </li>
+                <li>
+                    <a href="#tab_ventas_vendedor_anio_icono" data-toggle="tab"> Año </a>
+                </li>
+            </ul>
+            <div class="dashboard-stat2 ">
+                <div class="tab-content">
+                    <div class="tab-pane active" id="tab_ventas_vendedor_mes_icono">
+                        <div class="display">
+                            <div class="number">
+                                <h3 class="font-green-sharp">
+                                    <small class="font-green-sharp">$</small>
+                                    <span data-counter="counterup" data-value="@String.Format("{0:N0}", Model.ventasVendedorMetaMes)">@String.Format("{0:N0}", Model.ventasVendedorMetaMes)</span>
+
+                                </h3>
+                                <small>Meta Ventas</small>
+                            </div>
+                        </div>
+                        <div class="progress-info">
+                            <div class="progress">
+                                @{
+                                    double porcentajeMetasVendedoresMes = 0.0;
+                                    if (Model.ventasVendedorMetaMes > 0)
+                                    {
+                                        porcentajeMetasVendedoresMes = (long)Model.ventasVendedorMontoMes * 100 / Model.ventasVendedorMetaMes;
+                                        if (porcentajeMetasVendedoresMes > 100)
+                                        {
+                                            porcentajeMetasVendedoresMes = 100;
+                                        }
+                                    }
+                                }
+                                <span style="width: @String.Format("{0:N0}", porcentajeMetasVendedoresMes)%;" class="progress-bar progress-bar-success green-sharp">
+                                    <span class="sr-only"></span>
+                                </span>
+                            </div>
+                            <div class="status">
+                                <div class="status-title"> Progreso </div>
+                                <div class="status-number"> @String.Format("{0:N0}", porcentajeMetasVendedoresMes) % </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tab_ventas_vendedor_anio_icono">
+                        <div class="display">
+                            <div class="number">
+                                <h3 class="font-green-sharp">
+                                    <small class="font-green-sharp">$</small>
+                                    <span data-counter="counterup" data-value="@String.Format("{0:N0}", Model.ventasVendedorMetaAnio)">@String.Format("{0:N0}", Model.ventasVendedorMetaAnio)</span>
+
+                                </h3>
+                                <small>Meta Ventas</small>
+                            </div>
+                        </div>
+                        <div class="progress-info">
+                            <div class="progress">
+                                @{
+                                    double porcentajeMetasVendedoresAnio = 0.0;
+                                    if (Model.ventasVendedorMetaAnio > 0)
+                                    {
+                                        porcentajeMetasVendedoresAnio = ((long)Model.ventasVendedorMontoAnio * 100 / Model.ventasVendedorMetaAnio);
+                                        if (porcentajeMetasVendedoresAnio > 100)
+                                        {
+                                            porcentajeMetasVendedoresAnio = 100;
+                                        }
+                                    }
+                                }
+                                <span style="width: @String.Format("{0:N0}", porcentajeMetasVendedoresAnio)%;" class="progress-bar progress-bar-success green-sharp">
+                                    <span class="sr-only"></span>
+                                </span>
+                            </div>
+                            <div class="status">
+                                <div class="status-title"> Progreso </div>
+                                <div class="status-number"> @String.Format("{0:N0}", porcentajeMetasVendedoresAnio) % </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+
+
+    <div class="col-md-12">
+        <div class="portlet light ">
+            <div class="portlet-title">
+                <div class="caption caption-md">
+                    <i class="icon-bar-chart font-dark hide"></i>
+                    <span class="caption-subject bold uppercase">Ventas por vendedor</span>
+                </div>
+                <div class="actions">
+                    <ul class="nav nav-tabs" style="padding-bottom:0">
+                        <li class="active">
+                            <a href="#tab_ventas_vendedor_mes" data-toggle="tab"> Mensual </a>
+                        </li>
+                        <li>
+                            <a href="#tab_ventas_vendedor_anio" data-toggle="tab"> Anual </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="tab-content">
+                    <div class="tab-pane active" id="tab_ventas_vendedor_mes">
+                        <div class="table-scrollable table-scrollable-borderless">
+                            <div class="scroll">
+                                <div id="table-wrapper">
+                                    <div id="table-scroll">
+                                        <table class="table table-hover table-light">
+                                            <thead>
+                                                <tr class="uppercase">
+                                                    <th> Vendedor </th>
+                                                    <th class="text-center"> Porcentaje </th>
+                                                    <th class="text-right"> Meta </th>
+                                                    <th class="text-right"> Ventas </th>
+                                                    @*<th class="text-center"> Monto </th>*@
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var item in Model.vendedores)
+                                                {
+                                                    if (item.montoMensual != 0)
+                                                    {
+                                                        <tr>
+                                                            <td> @item.nombre </td>
+                                                            <td>
+                                                                @{
+                                                                    double porcentaje = 0.0;
+                                                                    if (item.metaMensual > 0 && item.montoMensual != null)
+                                                                    {
+                                                                        porcentaje = (long)item.montoMensual * 100 / item.metaMensual;
+                                                                        if (porcentaje > 100)
+                                                                        {
+                                                                            porcentaje = 100;
+                                                                        }
+                                                                    }
+                                                                }
+                                                                <div class="progress-info">
+                                                                    <div class="progress" style="margin-bottom:0;" title="@String.Format("{0:N0}", porcentaje) %">
+                                                                        <span style="width: @String.Format("{0:N0}", porcentaje)%;" class="progress-bar progress-bar-success green-sharp"></span>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            <td class="text-right"> @String.Format("{0:C}", item.metaMensual) </td>
+                                                            @*<td class="text-right"> @item.cantVentasMensual </td>*@
+                                                            <td class="text-right"> @String.Format("{0:C}", item.montoMensual) </td>
+                                                        </tr>
+                                                    }
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tab_ventas_vendedor_anio">
+                        <div class="table-scrollable table-scrollable-borderless">
+                            <div class="scroll">
+                                <div id="table-wrapper">
+                                    <div id="table-scroll">
+                                        <table class="table table-hover table-light">
+                                            <thead>
+                                                <tr class="uppercase">
+                                                    <th> Vendedor </th>
+                                                    <th class="text-center"> Porcentaje </th>
+                                                    <th class="text-right"> Meta </th>
+                                                    <th class="text-right"> Ventas </th>
+                                                    @*<th class="text-center"> Monto </th>*@
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var item in Model.vendedores)
+                                                {
+                                                    if (item.montoAnual != 0)
+                                                    {
+                                                        <tr>
+                                                            <td> @item.nombre </td>
+                                                            <td>
+                                                                @{
+                                                                    double porcentaje = 0.0;
+                                                                    if (item.metaAnual > 0 && item.montoAnual != null)
+                                                                    {
+                                                                        porcentaje = (long)item.montoAnual * 100 / item.metaAnual;
+                                                                        if (porcentaje > 100)
+                                                                        {
+                                                                            porcentaje = 100;
+                                                                        }
+                                                                    }
+                                                                }
+                                                                <div class="progress-info">
+                                                                    <div class="progress" style="margin-bottom:0;" title="@String.Format("{0:N0}", porcentaje) %">
+                                                                        <span style="width: @String.Format("{0:N0}", porcentaje)%;" class="progress-bar progress-bar-success green-sharp"></span>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            <td class="text-right"> @String.Format("{0:C}", item.metaAnual) </td>
+                                                            @*<td class="text-right"> @item.cantVentasMensual </td>*@
+                                                            <td class="text-right"> @String.Format("{0:C}", item.montoAnual) </td>
+                                                        </tr>
+                                                    }
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+

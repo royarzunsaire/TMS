@@ -1,0 +1,52 @@
+﻿@model SGC.Models.ConfiguracionUsuarioParticipante
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2 class="page-title">Configuración del Usuario del Participante</h2>
+
+@using (Html.BeginForm("Index", "ConfiguracionUsuarioParticipante", FormMethod.Post, new { }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="portlet light bordered">
+                <div class="portlet-title">
+                    <div class="caption">
+                        Parametros
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.contrasenia, htmlAttributes: new { @class = "control-label" })
+                                @Html.EditorFor(model => model.contrasenia, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.contrasenia, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.rol.Id, "Rol", htmlAttributes: new { @class = "control-label" })
+                                @Html.DropDownListFor(model => model.rol.Id, (SelectList)ViewBag.roles, "Seleccionar", htmlAttributes: new { @class = "form-control select2" })
+                                @Html.ValidationMessageFor(model => model.rol.Id, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="row">
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <input type="submit" value="Guardar" class="btn btn-primary pull-right" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

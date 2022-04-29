@@ -1,0 +1,1272 @@
+﻿@model SGC.Models.Comercializacion
+@using SGC.Models
+@{
+    ViewBag.Title = "Comercialización";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var giros = new SelectList(Model.cotizacion.cliente.clienteGiros.Select(x => new { Id = x.giro.descripcion, Name = x.giro.descripcion }), "Id", "Name");
+
+
+    string sence = "";
+    if (ViewBag.sence != null && Model.cotizacion.tieneCodigoSence != "on")
+    {
+
+        sence = "si";
+    }
+    else
+    {
+
+        sence = "no";
+    }
+
+
+
+
+
+
+}
+
+@section Styles
+{
+    <link href="~/Content/css/Observaciones.css" rel="stylesheet" type="text/css" />
+    <style>
+        /*.custom-modal-2 .datepicker {
+                z-index: 10050 !important;
+            }*/
+        .modal-open .datepicker {
+            z-index: 10055 !important;
+        }
+
+        .modal {
+            z-index: 10060 !important;
+        }
+
+        .custom-modal {
+            z-index: 10050 !important;
+        }
+    </style>
+    <style>
+        div.scroll {
+            height: 274px;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        div.scrollModal {
+            height: 350px;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+    </style>
+}
+
+
+
+
+
+
+
+
+
+
+
+<div>
+    @if (ViewBag.sence != null && Model.cotizacion.tieneCodigoSence != "on")
+    {
+        <div class="row">
+            <div class="col-md-12">
+                <div class="page-title">Comercialización @Model.cotizacion.codigoCotizacion</div>
+                <div class="alert alert-default text-center" style="margin-bottom: 5px; padding: 5px; background-color:#add8e6">SENCE</div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="page-title">Comercialización @Model.cotizacion.codigoCotizacion</div>
+    }
+
+
+    @using (Html.BeginForm("Edit", "Comercializacions", FormMethod.Post, new { enctype = "multipart/form-data", @id = "form" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.idComercializacion)
+        @Html.HiddenFor(model => sence)
+
+        <div class="col-md-12">
+            <div class="form-group">
+                @Html.LabelFor(model => model.clientFactura, htmlAttributes: new { @class = "control-label" })
+                <hr class="separador-ver" />
+
+                @if (Model.clientFactura)
+                {
+
+                    <p><strong>Facturación tiene permitida la descarga de los documentos al cliente</strong></p>
+                }
+                else
+                {
+                    <p style="color:red;"><strong>Restringida la descarga de los documentos por Facturación</strong></p>
+                }
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="form-group">
+                @Html.LabelFor(model => model.clientDownload, htmlAttributes: new { @class = "control-label" })
+                <hr class="separador-ver" />
+                @Html.CheckBoxFor(model => model.clientDownload, new { htmlAttributes = new { @id = "clientDownload", @class = "form - control" } })
+                <div class="col-md-2" id="clientDownloadText"></div>
+            </div>
+
+        </div>
+
+
+
+
+
+
+        <input type="hidden" name="idCotizacion" value="@Model.cotizacion.idCotizacion_R13" />
+        <div class="portlet light bordered">
+            <div class="portlet-title">
+                <div class="caption">
+                    Cliente - @Model.cotizacion.nombreEmpresa [@Model.cotizacion.razonSocial]
+                </div>
+                <div class="tools">
+                    <a href="javascript:;" class="expand"> </a>
+                    <a href="javascript:;" class="fullscreen"> </a>
+                </div>
+            </div>
+            <div class="portlet-body" id="datos-cliente" style="display: block;">
+                <input type="hidden" id="idCotizacion" value="@Model.cotizacion.idCotizacion_R13" />
+
+                <div class="row">
+
+
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-6"><h2>Datos Cliente </h2></div>
+                            <div class="col-md-3">
+                                <button style="margin-top:26px; display:none;" id="idClienteDeudor" class="btn btn-danger form-control" disabled>Cliente con Facturas Pendientes</button>
+                            </div>
+                            <div class="col-md-3">
+                                <button style="margin-top:26px; display:none;" id="idClienteOCPendiente" class="btn btn-danger form-control" disabled>Cliente OC Pediente</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="control-label">RUT</label>
+                        <select class="form-control select2-allow-clear" id="idSelectRut" data-live-search="true" name="cotizacion.idCliente">
+                            <option disabled data-tokens="" selected> Selecciona un RUT cliente </option>
+                            @foreach (var itemCliente in ViewBag.clientes)
+                            {
+                                if (Model.cotizacion != null)
+                                {
+                                    if (Model.cotizacion.idCliente == itemCliente.idCliente)
+                                    {
+                                        <option data-tokens="@itemCliente.rut" value="@itemCliente.idCliente" selected> @itemCliente.rut | @itemCliente.nombreEmpresa | @itemCliente.direccion</option>
+                                    }
+                                    else
+                                    {
+                                        <option data-tokens="@itemCliente.rut" value="@itemCliente.idCliente"> @itemCliente.rut | @itemCliente.nombreEmpresa</option>
+                                    }
+                                }
+                                else
+                                {
+                                    <option data-tokens="@itemCliente.rut" value="@itemCliente.idCliente"> @itemCliente.rut | @itemCliente.nombreEmpresa</option>
+                                }
+                            }
+                        </select>
+                        @Html.ValidationMessageFor(model => model.cotizacion.nombreEmpresa, "El campo debe ser obligatorio", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="col-md-6" disabled>
+                        @Html.LabelFor(model => model.cotizacion.nombreEmpresa, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.cotizacion.nombreEmpresa, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                        @Html.ValidationMessageFor(model => model.cotizacion.nombreEmpresa, "El campo debe ser obligatorio", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="col-md-12" disabled>
+                        @Html.LabelFor(model => model.cotizacion.razonSocial, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.cotizacion.razonSocial, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                        @Html.ValidationMessageFor(model => model.cotizacion.razonSocial, "El campo debe ser obligatorio", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="col-md-6">
+                        @Html.LabelFor(model => model.cotizacion.giro, htmlAttributes: new { @class = "control-label" })
+                        @Html.DropDownListFor(model => model.cotizacion.giro, (SelectList)giros, "Seleccione", new { @class = "form-control", @id = "idSelectGiro" })
+
+
+                        @*  <select class="form-control" id="idSelectGiro" data-live-search="true" name="cotizacion.giro"></select>*@
+                        @Html.ValidationMessageFor(model => model.cotizacion.giro, "El campo debe ser obligatorio", new { @class = "text-danger" })
+                    </div>
+
+
+                    <div class="col-md-6">
+                        @Html.Label("Faena", htmlAttributes: new { @class = "control-label" })
+
+                        @Html.DropDownListFor(model => model.faena.idFaena, (MultiSelectList)ViewBag.faenas, "Seleccione una faena", htmlAttributes: new { @class = "form-control", id = "idfaena" })
+                        @Html.ValidationMessage("faena", new { @class = "text-danger" })
+
+                        <input id="girosSeleccionados" value="@ViewBag.faenasSeleccionados" type="hidden" />
+                    </div>
+
+
+                    <div class="col-md-6" disabled>
+                        @Html.LabelFor(model => model.cotizacion.telefonoCorporativo, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.cotizacion.telefonoCorporativo, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                        @Html.ValidationMessageFor(model => model.cotizacion.telefonoCorporativo, "El campo debe ser obligatorio", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="col-md-12"><h2>Facturacion </h2></div>
+
+                    <div class="col-md-6">
+                        <label class="control-label">Encargado de Pago</label>
+                        <span class="input-group">
+                            @Html.DropDownListFor(model => model.cotizacion.contactoEncargadoPago, (SelectList)ViewBag.encargadosPagoCliente, "Seleccione", new { @class = "form-control", @id = "idSelectEncargadoPago" })
+
+                            @*<select class="form-control" id="idSelectEncargadoPago" data-live-search="true" name="cotizacion.contactoEncargadoPago"></select>*@
+                            <span class="input-group-btn" disabled>
+                                <div class="btn btn-primary btn-large glyphicon glyphicon-plus"
+                                     onclick="return loadModal('myModal', 'myModalContent', '/Contacto/NewModalCreate', {idDropDownList:'idSelectEncargadoPago', idCliente: $('#idSelectRut').val()});" alt="Crear Encargado Pago"></div>
+                            </span>
+                        </span>
+                        @Html.ValidationMessageFor(model => model.cotizacion.contactoEncargadoPago, "El campo debe ser obligatorio", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="col-md-6" disabled>
+                        @Html.LabelFor(model => model.cotizacion.direccion, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.cotizacion.direccion, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                        @Html.ValidationMessageFor(model => model.cotizacion.direccion, "El campo debe ser obligatorio", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="control-label">Contacto</label>
+                        <span class="input-group">
+                            @Html.DropDownListFor(model => model.cotizacion.contacto, (SelectList)ViewBag.contactosCliente, "Seleccione", new { @class = "form-control", @id = "idSelectContacto" })
+
+                            @*<select class="form-control" id="idSelectContacto" data-live-search="true" name="cotizacion.Contacto"></select>*@
+                            <span class="input-group-btn">
+                                <div class="btn btn-primary btn-large glyphicon glyphicon-plus"
+                                     onclick="return loadModal('myModal', 'myModalContent', '/Contacto/NewModalCreate', {idDropDownList:'idSelectContacto', idCliente: $('#idSelectRut').val()});" alt="Crear Representante Legal"></div>
+                            </span>
+                        </span>
+                        @Html.ValidationMessageFor(model => model.cotizacion.contacto, "El campo debe ser obligatorio", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-6"></div>
+                </div>
+
+
+            </div>
+        </div>
+
+        if (Model.cotizacion.tipoCurso != "Duplicado Credencial" && Model.cotizacion.tipoCurso != "Arriendo de Sala" && Model.cotizacion.tipoCurso != "Tramitación Licencia")
+        {
+            <div class="portlet light bordered">
+                <div class="portlet-title">
+                    <div class="caption">
+                        Curso - @Model.cotizacion.curso.nombreCurso [@Model.cotizacion.curso.tipoEjecucion]
+                    </div>
+                    <div class="tools">
+                        <a href="javascript:;" class="expand"> </a>
+                        <a href="javascript:;" class="fullscreen"> </a>
+                    </div>
+                </div>
+                <div class="portlet-body" id="datos-curso" style="display: block;">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.cotizacion.modalidad, htmlAttributes: new { @class = "control-label" })
+                                <hr class="separador-ver" />
+                                @Html.EditorFor(model => model.cotizacion.modalidad, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", @style = "border: 0" } })
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.cotizacion.tipoCurso, htmlAttributes: new { @class = "control-label" })
+                                <hr class="separador-ver" />
+                                @Html.EditorFor(model => model.cotizacion.tipoCurso, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", @style = "border: 0" } })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.cotizacion.curso.nombreCurso, htmlAttributes: new { @class = "control-label" })
+                                <hr class="separador-ver" />
+                                @Html.EditorFor(model => model.cotizacion.curso.nombreCurso, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", @style = "border: 0" } })
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.cotizacion.curso.tipoEjecucion, htmlAttributes: new { @class = "control-label" })
+                                <hr class="separador-ver" />
+                                @Html.EditorFor(model => model.cotizacion.curso.tipoEjecucion, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", @style = "border: 0" } })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.cotizacion.nombreDiploma, htmlAttributes: new { @class = "control-label" })
+                                <hr class="separador-ver" />
+                                @Html.EditorFor(model => model.cotizacion.nombreDiploma, new { htmlAttributes = new { @class = "form-control" } })
+                            </div>
+                        </div>
+                    </div>
+                    <h4>SENCE</h4>
+                    <hr />
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        @Html.LabelFor(model => model.cotizacion.tieneCodigoSence, htmlAttributes: new { @class = "control-label" })
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        @{
+                                            var tieneSence = Model.cotizacion.tieneCodigoSence == null ? false : true;
+                                        }
+                                        @Html.CheckBoxFor(model => tieneSence)
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.cotizacion.codigoSence, htmlAttributes: new { @class = "control-label" })
+                                <hr class="separador-ver" />
+                                @Html.EditorFor(model => model.cotizacion.codigoSence, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", @style = "border: 0" } })
+                            </div>
+                        </div>
+                        @if (Model.cotizacion.calendarizacionAbierta != null)
+                        {
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    @Html.Label("Código Curso Abierto", htmlAttributes: new { @class = "control-label" })
+                                    <hr class="separador-ver" />
+                                    @Html.EditorFor(model => model.cotizacion.calendarizacionAbierta.codigoConsolidacion, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", @style = "border: 0" } })
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+        <div class="portlet light bordered">
+            <div class="portlet-title">
+                <div class="caption">
+                    Comercialización
+                </div>
+                <div class="tools">
+                    <a href="javascript:;" class="collapse"> </a>
+                    <a href="javascript:;" class="fullscreen"> </a>
+                </div>
+                <div class="actions">
+                    <div class="inputs pull-right">
+                        @if (Model.cotizacion.tipoCurso != "Duplicado Credencial" && Model.cotizacion.tipoCurso != "Arriendo de Sala" && Model.cotizacion.tipoCurso != "Tramitación Licencia")
+                        {
+                            <button type="button" class="btn btn-sm btn-default" id="btnMostrarDescuento">Descuento</button>
+                            <a href="@Url.Action("ActualizarEvaluaciones", new { id = Model.idComercializacion }) " class="btn btn-sm btn-default">
+                                Actualizar Evaluaciones
+                            </a>
+                        }
+                        else
+                        {
+                            <button type="button" class="btn btn-sm btn-default" id="btnMostrarDescuento" style="margin-right:10px;">Descuento</button>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="portlet-body" id="datos-comercializacion">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="row">
+                    <div class="col-md-9" id="campos">
+                        <div class="row">
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3" id="divCodigo">
+                                <label class="control-label">Código</label>
+                                <div class="form-control" style="border: 0px">
+                                    @Model.cotizacion.codigoCotizacion
+                                </div>
+                            </div>
+                            <div class="col-md-6" id="divUsuario">
+                                <label class="control-label">Lider Comercial</label>
+                                <div class="form-control" style="border: 0px">
+                                    @Model.usuarioCreador.UserName
+                                </div>
+                            </div>
+                            <div class="col-md-3" id="divEstado">
+                                <label class="control-label">Estado</label>
+                                <div class="form-control" style="border: 0px">
+                                    @Model.comercializacionEstadoComercializacion.Last().EstadoComercializacion
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <hr />
+                            </div>
+                            <div class="col-md-4" id="divFechaInicio">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.fechaInicio, htmlAttributes: new { @class = "control-label" })
+                                    <div class="input-group">
+                                        @Html.EditorFor(model => model.fechaInicio, new { htmlAttributes = new { @class = "form-control datepicker", autocomplete = "off" } })
+                                        <span class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                    @Html.ValidationMessageFor(model => model.fechaInicio, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="col-md-4" id="divFechaTermino">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.fechaTermino, htmlAttributes: new { @class = "control-label" })
+                                    <div class="input-group">
+                                        @Html.EditorFor(model => model.fechaTermino, new { htmlAttributes = new { @class = "form-control datepicker", autocomplete = "off" } })
+                                        <span class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                    @Html.ValidationMessageFor(model => model.fechaTermino, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="col-md-4" id="divVigencia">
+                                @if (Model.cotizacion.tipoCurso != "Duplicado Credencial" && Model.cotizacion.tipoCurso != "Arriendo de Sala" && Model.cotizacion.tipoCurso != "Tramitación Licencia")
+                                {
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.vigenciaCredenciales, htmlAttributes: new { @class = "control-label" })
+                                        @*@Html.EditorFor(model => model.vigenciaCredenciales, new { htmlAttributes = new { @class = "form-control datepicker" } })*@
+                                        @Html.EditorFor(model => model.vigenciaCredenciales, new { htmlAttributes = new { @class = "form-control" } })
+                                        @Html.ValidationMessageFor(model => model.vigenciaCredenciales, "", new { @class = "text-danger" })
+                                    </div>
+                                }
+                            </div>
+                            <div class="col-md-8" id="divCiudad">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.ciudad, "Ciudad", htmlAttributes: new { @class = "control-label" })
+                                    @Html.DropDownListFor(model => model.ciudad.idCiudad, (SelectList)ViewBag.ciudades, "Seleccionar", htmlAttributes: new { @class = "form-control select2" })
+                                    @Html.ValidationMessageFor(model => model.ciudad.idCiudad, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            @if (ViewBag.sence != null && Model.cotizacion.tieneCodigoSence != "on")
+                            {
+                                <div class="col-md-4" id="divSenceNet">
+                                    @if (Model.cotizacion.tipoCurso != "Duplicado Credencial" && Model.cotizacion.tipoCurso != "Arriendo de Sala" && Model.cotizacion.tipoCurso != "Tramitación Licencia")
+                                    {
+                                        <div class="form-group">
+                                            @Html.LabelFor(model => model.senceNet, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.senceNet, new { htmlAttributes = new { @class = "form-control" } })
+                                            @Html.ValidationMessageFor(model => model.senceNet, "", new { @class = "text-danger" })
+                                        </div>
+                                    }
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="col-md-4" id="divSenceNet">
+                                </div>
+                            }
+                            <div class="col-md-12" id="divLugar">
+                                @if (Model.cotizacion.tipoCurso != "Duplicado Credencial" && Model.cotizacion.tipoCurso != "Arriendo de Sala" && Model.cotizacion.tipoCurso != "Tramitación Licencia")
+                                {
+                                    <div class="form-group">
+                                        @Html.Label("Lugar de Realización", htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.cotizacion.lugarRealizacion, new { htmlAttributes = new { @class = "form-control" } })
+                                        @Html.ValidationMessageFor(model => model.cotizacion.lugarRealizacion, "", new { @class = "text-danger" })
+                                    </div>
+                                }
+                            <div class="col-md-4">
+                                <label style="margin-top:26px" class="control-label">Proceso Practico:</label>
+                                @Html.EditorFor(model => model.cotizacion.procesoPractico, new { htmlAttributes = new { @class = "form-control" } }) <br />
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 vl" id="observaciones">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <button type="button" class="btn btn-default glyphicon glyphicon-resize-full pull-right" id="btnMostrarObservaciones" style="margin-bottom:5px; border: 0" title="Expandir Observaciones"></button>
+                            </div>
+                        </div>
+                        @*<button type="button" class="btn btn-sm btn-default glyphicon glyphicon-comment" id="btnOcultarObservaciones" style="display:none"></button>*@
+                        <div class="contenidoObservaciones scroll" id="contenidoObservaciones"></div>
+                    </div>
+                </div>
+                <hr />
+                @Html.ValidationMessage("pago", "", new { @class = "text-danger" })
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-6">
+
+                                @Html.LabelFor(model => model.cotizacion.documentosCompromiso.FirstOrDefault().tipoVenta.tipoPago, htmlAttributes: new { @class = "control-label" })
+
+                                @*<div id="tipoPagoSence" @hiddenSence>
+                                        @Html.EnumDropDownListFor(model => model.cotizacion.documentosCompromiso.FirstOrDefault().tipoVenta.tipoPago, htmlAttributes: new { @class = "form-control select2 tipoPago " })
+
+                                    </div>*@
+
+                                <div>
+                                    <select class="form-control" id="tipoPago" name="tipoPago" tabindex="-1" aria-hidden="true">
+                                        <option value="0">OTIC</option>
+                                        <option id="senceOption" value="1">SENCE</option>
+                                        <option value="2">Costo Empresa</option>
+                                    </select>
+                                    @* @Html.DropDownList("tipoPago", listItems, htmlAttributes: new { @class = "form-control select2 ", @id = "tipoPago" })*@
+
+
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group" id="tipoDocCompromisoForm" hidden>
+                                    @Html.Label("Tipo de Documento", htmlAttributes: new { @class = "control-label" })
+                                    @Html.DropDownList("tipoDocCompromiso", (SelectList)ViewBag.tiposDocCompromiso, htmlAttributes: new { @class = "form-control select2" })
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group" id="oticForm" hidden>
+                                    @Html.Label("OTIC", htmlAttributes: new { @class = "control-label" })
+                                    @Html.DropDownList("otics", (SelectList)ViewBag.otics, htmlAttributes: new { @class = "form-control select2", id = "otic" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <button id="btnPago" type="button" class="btn btn-primary">Agregar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr />
+                <div class="row">
+                    <div class="col-md-12">
+                        <input type="hidden" id="cantPago" name="cantPago" value="@ViewBag.cantPago" />
+                        <table id="pago" class="table">
+                            <thead>
+                                <tr>
+                                    <th>Tipo de Venta</th>
+                                    <th></th>
+                                    <th>Documento</th>
+                                    <th>Número de Serie</th>
+                                    <th>Monto</th>
+                                    <th>Archivo</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.cotizacion.documentosCompromiso != null)
+                                {
+                                    var i = 0;
+                                    foreach (var item in Model.cotizacion.documentosCompromiso)
+                                    {
+                                        var id = "rowPago" + i;
+                                        var nameTipo = "tipoDocCompromiso" + i;
+                                        var nameIdDocCompromiso = "idDocCompromiso" + i;
+                                        var nameIdentificador = "identificadorDocCompromiso" + i;
+                                        var validarIdentificador = "validarIdentificadorDocCompromiso" + i;
+                                        var nameMonto = "montoDocCompromiso" + i;
+                                        var validarMonto = "validarMontoDocCompromiso" + i;
+                                        var nameDoc = "docCompromiso" + i;
+                                        var validarDoc = "validarDocCompromiso" + i;
+                                        var funcion = "borrarPago(" + i + ")";
+
+                                        var nameTipoPago = "tipoPago" + i;
+                                        var nameOtic = "otic" + i;
+                                        var tipoPago = "";
+                                        var nombreTipoPago = "";
+                                        if (item.tipoVenta.tipoPago.ToString() == "Otic")
+                                        {
+                                            nombreTipoPago = "OTIC";
+                                            tipoPago = "0";
+                                        }
+                                        if (item.tipoVenta.tipoPago.ToString() == "Sence")
+                                        {
+                                            nombreTipoPago = "SENCE";
+                                            tipoPago = "1";
+                                        }
+                                        if (item.tipoVenta.tipoPago.ToString() == "CostoEmpresa")
+                                        {
+                                            nombreTipoPago = "Costo Empresa";
+                                            tipoPago = "2";
+                                        }
+                                        <tr id="@id">
+                                            <td style="vertical-align: middle;">
+                                                @nombreTipoPago
+                                                <input name="@nameTipoPago" id="@nameTipoPago" type="hidden" value="@tipoPago" />
+                                            </td>
+                                            @if (item.tipoVenta.otic != null)
+                                            {
+                                                <td style="vertical-align: middle;">
+                                                    @item.tipoVenta.otic.nombre
+                                                    <input name="@nameOtic" id="@nameOtic" type="hidden" value="@item.tipoVenta.otic.idOtic" />
+                                                </td>
+                                            }
+                                            else
+                                            {
+                                                <td></td>
+                                            }
+                                            <td style="vertical-align: middle;">
+                                                @if (item.tipoDocCompromiso == null)
+                                                {
+                                                    <span>OC</span>
+                                                    <input name="@nameTipo" type="hidden" value="0" />
+                                                }
+                                                else
+                                                {
+                                                    @item.tipoDocCompromiso.nombre
+                                                    <input name="@nameTipo" type="hidden" value="@item.tipoDocCompromiso.idTipoDocumentosPago" />
+                                                }
+                                                <input name="@nameIdDocCompromiso" type="hidden" value="@item.idDocumentoCompromiso" />
+                                            </td>
+                                            <td style="vertical-align: middle;">
+                                                <input name="@nameIdentificador" class="form-control" value="@item.numeroSerie" />
+                                                @Html.ValidationMessage(validarIdentificador, "", new { @class = "text-danger" })
+                                            </td>
+                                            <td style="vertical-align: middle;">
+                                                <input name="@nameMonto" class="form-control currency" value="@item.monto" type="text" />
+                                                @Html.ValidationMessage(validarMonto, "", new { @class = "text-danger" })
+                                            </td>
+                                            <td style="vertical-align: middle;">
+                                                <input name="@nameDoc" type="file" accept="application/pdf" />
+                                                @Html.ValidationMessage(validarDoc, "", new { @class = "text-danger" })
+                                            </td>
+                                            <td style="vertical-align: middle;" class="text-center">
+                                                @if (@item.documento != null)
+                                                {
+                                                    if (@item.documento.idStorage != 0)
+                                                    {
+                                                        @Html.ActionLink(" ", "Descargar", new { id = item.documento.idStorage }, new { @class = "btn btn-info btn-sm glyphicon glyphicon-save", style = "vertical-align:top", title = item.documento.nombreArchivo })
+                                                    }
+                                                }
+                                                <button class="btn btn-danger btn-sm" type="button" onclick="@funcion"><i class="fa fa-trash"></i></button>
+                                            </td>
+                                        </tr>
+                                        i++;
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <hr />
+                @if (Model.cotizacion.tipoCurso != "Duplicado Credencial" && Model.cotizacion.tipoCurso != "Arriendo de Sala" && Model.cotizacion.tipoCurso != "Tramitación Licencia")
+                {
+                    @Html.ValidationMessage("relatorCurso", "", new { @class = "text-danger" })
+                    <div class="row">
+                        <div class="col-md-4">
+                            @*TODO: if curso sence*@
+                            @if (ViewBag.sence != null && Model.cotizacion.tieneCodigoSence != "on")
+                            {
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            @Html.Label("Relatores con SENCE", htmlAttributes: new { @class = "control-label" })
+                                            @Html.DropDownList("relatores", (SelectList)ViewBag.relatoresSence, htmlAttributes: new { @class = "form-control select2", id = "relatoresSence" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12 text-right">
+                                        <button id="btnRelatorSence" type="button" class="btn btn-primary">Agregar</button>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            @Html.Label("Relatores sin SENCE", htmlAttributes: new { @class = "control-label" })
+                                            @Html.DropDownList("relatores", (SelectList)ViewBag.relatoresNoSence, htmlAttributes: new { @class = "form-control select2", id = "relatoresNoSence" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12 text-right">
+                                        <button id="btnRelatorNoSence" type="button" class="btn btn-primary">Agregar</button>
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            @Html.Label("Relatores", htmlAttributes: new { @class = "control-label" })
+                                            @Html.DropDownList("relatores", (SelectList)ViewBag.relatores, htmlAttributes: new { @class = "form-control select2", id = "relatores" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12 text-right">
+                                        <button id="btnRelator" type="button" class="btn btn-primary">Agregar</button>
+                                    </div>
+                                </div>
+                            }
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <button type="button" id="btnInfoRelatores" class="btn btn-primary" title="Información Relatores">Información Relatores</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="hidden" id="cantRelator" name="cantRelator" value="@ViewBag.cantRelator" />
+                            <table id="relator" class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Relator</th>
+                                        <th>RUT</th>
+                                        @*TODO: if curso sence*@
+                                        @if (ViewBag.sence != null && Model.cotizacion.tieneCodigoSence != "on")
+                                        {
+                                            <th>SENCE</th>
+                                        }
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model.relatoresCursos != null)
+                                    {
+                                        var i = 0;
+                                        foreach (var item in Model.relatoresCursos)
+                                        {
+                                            var id = "rowRelator" + i;
+                                            var name = "relator" + i;
+                                            //var name2 = "relatorNombre" + i;
+                                            var funcion = "borrarRelator(" + i + ")";
+                                            <tr id="@id">
+                                                <td style="vertical-align: middle;">
+                                                    @item.relator.contacto.nombreCompleto
+                                                    <input id="@name" name="@name" type="hidden" value="@(item.idRelator + "-" + item.idCurso)" />
+                                                    @*<input id="@name2" type="hidden" value="@item.relator.contacto.nombreCompleto" />*@
+                                                </td>
+                                                <td style="vertical-align: middle;">
+                                                    @item.relator.contacto.run
+                                                    <input type="hidden" value="@item.relator.contacto.run" />
+                                                </td>
+                                                @if (ViewBag.sence != null && Model.cotizacion.tieneCodigoSence != "on")
+                                                {
+                                                    <td style="vertical-align: middle;">
+                                                        @if (@item.validoSence)
+                                                        {
+                                                            <div class="label label-success bg-green-soft font-white">Sí</div>
+                                                        }
+                                                        else
+                                                        {
+                                                            <p>No</p>
+                                                        }
+                                                    </td>
+                                                }
+                                                <td style="vertical-align: middle;" class="text-center">
+                                                    <button class="btn btn-danger btn-sm" type="button" onclick="@funcion"><i class="fa fa-trash"></i></button>
+                                                </td>
+                                            </tr>
+                                            i++;
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="row">
+                        <div class="col-md-12">
+                            @Html.LabelFor(model => model.R23ConDescriptorContenidos, htmlAttributes: new { @class = "control-label" })
+                            @Html.EditorFor(model => model.R23ConDescriptorContenidos, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.R23ConDescriptorContenidos, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <hr />
+                }
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.observacion, htmlAttributes: new { @class = "control-label" })
+                            @Html.EditorFor(model => model.observacion, new { htmlAttributes = new { @class = "form-control", @style = "resize: none;" } })
+                            @Html.ValidationMessageFor(model => model.observacion, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        if (Model.cotizacion.tipoCurso != "Duplicado Credencial" && Model.cotizacion.tipoCurso != "Arriendo de Sala" && Model.cotizacion.tipoCurso != "Tramitación Licencia")
+        {
+            <div class="portlet light bordered">
+                <div class="portlet-title">
+                    <div class="caption">
+                        Costos
+                    </div>
+                    <div class="tools">
+                        <a href="javascript:;" class="collapse"> </a>
+                        <a href="javascript:;" class="fullscreen"> </a>
+                    </div>
+                </div>
+                <div class="portlet-body" id="datos-costos">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.cotizacion.cantidadParticipante, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.cotizacion.cantidadParticipante, new { htmlAttributes = new { @class = "form-control" } })
+                                        @Html.ValidationMessageFor(model => model.cotizacion.cantidadParticipante, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.cotizacion.condicionesDePago, htmlAttributes: new { @class = "control-label" })
+                                        <hr class="separador-ver" />
+                                        @Html.EditorFor(model => model.cotizacion.condicionesDePago, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", @style = "border: 0" } })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.cotizacion.tipoMenu, htmlAttributes: new { @class = "control-label" })
+                                        <hr class="separador-ver" />
+                                        @Html.EditorFor(model => model.cotizacion.tipoMenu, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", @style = "border: 0" } })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Detalle</th>
+                                                <th>Cantidad</th>
+                                                <th>Valor</th>
+                                                <th>Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var item in Model.cotizacion.costo)
+                                            {
+                                                <tr>
+                                                    <td>@item.detalle</td>
+                                                    <td>@item.cantidad</td>
+                                                    <td>
+                                                        @String.Format("{0:C}", item.valor)
+                                                    </td>
+                                                    <td>
+                                                        @String.Format("{0:C}", item.total)
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                    <small>* P/P</small>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="pull-right">
+                                        @if (Model.cotizacion.costo.Count() == 0)
+                                        {
+
+                                            <h2 id="idTotalTotal2">0</h2>
+                                        }
+                                        else
+                                        {
+
+                                            <h2 id="idTotalTotal2"> @String.Format("{0:C}", Model.cotizacion.costo.Select(y => y.total).Sum() - Model.descuento)</h2>
+                                        }
+
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="pull-right">
+                                        @if (Model.descuento != 0)
+                                        {
+                                            <small>@Model.usuarioCreadorDescuento.UserName aplicó un descuento de @Html.DisplayFor(model => model.descuento) el @Html.DisplayFor(model => model.fechaDescuento).</small>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="portlet light bordered">
+                <div class="portlet-title">
+                    <div class="caption">
+                        Costos
+                    </div>
+                    <div class="tools">
+                        <a href="javascript:;" class="collapse"> </a>
+                        <a href="javascript:;" class="fullscreen"> </a>
+                    </div>
+                </div>
+                <div class="portlet-body" id="datos-costos">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h2 id="" style="float:right">@String.Format("{0:C}", Model.cotizacion.valorUnico - Model.descuento)</h2>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <div class="row">
+            <div class="form-group">
+                <div class="col-md-6">
+                    @Html.ActionLink("Volver", "Index", "", new { @class = "btn btn-default" })
+                </div>
+                <div class="col-md-6 text-right">
+                    @if (Model.comercializacionEstadoComercializacion.LastOrDefault().EstadoComercializacion == SGC.Models.EstadoComercializacion.Borrador)
+                    {
+                        <input id="btnBorrador" type="button" value="Borrador" name="guardar" class="btn btn-primary" />
+                    }
+                    <input id="btnGuardar" type="button" value="Guardar" name="guardar" class="btn btn-primary" />
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+
+<div id="modalInfoRelatores" class="modal fade draggable-modal modalx" tabindex="-1" data-keyboard="false" role="alertdialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div id="modal-content" class="modal-content">
+            <div class="modal-header">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4 class="modal-title">Relatores</h4>
+                    </div>
+                    <div class="col-md-6">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <table class="table dataTable">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>RUN</th>
+                            <th>Correo Electrónico</th>
+                            <th>Teléfono/Celular</th>
+                            <th>Válido SENCE</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in ViewBag.infoRelatores)
+                        {
+                            <tr>
+                                <td>@item.relator.contacto.nombreCompleto</td>
+                                <td>@item.relator.contacto.run</td>
+                                <td>@item.relator.contacto.correo</td>
+                                <td>@item.relator.contacto.telefono</td>
+                                @if (item.validoSence)
+                                {
+                                    <td>
+                                        <div class="label label-success bg-green-soft font-white">Sí</div>
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td>
+                                        <div class="">No</div>
+                                    </td>
+                                }
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <div class="text-right">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="modalConfirmar" class="modal fade draggable-modal modalx" tabindex="-1" role="alertdialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div id="modal-content" class="modal-content">
+            <div class="modal-header">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4 class="modal-title">Confirmar</h4>
+                    </div>
+                    <div class="col-md-6">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body text-center">
+                <p>¿Esta seguro que desea conservar los cambios realizados a la comercialización?</p>
+            </div>
+            <div class="modal-footer">
+                <button id="btnConfirmar" type="button" class="btn btn-primary">Aceptar</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade draggable-modal modalx"
+     id="modalDescuento"
+     tabindex="-1"
+     data-backdrop="static"
+     data-keyboard="false"
+     role="dialog"
+     aria-labelledby="deleteLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="row">
+                    <div class="col-md-10">
+                        <h4 class="modal-title">Descuento</h4>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("Descuento", "Comercializacions", FormMethod.Post, new { @id = "formDescuento" }))
+                {
+                    @Html.AntiForgeryToken()
+
+                    @Html.HiddenFor(model => model.idComercializacion)
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label class="control-label">Monto Original</label>
+                            <input type="text" class="form-control" value="@Model.valorFinal" readonly />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="control-label">Descuento</label>
+                            <input type="number" name="descuento" class="form-control" id="descuento" value="@Model.descuento" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="control-label">Nuevo Monto</label>
+
+                            <input type="text" class="form-control" id="descuentoTotal" value="@(Model.valorFinal - Model.descuento)" readonly />
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-md-6 text-left">
+                        <button type="button" id="btnCancelarDescuento" class="btn btn-default" data-dissmiss="modal">Cancelar</button>
+                    </div>
+                    <div class="col-md-6">
+                        <button type="submit" id="btnEnviarDescuento" class="btn btn-primary">Guardar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade draggable-modal modalx"
+     id="modalObservaciones"
+     tabindex="-1"
+     data-keyboard="false"
+     role="dialog"
+     aria-labelledby="deleteLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="row">
+                    <div class="col-md-10">
+                        <h4 class="modal-title">Observaciones</h4>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="contenidoObservaciones scrollModal"></div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <textarea id="observacionModal" class="form-control todo-taskbody-taskdesc" rows="2" placeholder="Observaciones..." style="margin-top: 15px"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-md-6 text-left">
+                        <button type="button" id="btnCerrarObservaciones" class="btn btn-default" data-dissmiss="modal">Cerrar</button>
+                    </div>
+                    <div class="col-md-6">
+                        <button type="button" onclick="ajax_call_enviar_observacion_modal()" class="btn btn-primary" style="margin-top: 5px;"> Enviar </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id='myModal' class='modal custom-modal'>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body" id='myModalContent'>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<input type="hidden" id="clientesArray" value='@Html.Raw(ViewBag.clientesJson)' />
+
+<input type="hidden" id="urlObtenerGiro" value="@Url.Action("ObtenerGiro", "Cotizacion_R13")" />
+<input type="hidden" id="urlObtenerEncargadoDePago" value="@Url.Action("ObtenerEncargadoDePago", "Cotizacion_R13")" />
+<input type="hidden" id="urlObtenerContacto" value="@Url.Action("ObtenerContacto", "Cotizacion_R13")" />
+<input type="hidden" id="urlObtenerClienteDeudor" value="@Url.Action("ObtenerClienteDeudor", "Cotizacion_R13")" />
+<input type="hidden" id="urlObtenerClienteOCPendiente" value="@Url.Action("ObtenerClienteOCPendiente", "Cotizacion_R13")" />
+<input type="hidden" id="urlObtenerCursos" value="@Url.Action("ObtenerCursos", "Cotizacion_R13")" />
+<input type="hidden" id="urlObtenerDatosCurso" value="@Url.Action("ObtenerDatosCurso", "Cotizacion_R13")" />
+<input type="hidden" id="urlObtenerCostos" value="@Url.Action("ObtenerCostos", "Cotizacion_R13")" />
+
+
+
+
+@section Scripts {
+
+    <script src="~/Content/js/Comercializacion/Guardar-v3.js"></script>
+    <script src="~/Content/js/Cotizacion/Crear-v2.js"></script>
+
+    <script>
+            $(document).ready(function () {
+                ajax_call_observaciones();
+                $('#clientDownload').trigger('change');
+                $("#tieneSence").trigger('change');
+
+            });
+            $('#btnCerrarObservaciones').click(function () {
+                $('#modalObservaciones').modal('hide');
+            });
+             $("#btnBorrador").click(function () {
+                    action = $("#form").attr("action");
+                    action = action.replace("Edit", "EditBorrador");
+                    $("#form").attr("action", action);
+                    $("#form").submit();
+                });
+                $('#form').submit(function () {
+                    $('#form input').unmask();
+                });
+                $('#btnMostrarDescuento').click(function () {
+                    $('#modalDescuento').modal({ keyboard: true }, 'show');
+                });
+                $('#btnEnviarDescuento').click(function () {
+                    $('#modalDescuento').modal('hide');
+                    $('#formDescuento').submit();
+                });
+                $('#btnCancelarDescuento').click(function () {
+                    $('#modalDescuento').modal('hide');
+                });
+                $('#descuento').change(function () {
+                    monto = @Model.valorFinal;
+                    descuento = $(this).val();
+                    $('#descuentoTotal').val(monto - descuento);
+                });
+                $('#btnMostrarObservaciones').click(function () {
+                    $('#modalObservaciones').modal({ keyboard: true }, 'show');
+
+                });
+
+                $('#clientDownload').change(function () {
+                    if (this.checked) {
+                        $('#clientDownloadText').html("<h5 style='color: green;'>Permitida</h5>");
+                    } else {
+                        $('#clientDownloadText').html("<h5 style='color: red;'>Denegada</h5>");
+                    }
+
+
+                });
+
+
+
+            $('#tieneSence').change(function () {
+
+                var sence = $('#sence').val();
+                var selected = this.checked;
+                if (selected || sence == "no") {
+                    $("#tipoPago").val("0");
+                    $('#senceOption').css('display', 'none');
+
+                } else if (!selected && sence == "si"){
+                    $('#senceOption').css('display', 'block');
+                }
+
+
+                $(".delete").each(function (i, obj) {
+                    $(this).trigger("click");
+                });
+
+
+
+            });
+            var ajax_call_observaciones = function () {
+                $.ajax({
+                    url: "@Url.Action("CargarObservaciones", "Comercializacions", new { id = Model.idComercializacion })",
+                    type: "GET",
+                    success: function (response) {
+                        console.log("Success!");
+                        $(".contenidoObservaciones").html(response);
+                    },
+                    fail: function (xhr, textStatus, errorThrown) {
+                        console.log("Error!");
+                    }
+                });
+            };
+
+
+
+            var ajax_call_enviar_observacion_modal = function () {
+                $.ajax({
+                    url: "@Url.Action("EnviarObservacion", "Comercializacions", new { id = Model.idComercializacion })",
+                    data: {
+                        idComercializacion: @Model.idComercializacion,
+                        textoObservacion: $('#observacionModal').val()
+                    },
+                    type: "POST",
+                    success: function (response) {
+                        console.log("Success!");
+                        $("#observacionModal").val('');
+                        $(".contenidoObservaciones").html(response);
+                    },
+                    fail: function (xhr, textStatus, errorThrown) {
+                        console.log("Error!");
+                    }
+                });
+            };
+
+
+    </script>
+
+}
+

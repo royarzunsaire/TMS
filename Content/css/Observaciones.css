@@ -1,0 +1,22 @@
+﻿.observacion-fecha {
+    /*background: #f1f1f1;*/
+    float: right;
+    font-size: 12px;
+    font-weight: 400;
+    opacity: 0.5;
+    /*filter: alpha(opacity=70);
+    text-align: right;
+    padding: 1px 5px;*/
+}
+
+.observacion-titulo {
+    color: #5b9bd1;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.observacion-detalles {
+    line-height: 1.3;
+    font-size: 14px;
+    font-weight: 400;
+}

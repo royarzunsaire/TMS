@@ -1,0 +1,122 @@
+﻿@model SGC.Models.Comercializacion
+@using SGC.Models
+    @{
+        List<R24> r24s = ViewBag.r24s;
+        ViewBag.Title = "Ingresar R24";
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+
+    <div class="page-title" style="margin-bottom: 0">
+        <div class="row">
+            <div class="col-md-12">
+                Administrar Comercialización
+            </div>
+            <div class="col-md-12">
+                <small>Comercialización: @Model.cotizacion.codigoCotizacion</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="portlet light bordered">
+                <div class="portlet-title">
+                    <div class="caption">
+                        R24
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <div class="row col-md-12">
+                        <div class="col-md-2 text-center">
+                            <label> Elementos </label>
+                        </div>
+
+                        <div class="col-md-4 text-center">
+                            <label> Fichero</label>
+                        </div>
+                        <div class="col-md-3 text-center">
+                            <label> Descripción </label>
+                        </div>
+                        <div class="col-md-3">
+                            <label>  </label>
+                        </div>
+                    </div>
+
+                    @if (r24s != null && r24s.Count() > 0)
+                    {
+                        int i = 1;
+                        foreach (R24 r24 in r24s)
+                        {
+                            <div class="row col-md-12">
+                                <div class="col-md-2 text-left">
+                                    @Html.Label("Documentos", "Documento " + i, htmlAttributes: new { @class = "control-label" })
+                                </div>
+                                <div class="col-md-4 text-left">
+                                    <span class="glyphicon glyphicon-save"></span>
+                                    @Html.ActionLink(r24.file.nombreArchivo, "Descargar", new { id = r24.file.idStorage }, new { })
+                                </div>
+                                <div class="col-md-3 text-center">
+                                    <label> @r24.description</label>
+                                </div>
+                                <div class="col-md-3  text-right">
+                                    <span class="glyphicon glyphicon-remove"></span>
+                                    @Html.ActionLink("Eliminar", "DeleteR24", "Comercializacions", new { idComercializacion = Model.idComercializacion, idStorage = r24.file.idStorage }, new { onclick = "return confirm('Está seguro que desea eliminar el R24: " + r24.file.nombreArchivo + "?');" })
+                                </div>
+                            </div>
+                            <hr />
+                            i++;
+                        }
+
+                    }
+                    <hr />
+                    @using (Html.BeginForm("IngresarR24", "Comercializacions", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <div class="col-md-12">
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                            </div>
+                        @Html.HiddenFor(model => model.idComercializacion)
+                        <div class="row">
+                            <div class="col-md-12">
+                                    @Html.Label("Archivo R24", "Seleccionar archivo", htmlAttributes: new { @class = "control-label" })
+                                    @if (r24s != null && r24s.Count() < 5)
+                                    {
+                                        for (int i = (r24s.Count() + 1); i <= 5; i++)
+                                        {
+                                            int pos = (@i - @r24s.Count() - 1);
+                                            <div class="col-md-12">
+                                                <div class="col-md-4  text-left">
+                                                    <label> Documento @i</label>
+                                                </div>
+                                                <div class="col-md-4  text-left">
+
+                                                    <label> Descripción: </label>
+                                                    <input type="text" name="r24Model[@pos].descritions" id="descritions_@pos" />
+                                                </div>
+                                                <div class="col-md-4  text-left">
+                                                    <input type="file" name="r24Model[@pos].files" id="files_@pos" accept="application/pdf" />
+                                                </div>
+                                            </div>
+                                            <br>
+                                        }
+                                    }
+
+
+
+
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="row">
+                            <div class="col-md-6">
+                                @Html.ActionLink("Volver", "Index", new { }, new { @class = "btn btn-default" })
+                            </div>
+                            <div class="col-md-6 text-right">
+                                <input type="submit" value="Guardar" class="btn btn-primary" />
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>

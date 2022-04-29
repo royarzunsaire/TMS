@@ -1,0 +1,204 @@
+﻿@model SGC.Models.Publicidad
+@using SGC.Models
+@{
+    ViewBag.Title = "Nueva Publicidad";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    List<string> listTipos = new List<string>();
+    listTipos.Add("Todos");
+    listTipos.Add("Por Cliente");
+    var tipos = listTipos.Select(p => new SelectListItem() { Value = p, Text = p }).ToList<SelectListItem>();
+    var clientes = ((List<Cliente>)ViewBag.clientes).Select(p => new SelectListItem() { Value = p.idCliente.ToString(), Text = p.nombreEmpresa }).ToList<SelectListItem>();
+  }
+
+
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet light bordered">
+            <div class="portlet-title">
+                <div class="caption">
+                     Nueva Publicidad
+                </div>
+            
+            </div>
+            <div class="portlet-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-horizontal">
+
+                            <div class="form-group">
+
+
+
+                                <div class="col-md-12" style="margin-top: 20px">
+                                    @using (Html.BeginForm("Create", "Publicidad", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                                    {
+                                        @Html.AntiForgeryToken()
+                                        @Html.HiddenFor(model => model.idPublicidad, new { htmlAttributes = new { @class = "form-control" } })
+
+                                    <div class="form-horizontal">
+                                        <h4>Publicidad</h4>
+                                        <hr />
+                                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                        <div class="form-group">
+                                            @Html.LabelFor(model => model.nombre, htmlAttributes: new { @class = "control-label col-md-2" })
+                                            <div class="col-md-10">
+                                                @Html.EditorFor(model => model.nombre, new { htmlAttributes = new { @class = "form-control" } })
+                                                @Html.ValidationMessageFor(model => model.nombre, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            @Html.LabelFor(model => model.titulo, htmlAttributes: new { @class = "control-label col-md-2" })
+                                            <div class="col-md-10">
+                                                @Html.EditorFor(model => model.titulo, new { htmlAttributes = new { @class = "form-control" } })
+                                                @Html.ValidationMessageFor(model => model.titulo, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            @Html.LabelFor(model => model.descripcion, htmlAttributes: new { @class = "control-label col-md-2" })
+                                            <div class="col-md-10">
+                                                @Html.TextAreaFor(model => model.descripcion, new { htmlAttributes = new { @class = "form-control" } })
+                                                @Html.ValidationMessageFor(model => model.descripcion, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            @Html.LabelFor(model => model.tipo, htmlAttributes: new { @class = "control-label col-md-2" })
+                                            <div class="col-md-10">
+                                                @Html.DropDownListFor(model => model.tipo, tipos, "Seleccione un Tipo", new { htmlAttributes = new { @class = "form-control", @id = "tipo" } })
+                                                @Html.ValidationMessageFor(model => model.tipo, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="form-group" id="clientes">
+                                            @Html.Label("Seleccione los clientes ", htmlAttributes: new { @class = "control-label col-md-2" })
+                                            <div class="col-md-10">
+                                                @Html.DropDownList("clientes", clientes, "Seleccione los clientes", htmlAttributes: new { @class = "form-control select2", @multiple = "multiple" })
+                                                @Html.ValidationMessage("clientes", "", new { @class = "text-danger" })
+                                            </div>
+
+
+                                        </div>
+
+                                        <div class="form-group">
+                                            @Html.LabelFor(model => model.foto, htmlAttributes: new { @class = "control-label col-md-2" })
+                                            <div class="col-md-10">
+                                                <div class="col-md-1">
+                                                    @if (Model != null && Model.foto != null)
+                                                    {
+                                                        <img src="@Url.Content(Model.foto.urlArchivo)" alt="FOTO" style="max-height:50px;max-width:50px" />
+                                                    }
+                                                    else
+                                                    {
+                                                        <img src="" alt="FOTO" />
+                                                    }
+                                                </div>
+                                                <div class="col-md-11">
+                                                    <input type="file" name="myFile" accept="image/png, image/jpeg" /> <br>
+
+                                                </div>
+
+                                                @Html.ValidationMessageFor(model => model.foto, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            @Html.LabelFor(model => model.link, htmlAttributes: new { @class = "control-label col-md-2" })
+                                            <div class="col-md-10">
+                                                @Html.EditorFor(model => model.link, new { htmlAttributes = new { @class = "form-control" } })
+                                                @Html.ValidationMessageFor(model => model.link, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            @Html.LabelFor(model => model.vigencia, htmlAttributes: new { @class = "control-label col-md-2" })
+                                            <div class="col-md-10">
+                                                @Html.EditorFor(model => model.vigencia, new { htmlAttributes = new { @class = "form-control datepicker" } })
+                                                @Html.ValidationMessageFor(model => model.vigencia, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+
+
+                                        <hr />
+                                        <div class="row">
+                                            <div class="form-group">
+                                                <div class="col-md-offset-1 col-md-5">
+                                                    @Html.ActionLink("Volver", "Index")
+                                                </div>
+
+
+                                                <div class="col-md-offset-4 col-md-2">
+                                                    <input type="submit" value="Guardar" class="btn btn-success" />
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    }
+
+                                  
+                                </div>
+
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+              
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            ClientesShow()
+            ClientesSeleccionados()
+
+
+        });
+        function ClientesShow() {
+
+            var tipo = $("#tipo").val();
+            var cliente = $("#clientes");
+            if (tipo == "Todos" || tipo == "") {
+                cliente.hide();
+            } else if (tipo == "Por Cliente") {
+                cliente.show();
+            }
+        }
+        function ClientesSeleccionados() {
+
+            var arrayOfClient = JSON.parse('@Html.Raw(Json.Encode(Model.publicidadClientes.Select(x => x.cliente.idCliente.ToString()).ToList()))');
+            var clientesList = $("#clientes option");
+
+            for (i = 0; i < clientesList.length; i++) {
+                for (j = 0; j < arrayOfClient.length; j++) {
+                    if (clientesList[i].value === arrayOfClient[j]) {
+                        clientesList[i].selected = "true";
+                    }
+                }
+            }
+
+        }
+        $("#tipo").change( function () {
+            ClientesShow();
+        });
+
+    </script>
+    }

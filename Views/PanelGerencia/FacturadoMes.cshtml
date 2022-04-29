@@ -1,0 +1,132 @@
+﻿@model IEnumerable<SGC.Models.ViewModelFacturaComercializacion>
+
+<style>
+    #table-wrapper {
+        position: relative;
+    }
+
+    #table-scroll {
+        overflow: auto;
+    }
+
+    #table-wrapper table {
+        width: 100%;
+    }
+
+    #table-wrapper td {
+        white-space: nowrap;
+    }
+
+    #table-wrapper th {
+        white-space: nowrap;
+    }
+
+    th {
+        background-color: yellow;
+    }
+</style>
+
+<div id="table-wrapper">
+    <div id="table-scroll">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayName("Código Comercialización")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Cliente")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Precio Final")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Curso")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Tipo de Ejecución")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Cant Alumnos")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Tipo")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Estado Comercialización")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Fecha Comercialización")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Fecha Facturación")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Tipo Doc Compromiso")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Doc Compromiso")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Factura")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Monto Factura")
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.comercializacionEstado.comercializacion.cotizacion.codigoCotizacion)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.comercializacionEstado.comercializacion.cotizacion.cliente.nombreEmpresa)
+                        </td>
+                        <td data-cell-type="number">
+                            @(item.comercializacionEstado.comercializacion.valorFinal - item.comercializacionEstado.comercializacion.descuento)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.comercializacionEstado.comercializacion.cotizacion.curso.nombreCurso)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.comercializacionEstado.comercializacion.cotizacion.curso.tipoEjecucion)
+                        </td>
+                        <td data-cell-type="number">
+                            @Html.DisplayFor(modelItem => item.comercializacionEstado.comercializacion.cotizacion.cantidadParticipante)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.comercializacionEstado.comercializacion.cotizacion.tipoCurso)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.comercializacionEstado.estado.EstadoComercializacion)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.comercializacionEstado.comercializacion.fechaCreacion)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.facturaDocCompromiso.facturaEstado.factura.fechaCreacion)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.facturaDocCompromiso.documentoCompromiso.tipoDocCompromiso.nombre)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.facturaDocCompromiso.documentoCompromiso.numeroSerie)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.facturaDocCompromiso.facturaEstado.factura.numero)
+                        </td>
+                        <td data-cell-type="number">
+
+                            @(item.facturaDocCompromiso.facturaEstado.factura.costo)
+                        </td>
+                    </tr>
+                    
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+

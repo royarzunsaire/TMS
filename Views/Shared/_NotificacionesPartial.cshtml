@@ -1,0 +1,33 @@
+﻿@using Microsoft.AspNet.Identity
+@if (Request.IsAuthenticated)
+{
+    <li class="dropdown dropdown-extended dropdown-notification" id="header_notification_bar">
+        <a href="javascript:;" id="marcarComoVistas" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true" style="padding-top:14px;pading-bottom:12px">
+            <i class="icon-bell" style="font-size: 20px"></i>
+            <span id="cantNotificacionesEnviadas" class="badge badge-default"></span>
+        </a>
+        <ul class="dropdown-menu">
+            <li class="external">
+                <h3>
+                    <span id="cantNotificacionesPendientes" class="bold">0</span> Notificaciones pendientes
+                </h3>   
+                @Html.ActionLink("ver todas", "List", "Notificacion", new {  }, new { })
+            </li>
+            <li>
+                <ul id="notificaciones" class="dropdown-menu-list scroller" style="height: 250px;" data-handle-color="#637283"></ul>
+            </li>
+        </ul>
+    </li>
+    using (Html.BeginForm("MarcarVistas", "Notificacion", FormMethod.Post, new { id = "formVistas" }))
+    {
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="idUsuario" value="@User.Identity.GetUserId()" />
+    }
+    using (Html.BeginForm("MarcarLeido", "Notificacion", FormMethod.Post, new { id = "formLeido" }))
+    {
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="idNotificacion" id="idNotificacionLeida" value="" />
+        <input type="hidden" name="idUsuario" value="@User.Identity.GetUserId()" />
+        <input type="hidden" id="hoy" value="@Newtonsoft.Json.JsonConvert.SerializeObject(DateTimeOffset.Parse(DateTime.Now.ToString(), null).DateTime)" />
+    }
+}

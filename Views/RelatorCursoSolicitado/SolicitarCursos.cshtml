@@ -1,0 +1,51 @@
+﻿@model IEnumerable<SGC.Models.RelatorCursoSolicitado>
+
+@{
+    ViewBag.Title = "Listado RelatorCursoSolicitado";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>
+    Cursos Solicitados @Html.ActionLink(" ", "Create", new { id = ViewBag.idRelator }, htmlAttributes: new { @class = "btn btn-primary btn-large glyphicon glyphicon-plus", @datatoggle = "tooltip", @title = "Nuevo" })
+</h2>
+<p>
+
+</p>
+<table class="table table-striped table-bordered table-hover dt-responsive dataTable no-footer" id="sys-table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.curso.nombreCurso)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.curso.tipoEjecucion)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.curso.nombreCurso)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.curso.tipoEjecucion)
+                </td>
+                <td class="text-center">
+                    @using (Html.BeginForm("Delete", "RelatorCursoSolicitado"))
+                    {
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="idRelator" value="@item.idRelator" />
+                        <input type="hidden" name="idCurso" value="@item.idCurso" />
+                        <div class="form-actions no-color">
+                            <input type="submit" value="Eliminar" class="btn btn-danger" />
+                        </div>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@Html.ActionLink("Volver", "Perfil", "Relator", new { }, new { @class = "btn btn-default" })

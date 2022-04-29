@@ -1,0 +1,98 @@
+﻿@model SGC.Models.Evaluacion
+
+@{
+    ViewBag.Title = "Crear Evaluacion";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2 class="page-title">Crear</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="portlet light bordered">
+                <div class="portlet-title">
+                    <div class="caption">
+                        Evaluación
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    @Html.HiddenFor(model => model.curso.idCurso)
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.nombre, htmlAttributes: new { @class = "control-label" })
+                                @Html.EditorFor(model => model.nombre, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.nombre, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.categoria, htmlAttributes: new { @class = "control-label" })
+                                @Html.EnumDropDownListFor(model => model.categoria, htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.categoria, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.tipo, htmlAttributes: new { @class = "control-label" })
+
+                                @{ // you can put the following in a back-end method and pass through ViewBag
+                                    var selectList = Enum.GetValues(typeof(SGC.Models.TipoEvaluacion))
+                                                         .Cast<SGC.Models.TipoEvaluacion>()
+                                                         .Where(e => e != SGC.Models.TipoEvaluacion.Moodle)
+                                                         .Select(e => new SelectListItem
+                                                         {
+                                                             Value = ((int)e).ToString(),
+                                                             Text = e.ToString()
+                                                         });
+                                }
+
+                                @Html.DropDownListFor(model => model.tipo, selectList, htmlAttributes: new { @class = "form-control", @id = "tipo" })
+                                @Html.ValidationMessageFor(model => model.tipo, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="col-md-12" id="formulario">
+                            <div class="form-group">
+                                @Html.Label("formulario", "Formulario", htmlAttributes: new { @class = "control-label" })
+                                @Html.DropDownListFor(model => model.formulario.idFormulario, (SelectList)ViewBag.formularios, "", htmlAttributes: new { @class = "form-control select2", @id = "idFormulario" })
+                                @Html.ValidationMessageFor(model => model.formulario, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="row">
+                        <div class="form-group">
+                            <div class="col-md-6">
+                                @Html.ActionLink("Volver", "EvaluacionesCurso", new { id = Model.curso.idCurso }, new { @class = "btn btn-default" })
+                            </div>
+                            <div class="col-md-6 text-right">
+                                <input type="submit" value="Guardar" class="btn btn-primary" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#tipo').change(function () {
+                if ($(this).val() === '0') {
+                    $('#formulario').show();
+                }
+                else {
+                    $('#formulario').hide();
+                    $("#idFormulario").select2("val", "");
+                }
+            });
+        });
+    </script>
+}

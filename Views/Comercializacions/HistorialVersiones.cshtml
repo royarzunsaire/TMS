@@ -1,0 +1,75 @@
+﻿@model IEnumerable<SGC.Models.HistorialComercializacion>
+
+@{
+    ViewBag.Title = "Historial Versiones";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="page-title" style="margin-bottom: 0">
+    <div class="row">
+        <div class="col-md-12">
+            Historial de Versiones
+        </div>
+        <div class="col-md-4">
+            <small>Comercialización: @ViewBag.codigoCotizacion</small>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-dark">
+            <div class="portlet-title">
+                <div class="caption">
+                    Versiones
+                </div>
+                <div class="tools">
+                    <a href="javascript:;" class="collapse"> </a>
+                    <a href="javascript:;" class="fullscreen"> </a>
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <table class="table table-striped table-bordered table-hover dt-responsive dataTable" id="sys-table" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.usuarioModificacion.UserName)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.fechaModificacion)
+                                    </th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.usuarioModificacion.nombreCompleto)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.fechaModificacion)
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="input-group-btn">
+                                            @Html.ActionLink(" ", "Version", new { id = item.idHistorialComercializacion }, htmlAttributes: new { @class = "btn btn-default btn-sm glyphicon glyphicon-list-alt", @datatoggle = "tooltip", @title = "Versión" })
+                                        </div>
+                                    </td>
+                                </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        @Html.ActionLink("Volver", "Index", "", new { @class = "btn btn-default" })
+    </div>
+</div>

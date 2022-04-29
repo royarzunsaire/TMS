@@ -1,0 +1,149 @@
+﻿@model SGC.Models.Comercializacion
+@using Microsoft.AspNet.Identity;
+@{
+    ViewBag.Title = "Ingresar Calificaciones";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+   
+    string tipoEjecucion = Convert.ToString(Model.cotizacion.curso.tipoEjecucion);
+    String role = ViewBag.role;
+
+}
+
+@section Styles
+{
+    <link href="~/Content/plugins/handsontable/dist/handsontable.full.min.css" rel="stylesheet" type="text/css" />
+}
+
+<div class="page-title" style="margin-bottom: 0">
+    <div class="row">
+        <div class="col-md-12">
+            Administrar Participantes
+        </div>
+        <div class="col-md-4">
+            <small>Curso: @Model.cotizacion.curso.nombreCurso</small>
+        </div>
+        <div class="col-md-4">
+            <small>Comercialización: @Model.cotizacion.codigoCotizacion</small>
+        </div>
+    </div>
+</div>
+
+<div id="seleccionar">
+    @using (Html.BeginForm("IngresarNotas", "Evaluacion", FormMethod.Post, new { @id = "form" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="portlet light bordered">
+            <div class="portlet-title">
+                <div class="caption">
+                    Calificaciones
+                </div>
+                <div class="tools">
+                    <a href="javascript:;" class="collapse"> </a>
+                    <a href="javascript:;" class="fullscreen"> </a>
+                </div>
+            </div>
+            <div class="portlet-body">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div id="errorNota" class="validation-summary-errors text-danger" hidden>
+                    <ul>
+                        <li>Las Calificaciones deben se un número entre 0,0 y 7,0</li>
+                    </ul>
+                </div>
+                <input type="hidden" name="idComercializacion" value="@Model.idComercializacion" />
+                <input type="hidden" name="returnUrl" value="@ViewBag.returnUrl" />
+                <div class="row">
+                    <div class="col-md-12">
+                        <div id="notas"></div>
+                    </div>
+                </div>
+                <hr />
+                <div class="row">
+                    <div class="col-md-6">
+                        <a href="javascript: history.go(-1)">Volver</a>
+
+
+                    </div>
+                    <div class="col-md-6 text-right">
+                        <div class="col-md-12 text-right">
+                            @if ((tipoEjecucion != null && !role.Contains("Representante") && !role.Contains("Relator")) || (role.Contains("Relator") && tipoEjecucion == "Presencial" && tipoEjecucion == "Recertificacion"))
+                            {
+                                <div class="col-md-6 text-right">
+                                    <input type="submit" value="Guardar" class="btn btn-primary" />
+                                </div>
+                            }
+                            @if (tipoEjecucion != "Presencial" && tipoEjecucion != "Recertificacion")
+                            {
+                                <div class="col-md-6 text-right">
+                                    @Html.ActionLink("Actualizar Notas de moodle", "IngresarNotas", "Evaluacion", new { id = Model.idComercializacion }, new { @class = "btn btn-default" })
+
+                                </div>
+                            }
+                        </div>
+
+                        </div>
+
+
+
+
+                    </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts{
+    <script src="~/Content/plugins/handsontable/dist/handsontable.full.min.js" type="text/javascript"></script>
+    <script>
+        $(document).ready(function () {
+            $('#form').submit(function () {
+                input = $("<input>")
+                    .attr("type", "hidden")
+                    .attr("name", "data")
+                    .val(JSON.stringify(data));
+                $('#form').append(input);
+            })
+
+            width = window.innerWidth;
+            height = window.innerHeight;
+            $('#notas').attr('style', 'overflow:hidden;width:' + width + ';height:' + height + ';')
+        });
+
+        data = JSON.parse('@Html.Raw(ViewBag.data)');
+
+        headers = JSON.parse('@Html.Raw(ViewBag.headers)');
+
+
+
+        var container = document.getElementById('notas');
+        var tablaParticipantes = new Handsontable(container, {
+            data: data,
+            rowHeaders: true,
+            colHeaders: headers,
+            maxCols: @(Model.evaluaciones.Count() + 2),
+            maxRows: @Model.participantes.Count(),
+            stretchH: 'all',
+            cells: function (row, col, prop) {
+                var cellProperties = {};
+                if (col === 0 || col === 1) {
+                    cellProperties.readOnly = 'true'
+                }
+                return cellProperties
+            },
+            beforeChange: function (changes, source) {
+                $('#errorNota').hide();
+                if (!ValidarNota(changes[0][3])) {
+                    $('#errorNota').show();
+                    changes[0][3] = '-';
+                }
+
+            }
+        });
+
+        function ValidarNota(nota) {
+            re = /^(([0-7](,[0-9])?)|(-))$/;
+            return re.test(String(nota));
+        }
+
+    </script>
+}

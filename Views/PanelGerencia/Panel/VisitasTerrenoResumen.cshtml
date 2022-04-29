@@ -1,0 +1,198 @@
+﻿@model SGC.Models.ViewModelPanelGerencia
+<div class="row">
+    <div class="col-md-5">
+        <div class="portlet light ">
+            <div class="portlet-title">
+                <div class="caption caption-md">
+                    <i class="icon-bar-chart font-dark hide"></i>
+                    <span class="caption-subject bold uppercase">Visitas a Terreno</span>
+                </div>
+                <div class="actions">
+                    <ul class="nav nav-tabs" style="padding-bottom:0">
+                        <li class="active">
+                            <a href="#tab_visitas_terreno_mes" data-toggle="tab"> Mensual </a>
+                        </li>
+                        <li>
+                            <a href="#tab_visitas_terreno_anio" data-toggle="tab"> Anual </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="tab-content">
+                    <div class="tab-pane active" id="tab_visitas_terreno_mes">
+                        <div class="table-scrollable table-scrollable-borderless">
+                            <div class="scroll">
+                                <div id="table-wrapper">
+                                    <div id="table-scroll">
+                                        <table class="table table-hover table-light">
+                                            <thead>
+                                                <tr class="uppercase">
+                                                    <th> Cliente </th>
+                                                    <th> RUT </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var item in Model.visitasTerrenoMensual)
+                                                {
+                                                    <tr>
+                                                        <td>
+                                                            @if (item.cliente != null)
+                                                            {
+                                                                @item.cliente.nombreEmpresa
+                                                            }
+                                                            else
+                                                            {
+                                                                @item.posibleCliente
+                                                            }
+                                                        </td>
+                                                        <td>
+                                                            @if (item.cliente != null)
+                                                            {
+                                                                @item.cliente.rut
+                                                            }
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tab_visitas_terreno_anio">
+                        <div class="table-scrollable table-scrollable-borderless">
+                            <div class="scroll">
+                                <div id="table-wrapper">
+                                    <div id="table-scroll">
+                                        <table class="table table-hover table-light">
+                                            <thead>
+                                                <tr class="uppercase">
+                                                    <th> Cliente </th>
+                                                    <th> RUT </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var item in Model.visitasTerrenoAnual)
+                                                {
+                                                    <tr>
+                                                        <td>
+                                                            @if (item.cliente != null)
+                                                            {
+                                                                @item.cliente.nombreEmpresa
+                                                            }
+                                                            else
+                                                            {
+                                                                @item.posibleCliente
+                                                            }
+                                                        </td>
+                                                        <td>
+                                                            @if (item.cliente != null)
+                                                            {
+                                                                @item.cliente.rut
+                                                            }
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-7">
+        <div class="portlet light ">
+            <div class="portlet-title">
+                <div class="caption caption-md">
+                    <i class="icon-bar-chart font-dark hide"></i>
+                    <span class="caption-subject bold uppercase">Efectividad Visitas</span>
+                </div>
+                <div class="actions">
+                    <ul class="nav nav-tabs" style="padding-bottom:0">
+                        <li class="active">
+                            <a href="#tab_efectividad_visitas_mes" data-toggle="tab"> Mensual </a>
+                        </li>
+                        <li>
+                            <a href="#tab_efectividad_visitas_anio" data-toggle="tab"> Anual </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="tab-content">
+                    <div class="tab-pane active" id="tab_efectividad_visitas_mes">
+                        <div class="table-scrollable table-scrollable-borderless">
+                            <div class="scroll">
+                                <div id="table-wrapper">
+                                    <div id="table-scroll">
+                                        <table class="table table-hover table-light">
+                                            <thead>
+                                                <tr class="uppercase">
+                                                    <th> Vendedor </th>
+                                                    <th class="text-right"> Visitas </th>
+                                                    <th class="text-right"> Monto </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var item in Model.efectividadVisitasVendedor)
+                                                {
+                                                    if (item.cantidadMensual > 0)
+                                                    {
+                                                        <tr>
+                                                            <td> @item.nombre </td>
+                                                            <td class="text-right"> @String.Format("{0:N0}", item.cantidadMensual) </td>
+                                                            <td class="text-right"> @String.Format("{0:C}", item.montoMensual) </td>
+                                                        </tr>
+                                                    }
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tab_efectividad_visitas_anio">
+                        <div class="table-scrollable table-scrollable-borderless">
+                            <div class="scroll">
+                                <div id="table-wrapper">
+                                    <div id="table-scroll">
+                                        <table class="table table-hover table-light">
+                                            <thead>
+                                                <tr class="uppercase">
+                                                    <th> Vendedor </th>
+                                                    <th class="text-right"> Visitas </th>
+                                                    <th class="text-right"> Monto </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var item in Model.efectividadVisitasVendedor)
+                                                {
+                                                    if (item.cantidadAnual > 0)
+                                                    {
+                                                        <tr>
+                                                            <td> @item.nombre </td>
+                                                            <td class="text-right"> @String.Format("{0:N0}", item.cantidadAnual) </td>
+                                                            <td class="text-right"> @String.Format("{0:C}", item.montoAnual) </td>
+                                                        </tr>
+                                                    }
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+   
+</div>

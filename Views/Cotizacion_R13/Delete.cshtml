@@ -1,0 +1,200 @@
+﻿@model SGC.Models.Cotizacion_R13
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Delete</title>
+</head>
+<body>
+    <h3>Are you sure you want to delete this?</h3>
+    <div>
+        <h4>Cotizacion_R13</h4>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.cliente.nombreEmpresa)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.cliente.nombreEmpresa)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.curso.codigoCurso)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.curso.codigoCurso)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.contactoEncargadoPago)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.contactoEncargadoPago)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.direccion)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.direccion)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.representanteLegal)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.representanteLegal)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.tipoDocumento)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.tipoDocumento)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.contacto)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.contacto)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.modalidad)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.modalidad)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.tipoCurso)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.tipoCurso)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.nombreCurso)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.nombreCurso)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.nombreDiploma)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.nombreDiploma)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.codigoSence)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.codigoSence)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.tieneCodigoSence)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.tieneCodigoSence)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.lugarRealizacion)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.lugarRealizacion)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.fechaInicio)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.fechaInicio)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.fechaTermino)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.fechaTermino)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.cantidadParticipante)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.cantidadParticipante)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.condicionesComerciales)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.condicionesComerciales)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.condicionesDePago)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.condicionesDePago)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.tipoMenu)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.tipoMenu)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.fechaCreacion)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.fechaCreacion)
+            </dd>
+    
+        </dl>
+    
+        @using (Html.BeginForm()) {
+            @Html.AntiForgeryToken()
+    
+            <div class="form-actions no-color">
+                <input type="submit" value="Delete" class="btn btn-default" /> |
+                @Html.ActionLink("Back to List", "Index")
+            </div>
+        }
+    </div>
+</body>
+</html>

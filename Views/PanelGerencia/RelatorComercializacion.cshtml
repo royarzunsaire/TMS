@@ -1,0 +1,129 @@
+﻿@model IEnumerable<SGC.Models.Comercializacion>
+
+@{
+    string relator = "Sin relator";
+    double monto = 0;
+ }
+
+<table id="table" class="table table-striped table-bordered table-hover dt-responsive dataTable no-footer">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayName("Código")
+            </th>
+            <th>
+                @Html.DisplayName("Empresa")
+            </th>
+            <th>
+                @Html.DisplayName("Curso")
+            </th>
+
+            <th>
+                @Html.DisplayName("Tipo de Ejecución")
+            </th>
+            <th>
+                @Html.DisplayName("Relator")
+            </th>
+            <th>
+                @Html.DisplayName("Estado")
+            </th>
+
+            <th>
+                @Html.DisplayName("Fecha Inicio")
+            </th>
+            <th>
+                @Html.DisplayName("Fecha Termino")
+            </th>
+            <th>
+                @Html.DisplayName("Monto")
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var comercializacion in Model.OrderByDescending(x => x.fechaInicio))
+        {
+        <tr>
+            <td style="vertical-align:middle">
+                @comercializacion.cotizacion.codigoCotizacion
+            </td>
+            <td style="vertical-align:middle">
+                @comercializacion.cotizacion.cliente.nombreEmpresa
+            </td>
+            <td style="vertical-align:middle">
+                @comercializacion.cotizacion.nombreDiploma
+            </td>
+            <td style="vertical-align:middle">
+                @comercializacion.cotizacion.curso.tipoEjecucion
+            </td>
+            <td style="vertical-align:middle">
+                @{
+
+                    relator = "Sin relator";
+                    if (comercializacion.relatoresConfirmados.Any(x => comercializacion.bloques.Any(y => y.relator.idRelator == x.idRelator)))
+                    {
+                        relator = comercializacion.relatoresConfirmados.FirstOrDefault(x => comercializacion.bloques.Any(y => y.relator.idRelator == x.idRelator)).contacto.nombreCompleto;
+
+
+                    }
+                    if (comercializacion.relatoresCursos.Any())
+                    {
+                        relator = comercializacion.relatoresCursos.FirstOrDefault().relator.contacto.nombreCompleto;
+
+
+                    }
+                }
+                @relator
+
+            </td>
+
+            @if (!comercializacion.relatoresConfirmados.Any(x => comercializacion.bloques.Any(y => y.relator.idRelator == x.idRelator)))
+
+            {
+
+
+                <td style="vertical-align:middle">
+                    Sin Confirmar
+                </td>
+            }
+            else
+            {
+                <td style="vertical-align:middle">
+                    Confirmado
+                </td>
+            }
+            <td data-cell-type="date" style="vertical-align:middle">
+                @comercializacion.fechaInicio.ToString("MM-dd-yy")
+            </td>
+            <td data-cell-type="date" style="vertical-align:middle">
+                @comercializacion.fechaTermino.ToString("MM-dd-yy")
+            </td>
+            <td style="vertical-align:middle">
+                @{
+
+                    monto = 0;
+                    if (comercializacion.cotizacion.costo != null && comercializacion.cotizacion.costo.Where(x => x.detalle.ToLower().Contains("relator") == true).FirstOrDefault() != null)
+                    {
+                        monto = comercializacion.cotizacion.costo.FirstOrDefault(x => x.detalle.ToLower().Contains("relator")).valor * comercializacion.cotizacion.costo.FirstOrDefault(x => x.detalle.ToLower().Contains("relator")).cantidad;
+
+
+                    }
+                }
+                @monto
+            </td>
+        </tr>
+                    }
+
+        </tbody>
+    </table>
+
+
+
+
+
+
+
+
+
+
+

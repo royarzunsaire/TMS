@@ -1,0 +1,22 @@
+﻿@model SGC.Models.AspNetUsers
+@using SGC.Helpers
+
+
+
+
+@using (Html.BeginForm("Delete", "AdminUsers", FormMethod.Post, new { @id = "notificationForm_" + Model.Id }))
+{
+    <div class="input-group-btn">
+        @Html.AntiForgeryToken()
+        @if (Model.tipo == SGC.Models.TipoUsuario.completo)
+        {
+            Html.NoEncodeActionLink("<span class='glyphicon glyphicon-picture'></span>", "Firma", "Firma", "AdminUsers", routeValues: new { id = Model.Id }, htmlAttributes: new { @class = "btn btn-default btn-sm" });
+            Html.NoEncodeActionLink("<span class='glyphicon glyphicon-pencil'></span>", "Editar", "Edit", "AdminUsers", routeValues: new { id = Model.Id }, htmlAttributes: new { @class = "btn btn-default btn-sm" });
+        }
+        @Html.NoEncodeActionLink("<span class='glyphicon glyphicon-list-alt'></span>", "Detalles", "Details", "AdminUsers", new { id = Model.Id }, htmlAttributes: new { @class = "btn btn-default btn-sm" })
+        @Html.NoEncodeActionLink("<span class='glyphicon glyphicon-lock'></span>", "Restablecer Contraseña", "RestablecerContrasenia", "AdminUsers", new { id = Model.Id }, htmlAttributes: new { @class = "btn btn-default btn-sm" })
+        <a class="btn btn-danger btn-sm" href="javascript:confirmDelete('Delete','@Model.Id','AdminUsers')" title="Eliminar"><span class='glyphicon glyphicon-trash'></span></a>
+    </div>
+}
+
+

@@ -1,0 +1,96 @@
+﻿@model SGC.Models.ListaDetalleCosto
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Delete</title>
+</head>
+<body>
+    <h3>Are you sure you want to delete this?</h3>
+    <div>
+        <h4>ListaDetalleCosto</h4>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.detalle)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.detalle)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.activo)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.activo)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.cantidad)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.cantidad)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.valor)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.valor)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.valorMinimo)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.valorMinimo)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.valorMaximo)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.valorMaximo)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.usuarioCreador)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.usuarioCreador)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.fechaCreacion)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.fechaCreacion)
+            </dd>
+    
+        </dl>
+    
+        @using (Html.BeginForm()) {
+            @Html.AntiForgeryToken()
+    
+            <div class="form-actions no-color">
+                <input type="submit" value="Delete" class="btn btn-default" /> |
+                @Html.ActionLink("Back to List", "Index")
+            </div>
+        }
+    </div>
+</body>
+</html>

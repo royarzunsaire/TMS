@@ -1,0 +1,59 @@
+﻿@model SGC.Models.RelatorCurso
+
+@{
+    ViewBag.Title = "Eliminar";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Confirmar eliminación</h2>
+<div class="portlet light bordered col-md-6">
+    <div class="portlet-body">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.curso.nombreCurso, "Curso", htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.curso.nombreCurso, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", style = "border: 0px" } })
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.relator.contacto.nombreCompleto, "Relator", htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.relator.contacto.nombreCompleto, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", style = "border: 0px" } })
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.validoSence, htmlAttributes: new { @class = "control-label" })
+                    <div class="checkbox">
+                        @Html.EditorFor(model => model.validoSence, new { htmlAttributes = new { @disabled = "disabled", @style = "margin-left: -10px" } })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.reuf, htmlAttributes: new { @class = "control-label" })
+                    <div class="checkbox">
+                        @Html.EditorFor(model => model.reuf, new { htmlAttributes = new { @disabled = "disabled", @style = "margin-left: -10px" } })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-md-6">
+                @Html.ActionLink("Volver", "Index", new { }, new { @class = "btn btn-default" })
+            </div>
+            <div class="col-md-6 text-right">
+                @using (Html.BeginForm())
+                {
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-actions no-color">
+                        <input type="submit" value="Eliminar" class="btn btn-danger" />
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,82 @@
+﻿@model List<SGC.Models.ClienteContactoCotizacion>
+@using System.Collections.Generic;
+@{
+    var run = "";
+    var empresa = "";
+    var faena = "";
+}
+
+<style>
+    #table-wrapper {
+        position: relative;
+    }
+
+    #table-scroll {
+        overflow: auto;
+    }
+
+    #table-wrapper table {
+        width: 100%;
+    }
+
+    #table-wrapper td {
+        white-space: nowrap;
+    }
+
+    #table-wrapper th {
+        white-space: nowrap;
+    }
+
+    th {
+        background-color: yellow;
+    }
+</style>
+
+<div id="table-wrapper">
+    <div id="table-scroll">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>@Html.DisplayName("Empresa")</th>
+                    <th>@Html.DisplayName("Nombre")</th>
+                    <th>@Html.DisplayName("Apellido P")</th>
+                    <th>@Html.DisplayName("Apellido M")</th>
+                    @*<th>@Html.DisplayName("Faena")</th>*@
+                    <th>@Html.DisplayName("Dirección")</th>
+                    <th>@Html.DisplayName("Teléfono")</th>
+                    <th>@Html.DisplayName("Correo")</th>
+                    <th>@Html.DisplayName("Lider Comercial")</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var contacto in Model)
+                {
+                    faena = "No Aplica";
+                    if (contacto.cliente.mandante != null)
+                    {
+                        empresa = contacto.cliente.mandante.nombreMandante;
+                        faena = contacto.cliente.nombreEmpresa;
+                    }
+                    if (contacto.contacto.run != run)
+                    {
+                        <tr>
+                            <td>@Html.DisplayFor(modelItem => contacto.cliente.nombreEmpresa)</td>
+                            <td>@Html.DisplayFor(modelItem => contacto.contacto.nombres)</td>
+                            <td>@Html.DisplayFor(modelItem => contacto.contacto.apellidoPaterno)</td>
+                            <td>@Html.DisplayFor(modelItem => contacto.contacto.apellidoMaterno)</td>
+                            @*<td>@faena</td>*@
+                            <td>@Html.DisplayFor(modelItem => contacto.cliente.direccion)</td>
+                            <td>@Html.DisplayFor(modelItem => contacto.contacto.telefono)</td>
+                            <td>@Html.DisplayFor(modelItem => contacto.contacto.correo)</td>
+                            @foreach (var comercial in contacto.cliente.usuariosAsignados)
+                            {
+                                <td>@Html.Raw(comercial.usuario.nombreCompleto)</td>
+                            }
+                        </tr>
+                        run = contacto.contacto.run;
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

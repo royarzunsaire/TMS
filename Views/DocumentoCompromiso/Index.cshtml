@@ -1,0 +1,49 @@
+﻿@model IEnumerable<SGC.Models.DocumentoCompromiso>
+
+@{
+    ViewBag.Title = "Listado DocumentoCompromiso";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Listado DocumentoCompromiso @Html.ActionLink(" ", "Create","/Create",htmlAttributes: new { @class = "btn btn-primary btn-large glyphicon glyphicon-plus" , @datatoggle = "tooltip", @title = "Nuevo"})
+</h2>
+<p>
+   
+</p>
+<table class="table table-striped table-bordered table-hover dt-responsive dataTable no-footer">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayName("Tipo")
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.numeroSerie)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.monto)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.tipoDocCompromiso.nombre)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.numeroSerie)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.monto)
+                </td>
+                <td>
+                    @Html.ActionLink(" ", "Edit", new { id = item.idDocumentoCompromiso }, htmlAttributes: new { @class = "btn btn-warning  glyphicon glyphicon-edit", @datatoggle = "tooltip", @title = "Editar" })
+                    @Html.ActionLink(" ", "Details", new { id = item.idDocumentoCompromiso }, htmlAttributes: new { @class = "btn btn-info glyphicon glyphicon-list", @datatoggle = "tooltip", @title = "Ver" })
+                    @Html.ActionLink(" ", "Delete", new { id = item.idDocumentoCompromiso }, htmlAttributes: new { @class = "btn btn-danger glyphicon glyphicon-trash", @datatoggle = "tooltip", @title = "Borrar" })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

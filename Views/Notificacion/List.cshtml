@@ -1,0 +1,72 @@
+﻿@using Microsoft.AspNet.Identity
+@model List<SGC.Models.Notificacion>
+
+@{
+    ViewBag.Title = "Notificaciones";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Notificaciones</h2>
+
+<table class="table table-striped table-bordered table-hover dt-responsive dataTable no-footer" id="sys-table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayName("Título")
+            </th>
+            <th>
+                @Html.DisplayName("Mensaje")
+            </th>
+            <th>
+                @Html.DisplayName("Tipo")
+            </th>
+            <th>
+                @Html.DisplayName("Estado")
+            </th>
+            <th>
+                @Html.DisplayName("Fecha")
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.OrderByDescending(x => x.fechaCreacion))
+        {
+        <tr>
+            <td>
+                @using (Html.BeginForm("MarcarLeido", "Notificacion", FormMethod.Post, new { id = "formLeidoList-" + item.idNotificacion }))
+                {
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="idNotificacion" id="idNotificacionLeida" value="@item.idNotificacion" />
+                    <input type="hidden" name="idUsuario" value="@User.Identity.GetUserId()" />
+                    <input type="hidden" id="hoy" value="@Newtonsoft.Json.JsonConvert.SerializeObject(DateTimeOffset.Parse(DateTime.Now.ToString(), null).DateTime)" />
+                    <a href="@item.url" id="aTitulo" onclick="return false;">
+                        <div id="divTitulo" onclick="submitFormLeido('@item.idNotificacion');">
+                            @Html.DisplayFor(modelItem => item.titulo)
+                        </div>
+                    </a>
+                }
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.mensaje)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.tipo)
+            </td>
+            <td>
+                @item.estado.LastOrDefault().nombre
+            </td>
+            <td data-sort="@item.fechaCreacion.ToString("MM/dd/yyyy")">
+                @Html.DisplayFor(modelItem => item.fechaCreacion)
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts{
+    <script>
+        function submitFormLeido(id) {
+            $('#formLeidoList-' + id).submit();
+        }
+    </script>
+}

@@ -1,0 +1,170 @@
+﻿@model IEnumerable<SGC.Models.ViewModelCliente>
+
+@{
+    ViewBag.Title = "Administrar Mis Clientes";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2 class="page-title">Administrar Mis Clientes</h2>
+
+<div class="portlet box blue-dark">
+    <div class="portlet-title">
+        <div class="caption">
+            Clientes
+        </div>
+        <div class="tools">
+            <a href="javascript:;" class="collapse"> </a>
+            <a href="javascript:;" class="fullscreen"> </a>
+        </div>
+        <div class="actions">
+            <div class="inputs pull-right">
+                <a href="@Url.Action("Create") " class="btn btn-circle btn-sm btn-default btn-group-lg" style="margin-right:10px; margin-left:10px;">
+                    <i class="fa fa-plus-circle"></i> Nuevo
+                </a>
+            </div>
+            <button id="ReporteMisClientes" type="button" class="excel btn btn-circle btn-sm btn-default btn-group-lg">Reporte</button>
+        </div>
+    </div>
+    <div class="portlet-body">
+        <table class="table table-striped table-bordered table-hover dt-responsive dataTable" id="sys-table" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>Mandante</th>
+                    <th>Nombre</th>
+                    <th>Razón Social</th>
+                    <th>RUT</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item._mandante.nombreMandante)</td>
+                        <td>@Html.DisplayFor(modelItem => item._cliente.nombreEmpresa)</td>
+                        <td>@Html.DisplayFor(modelItem => item._cliente.razonSocial)</td>
+                        <td>@Html.DisplayFor(modelItem => item._cliente.rut)</td>
+                        <td class="text-center">
+                            @using (Html.BeginForm("Delete", "Cliente", FormMethod.Post, new { @id = "notificationForm_" + @item._cliente.idCliente }))
+                            {
+                                <div class="input-group-btn">
+                                    @if (item._cliente.encuestaSatisfaccion || item._cliente.encuestaSatisfaccionElerning)
+                                    {
+                                        <span class="btn btn-info btn-sm btn-circle glyphicon glyphicon-alert" data-toggle="tooltip" data-placement="top" title="El cliente debe realizar una encuesta de satisfacción." style="margin-right:5px" onclick="encuestaSatisfaccion()"> </span>
+                                    }
+                                    @if (item._cliente.postVenta)
+                                    {
+                                        <span class="btn btn-warning btn-sm btn-circle glyphicon glyphicon-alert" data-toggle="tooltip" data-placement="top" title="No se han realizado vetas en 3 meses." style="margin-right:5px" onclick="postVenta()"> </span>
+                                    }
+                                    @Html.ActionLink(" ", "R43", "Cliente", new { id = item._cliente.idCliente }, htmlAttributes: new { @class = "btn btn-default btn-sm glyphicon glyphicon-list-alt", @datatoggle = "tooltip", @title = "R43" })
+                                    @Html.ActionLink(" ", "Create", "ClienteContacto", new { id = item._cliente.idCliente }, htmlAttributes: new { @class = "btn btn-default btn-sm glyphicon glyphicon-user", @datatoggle = "tooltip", @title = "Acceso" })
+                                    @Html.ActionLink(" ", "Edit", new { id = item._cliente.idCliente }, htmlAttributes: new { @class = "btn btn-warning btn-sm glyphicon glyphicon-edit", @datatoggle = "tooltip", @title = "Editar" })
+                                    @Html.ActionLink(" ", "Details", new { id = item._cliente.idCliente }, htmlAttributes: new { @class = "btn btn-info btn-sm glyphicon glyphicon-list", @datatoggle = "tooltip", @title = "Ver" })
+                                    @Html.AntiForgeryToken()
+                                    <a class="btn btn-danger btn-sm glyphicon glyphicon-trash" href="javascript:confirmDelete('Delete','@item._cliente.idCliente','Cliente')" title="Eliminar"></a>
+                                </div>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<div hidden>
+    @using (Html.BeginForm("ReporteMisClientes", "ClienteController", FormMethod.Post, new { @id = ("form-ReporteMisClientes") }))
+    {
+        @Html.AntiForgeryToken()
+    }
+</div>
+
+<div class="modal fade draggable-modal modalx"
+     id="modalPostVenta"
+     tabindex="-1"
+     data-keyboard="false"
+     role="dialog"
+     aria-labelledby="deleteLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="row">
+                    <div class="col-md-10">
+                        <h4 class="modal-title">Alerta Post Venta</h4>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4>No se han realizado ventas en 3 meses.</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade draggable-modal modalx"
+     id="modalEncuestaSatisfaccion"
+     tabindex="-1"
+     data-keyboard="false"
+     role="dialog"
+     aria-labelledby="deleteLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="row">
+                    <div class="col-md-10">
+                        <h4 class="modal-title">Alerta Encuesta Satisfacción</h4>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4>El cliente debe realizar una encuesta de satisfacción.</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section topLevel{
+    @{Html.RenderPartial("_RenderConfirm.Modal"); }
+}
+
+@section Scripts{
+    <script>
+        function postVenta() {
+            $('#modalPostVenta').modal({ keyboard: true }, 'show');
+        }
+        function encuestaSatisfaccion() {
+            $('#modalEncuestaSatisfaccion').modal({ keyboard: true }, 'show');
+        }
+
+        var id = "";
+
+        $('.excel').on('click', function () {
+            var form = $('#form-ReporteMisClientes');
+            url = form.attr('action');
+            url = url.replace(id, this.id);
+            form.attr('action', this.id);
+            console.log(form.attr('action'));
+            id = this.id;
+            form.submit();
+        });
+    </script>
+}

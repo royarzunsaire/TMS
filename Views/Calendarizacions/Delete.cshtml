@@ -1,0 +1,49 @@
+﻿@model SGC.Models.Calendarizacion
+
+@{
+    ViewBag.Title = "Delete | Eliminar";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Confirmar eliminación</h2>
+
+<h3>Debe confirmar la eliminación de Calendarizacion </h3>
+<div>
+
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.detalle)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.detalle)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.inicioPeriodo)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.inicioPeriodo)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.finPeriopdo)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.finPeriopdo)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+    <div class="form-actions no-color">
+        @Html.ActionLink("Volver", "Index", "", new { @class = "btn btn-default" })
+        <input type="submit" value="Eliminar" class="btn btn-danger" />
+    </div>
+    }
+</div>

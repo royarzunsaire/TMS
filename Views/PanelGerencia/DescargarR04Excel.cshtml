@@ -1,0 +1,103 @@
+﻿@model SGC.Models.ViewModelContactosClientes
+@using SGC.Models;
+@using System.Data.Entity;
+@using System.Collections.Generic;
+@{
+    var empresa = "";
+    var faena = "";
+    var telefono = "";
+    var correo = "";
+}
+<style>
+    #table-wrapper {
+        position: relative;
+    }
+
+    #table-scroll {
+        overflow: auto;
+    }
+
+    #table-wrapper table {
+        width: 100%;
+    }
+
+    #table-wrapper td {
+        white-space: nowrap;
+    }
+
+    #table-wrapper th {
+        white-space: nowrap;
+    }
+
+    th {
+        background-color: yellow;
+    }
+</style>
+
+<div id="table-wrapper">
+    <div id="table-scroll">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>@Html.DisplayName("Empresa")</th>
+                    <th>@Html.DisplayName("Nombre")</th>
+                    <th>@Html.DisplayName("Apellido P")</th>
+                    <th>@Html.DisplayName("Apellido M")</th>
+                    <th>@Html.DisplayName("Faena")</th>
+                    <th>@Html.DisplayName("Dirección")</th>
+                    <th>@Html.DisplayName("Teléfono")</th>
+                    <th>@Html.DisplayName("Correo")</th>
+                    <th>@Html.DisplayName("Líder Comercial")</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.clienteContacto)
+                {
+                    var empresaCliente = item.cliente.nombreEmpresa;
+                    faena = "No Aplica";
+                    if (item.cliente.mandante != null)
+                    {
+                        empresa = item.cliente.mandante.nombreMandante;
+                        faena = item.cliente.nombreEmpresa;
+                    }
+                    //Verifica si el contacto es diferente al anterior
+                    if (empresa != empresaCliente || telefono != item.contacto.telefono || correo != item.contacto.correo)
+                    {
+                        <tr>
+                            <td>@empresaCliente</td>
+                            <td>@Html.DisplayFor(modelItem => item.contacto.nombres)</td>
+                            <td>@Html.DisplayFor(modelItem => item.contacto.apellidoPaterno)</td>
+                            <td>@Html.DisplayFor(modelItem => item.contacto.apellidoMaterno)</td>
+                            <td>@faena</td>
+                            <td>@Html.DisplayFor(modelItem => item.cliente.direccion)</td>
+                            <td>@Html.DisplayFor(modelItem => item.contacto.telefono)</td>
+                            <td>@Html.DisplayFor(modelItem => item.contacto.correo)</td>
+                            <td>
+                                @if (item.cliente.usuariosAsignados.Count() > 0)
+                                {
+                                    string usuarios = "";
+                                    foreach (var usuario in item.cliente.usuariosAsignados.ToList())
+                                    {
+                                        usuarios += usuario.usuario.nombres + " " + usuario.usuario.apellidoPaterno;
+                                        if (item.cliente.usuariosAsignados.Count() > 1)
+                                        {
+                                            usuarios += " | ";
+                                        }
+                                    }
+                                    @Html.Raw(usuarios);
+                                }
+                                else
+                                {
+                                    @Html.Raw("Sin Asignar");
+                                }
+                            </td>
+                        </tr>
+                    }
+                    empresa = empresaCliente;
+                    telefono = item.contacto.telefono;
+                    correo = item.contacto.correo;
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,45 @@
+﻿<script type="text/javascript">
+    var deleteURL;
+    var currentElementId;    
+    var controllerName;
+    function updateDialog(id, action, controller) {
+
+        $("#notificationFormItemId").val(id);
+        var actionURL = '@Url.Action("Delete", "Controller",new { id = "replace"})';
+        actionURL = actionURL.replace("replace", id);
+        actionURL = actionURL.replace("Controller", controller);
+        actionURL = actionURL.replace("Delete", deleteURL);
+        switch (action) {
+            case 'detail':
+                alert("Show details in this section");
+               break;
+            
+            case 'delete':
+                var del = deleteURL + "/" + id;
+                //debugger;
+                console.log(actionURL);
+                $("#notificationForm_"+id).attr('action', actionURL).submit();
+                break;
+            
+            default:
+                console.debug('Unknown action' +action)
+
+        }
+    }
+    function confirmDelete(deleteUrl, id,controller) {
+
+        currentElementId = id;
+        deleteURL = deleteUrl;
+        controllerName = controller;
+        $("#deleteConfirmModal").modal({ keyboard: true }, 'show');
+    }
+    $(function () {
+        $("#deleteConfirmModal").on('click', "#deleteConfirm", function () {
+            updateDialog(currentElementId, 'delete',controllerName);
+        });
+        $("#deleteConfirmModal").on('click', "#deleteCancel", function () {
+            $("#deleteConfirmModal").modal('hide');
+        });
+    });
+
+</script>

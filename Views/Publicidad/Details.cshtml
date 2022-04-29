@@ -1,0 +1,160 @@
+﻿@model SGC.Models.Publicidad
+
+@{
+    ViewBag.Title = "Detalles";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet light bordered">
+            <div class="portlet-title">
+                <div class="caption">
+                    Detalles
+                </div>
+                <div class="row col-md-11">
+                    <div class="col-md-offset-10 col-md-1">
+                        <p>
+                            @Html.ActionLink("Crear", "Create", new { }, new { @class = "btn btn-default" })
+                        </p>
+                    </div>
+                    <div class="col-md-1">
+                        <p>
+                            @Html.ActionLink("Vista previa", "DetailsSlider", new { }, new { @class = "btn btn-default" })
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+            <div class="portlet-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-horizontal">
+
+                            <div class="form-group">
+
+
+
+                                <div class="col-md-12" style="margin-top: 20px">
+                                    <div>
+
+                                        <dl class="dl-horizontal">
+                                            <dt>
+                                                @Html.DisplayNameFor(model => model.nombre)
+                                            </dt>
+
+                                            <dd>
+                                                @Html.DisplayFor(model => model.nombre)
+                                            </dd>
+
+                                            <dt>
+                                                @Html.DisplayNameFor(model => model.titulo)
+                                            </dt>
+
+                                            <dd>
+                                                @Html.DisplayFor(model => model.titulo)
+                                            </dd>
+
+                                            <dt>
+                                                @Html.DisplayNameFor(model => model.descripcion)
+                                            </dt>
+
+                                            <dd>
+                                                @Html.DisplayFor(model => model.descripcion)
+                                            </dd>
+                                            <dt>
+                                                @Html.DisplayNameFor(model => model.foto)
+                                            </dt>
+
+
+                                            <dt>
+                                                @Html.DisplayNameFor(model => model.link)
+                                            </dt>
+
+                                            <dd>
+                                                <a href="@Model.link">Link</a>
+                                            </dd>
+
+                                            <dt>
+                                                @Html.DisplayNameFor(model => model.tipo)
+                                            </dt>
+
+                                            <dd>
+                                                @Html.DisplayFor(model => model.tipo)
+                                            </dd>
+
+                                            <dt>
+                                                @Html.DisplayNameFor(model => model.vigencia)
+                                            </dt>
+
+                                            <dd>
+                                                @Html.DisplayFor(model => model.vigencia)
+                                            </dd>
+
+                                            <dt>
+                                                @Html.DisplayNameFor(model => model.fechaCreacion)
+                                            </dt>
+
+                                            <dd>
+                                                @Html.DisplayFor(model => model.fechaCreacion)
+                                            </dd>
+
+                                            <dt>
+                                                @Html.DisplayNameFor(model => model.fechaActualizacion)
+                                            </dt>
+
+                                            <dd>
+                                                @Html.DisplayFor(model => model.fechaActualizacion)
+                                            </dd>
+                                            <hr />
+                                            @if (Model != null && Model.foto != null)
+                                            {
+                                                <dd>
+                                                    <img src="@Url.Content(Model.foto.urlArchivo)" alt="FOTO" style="max-height:1024px" />
+                                                </dd>
+
+                                            }
+                                            else
+                                            {
+                                                <dd>
+                                                    <img src="" alt="FOTO" />
+                                                </dd>
+
+                                            }
+                                        </dl>
+                                    </div>
+                                    <hr />
+                                    <p>
+                                        @Html.ActionLink("Editar", "Create", new { id = Model.idPublicidad }) |
+                                        @Html.ActionLink("Volver", "Index")
+                                    </p>
+
+                                </div>
+
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <hr />
+      
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+

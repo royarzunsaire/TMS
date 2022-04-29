@@ -1,0 +1,510 @@
+﻿@model List<string>
+
+@{
+    ViewBag.Title = "Soporte a Usuario";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2 class="page-title" id="menu">Soporte a Usuario</h2>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="portlet light bordered">
+                    <div class="portlet-body">
+                        <ul class="list-grup">
+                            @if (Model.Contains("/AporteCapacitacion/")
+                                || Model.Contains("/Cliente/")
+                                || Model.Contains("/Contacto/")
+                                || Model.Contains("/Cotizacion_R13/")
+                                || Model.Contains("/Giros/")
+                                || Model.Contains("/Mandante/")
+                                || Model.Contains("/TiposDocumentosPago/"))
+                            {
+                                <li class="">
+                                    <h4>Cotización</h4>
+                                    <ul class="list-grup">
+                                        @if (Model.Contains("/AporteCapacitacion/"))
+                                        {
+                                            <li>
+                                                <a href="@Url.Action("AporteCapacitacion", "Home")">
+                                                    Aportes de Capacitación
+                                                </a>
+                                            </li>
+                                        }
+                                        @if (Model.Contains("/Cliente/"))
+                                        {
+                                            <li>
+                                                <a href="@Url.Action("Cliente", "Home")">
+                                                    Clientes
+                                                </a>
+                                            </li>
+                                        }
+                                        @if (Model.Contains("/Contacto/"))
+                                        {
+                                            <li>
+                                                <a href="@Url.Action("Contacto", "Home")">
+                                                    Contactos
+                                                </a>
+                                            </li>
+                                        }
+                                        @if (Model.Contains("/Cotizacion_R13/"))
+                                        {
+                                            <li>
+                                                <a href="@Url.Action("Cotizacion", "Home")">
+                                                    Cotizaciones
+                                                </a>
+                                            </li>
+                                        }
+                                        @if (Model.Contains("/Giro/"))
+                                        {
+                                            <li>
+                                                <a href="@Url.Action("Giro", "Home")">
+                                                    Giros
+                                                </a>
+                                            </li>
+                                        }
+                                        @if (Model.Contains("/Mandante/"))
+                                        {
+                                            <li>
+                                                <a href="@Url.Action("Mandante", "Home")">
+                                                    Mandantes
+                                                </a>
+                                            </li>
+                                        }
+                                        @if (Model.Contains("/TiposDocumentosPago/"))
+                                        {
+                                            <li>
+                                                <a href="@Url.Action("TiposDocumentosPago", "Home")">
+                                                    Tipos de Documentos de Pago
+                                                </a>
+                                            </li>
+                                        }
+                                    </ul>
+                                </li>
+                            }
+                            @if (Model.Contains("/Comercializacions/")
+                                || Model.Contains("/LugarAlmuerzoes/")
+                                || Model.Contains("/Otics/")
+                                || Model.Contains("/Salas/"))
+                            {
+                                <li class="">
+                                    <h4>Comercialización</h4>
+                                    <ul class="list-grup">
+                                        @if (Model.Contains("/Comercializacions/"))
+                                        {
+                                            <li>
+                                                <a href="@Url.Action("Comercializacions", "Home")">
+                                                    Comercializaciones
+                                                </a>
+                                            </li>
+                                        }
+                                        @if (Model.Contains("/Comercializacions/") || Model.Contains("/Comercializacions/Create/"))
+                                        {
+                                            <li>
+                                                <a href="@Url.Action("ComercializacionsCreate", "Home")">
+                                                    Crear Comercialización
+                                                </a>
+                                            </li>
+                                        }
+                                        @if (Model.Contains("/LugarAlmuerzoes/"))
+                                        {
+                                            <li>
+                                                <a href="@Url.Action("LugarAlmuerzoes", "Home")">
+                                                    Lugares de Almuerzo
+                                                </a>
+                                            </li>
+                                        }
+                                        @if (Model.Contains("/Otics/"))
+                                        {
+                                            <li>
+                                                <a href="@Url.Action("Otics", "Home")">
+                                                    OTICS
+                                                </a>
+                                            </li>
+                                        }
+                                        @if (Model.Contains("/Comercializacions/"))
+                                        {
+                                            <li>
+                                                <a href="@Url.Action("Participantes", "Home")">
+                                                    Participantes
+                                                </a>
+                                            </li>
+                                        }
+                                        @if (Model.Contains("/Salas/"))
+                                        {
+                                            <li>
+                                                <a href="@Url.Action("Salas", "Home")">
+                                                    Salas
+                                                </a>
+                                            </li>
+                                        }
+                                    </ul>
+                                </li>
+                            }
+                            @if (Model.Contains("/ClienteContacto/"))
+                            {
+                                <li class="">
+                                    <h4>Encargado Empresa</h4>
+                                    <ul class="list-grup">
+                                        @if (Model.Contains("/ClienteContacto/"))
+                                        {
+                                            <li>
+                                                <a href="@Url.Action("ClienteContacto", "Home")">
+                                                    Encargado Empresa
+                                                </a>
+                                            </li>
+                                        }
+                                    </ul>
+                                </li>
+                            }
+                            @if (Model.Contains("/SalidaTerreno/MisSalidas/")
+                                || Model.Contains("/SalidaTerreno/")
+                                || Model.Contains("//SalidaTerreno/Calendario//"))
+                            {
+                                <li class="">
+                                    <h4>Salidas a Terreno</h4>
+                                    <ul class="list-grup">
+                                        @if (Model.Contains("/SalidaTerreno/MisSalidas/"))
+                                        {
+                                            <li>
+                                                <a href="@Url.Action("SalidaTerrenoMisSalidas", "Home")">
+                                                    Mis Salidas a Terreno
+                                                </a>
+                                            </li>
+                                        }
+                                        @if (Model.Contains("/SalidaTerreno/") || Model.Contains("/SalidaTerreno/Calendario/"))
+                                        {
+                                            <li>
+                                                <a href="@Url.Action("SalidaTerreno", "Home")">
+                                                    Salidas a Terreno
+                                                </a>
+                                            </li>
+                                        }
+                                    </ul>
+                                </li>
+                            }
+                            @if (Model.Contains("/Relator/Perfil/")
+                                || Model.Contains("/Relator/"))
+                            {
+                                <li class="">
+                                    <h4>Relatores</h4>
+                                    <ul class="list-grup">
+                                        @if (Model.Contains("/Relator/Perfil/"))
+                                        {
+                                            <li>
+                                                <a href="@Url.Action("RelatorPerfil", "Home")">
+                                                    Perfil Relator
+                                                </a>
+                                            </li>
+                                        }
+                                        @if (Model.Contains("/Relator/"))
+                                        {
+                                            <li>
+                                                <a href="@Url.Action("Relator", "Home")">
+                                                    Relatores
+                                                </a>
+                                            </li>
+                                        }
+                                    </ul>
+                                </li>
+                            }
+                            @if (Model.Contains("/RelatorCurso/")
+                                || Model.Contains("/CategoriaR11/")
+                                || Model.Contains("/Checklists/")
+                                || Model.Contains("/ListaDetalleCosto/")
+                                || Model.Contains("/Curso/")
+                                || Model.Contains("/Calendarizacions/")
+                                || Model.Contains("/RelatorCurso/Solicitudes/"))
+                            {
+                                <li class="">
+                                    <h4>Cursos</h4>
+                                    <ul class="list-grup">
+                                        @if (Model.Contains("/RelatorCurso/"))
+                                        {
+                                            <li>
+                                                <a href="@Url.Action("RelatorCurso", "Home")">
+                                                    Agregar Relatores a Cursos
+                                                </a>
+                                            </li>
+                                        }
+                                        @if (Model.Contains("/CategoriaR11/"))
+                                        {
+                                            <li>
+                                                <a href="@Url.Action("CategoriaR11", "Home")">
+                                                    Categorías
+                                                </a>
+                                            </li>
+                                        }
+                                        @if (Model.Contains("/Checklists/"))
+                                        {
+                                            <li>
+                                                <a href="@Url.Action("Checklists", "Home")">
+                                                    Checklists
+                                                </a>
+                                            </li>
+                                        }
+                                        @if (Model.Contains("/ListaDetalleCosto/"))
+                                        {
+                                            <li>
+                                                <a href="@Url.Action("ListaDetalleCosto", "Home")">
+                                                    Costos Fijos
+                                                </a>
+                                            </li>
+                                        }
+                                        @if (Model.Contains("/Curso/"))
+                                        {
+                                            <li>
+                                                <a href="@Url.Action("Curso", "Home")">
+                                                    Cursos
+                                                </a>
+                                            </li>
+                                        }
+                                        @if (Model.Contains("/Calendarizacions/"))
+                                        {
+                                            <li>
+                                                <a href="@Url.Action("Calendarizacions", "Home")">
+                                                    Cursos Abiertos
+                                                </a>
+                                            </li>
+                                        }
+                                        @if (Model.Contains("/RelatorCurso/Solicitudes/"))
+                                        {
+                                            <li>
+                                                <a href="@Url.Action("RelatorCursoSolicitudes", "Home")">
+                                                    Solicitudes de Cursos por Relatores
+                                                </a>
+                                            </li>
+                                        }
+                                    </ul>
+                                </li>
+                            }
+                            @if (Model.Contains("/Factura/Facturable/"))
+                            {
+                                <li class="">
+                                    <h4>Facturación</h4>
+                                    <ul class="list-grup">
+                                        @if (Model.Contains("/Factura/Facturable/"))
+                                        {
+                                            <li>
+                                                <a href="@Url.Action("Factura", "Home")">
+                                                    Facturación
+                                                </a>
+                                            </li>
+                                        }
+                                    </ul>
+                                </li>
+                            }
+                            @if (Model.Contains("/MetasSucursal/Sucursales/")
+                                || Model.Contains("/MetasVendedor/Vendedores/"))
+                            {
+                                <li class="">
+                                    <h4>Reportes</h4>
+                                    <ul class="list-grup">
+                                        @if (Model.Contains("/MetasVendedor/Vendedores/"))
+                                        {
+                                            <li>
+                                                <a href="@Url.Action("MetasVendedor", "Home")">
+                                                    Metas Lideres Comerciales
+                                                </a>
+                                            </li>
+                                        }
+                                        @if (Model.Contains("/MetasSucursal/Sucursales/"))
+                                        {
+                                            <li>
+                                                <a href="@Url.Action("MetasSucursal", "Home")">
+                                                    Metas Sucursales
+                                                </a>
+                                            </li>
+                                        }
+                                    </ul>
+                                </li>
+                            }
+                            @if (Model.Contains("/Templates/"))
+                            {
+                                <li class="">
+                                    <h4>Templates</h4>
+                                    <ul class="list-grup">
+                                        @if (Model.Contains("/Templates/"))
+                                        {
+                                            <li>
+                                                <a href="@Url.Action("Templates", "Home")">
+                                                    Templates
+                                                </a>
+                                            </li>
+                                        }
+                                    </ul>
+                                </li>
+                            }
+                            @if (Model.Contains("/Formularios/"))
+                            {
+                                <li class="">
+                                    <h4>Formularios</h4>
+                                    <ul class="list-grup">
+                                        @if (Model.Contains("/Formularios/"))
+                                        {
+                                            <li>
+                                                <a href="@Url.Action("Formularios", "Home")">
+                                                    Formularios
+                                                </a>
+                                            </li>
+                                        }
+                                    </ul>
+                                </li>
+                            }
+                            @if (Model.Contains("/ValidarCredenciales/"))
+                            {
+                                <li class="">
+                                    <h4>Validar Credenciales</h4>
+                                    <ul class="list-grup">
+                                        @if (Model.Contains("/ValidarCredenciales/"))
+                                        {
+                                            <li>
+                                                <a href="@Url.Action("ValidarCredenciales", "Home")">
+                                                    Validar Credenciales
+                                                </a>
+                                            </li>
+                                        }
+                                    </ul>
+                                </li>
+                            }
+                            @if (Model.Contains("/ParametrosMoodles/Create/")
+                                || Model.Contains("/ConfiguracionUsuarioParticipante/")
+                                || Model.Contains("/ConfiguracionUsuarioRelator/")
+                                || Model.Contains("/Permissions/")
+                                || Model.Contains("/AdminRoles/")
+                                || Model.Contains("/Sucursal/")
+                                || Model.Contains("/AdminUsers/"))
+                            {
+                                <li class="">
+                                    <h4>Administración</h4>
+                                    <ul class="list-grup">
+                                        @if (Model.Contains("/ParametrosMoodles/Create/"))
+                                        {
+                                            <li>
+                                                <a href="@Url.Action("ParametrosMoodles", "Home")">
+                                                    Configurar Moodle
+                                                </a>
+                                            </li>
+                                        }
+                                        @if (Model.Contains("/ConfiguracionUsuarioParticipante/"))
+                                        {
+                                            <li>
+                                                <a href="@Url.Action("ConfiguracionUsuarioParticipante", "Home")">
+                                                    Configurar Usuario Participante
+                                                </a>
+                                            </li>
+                                        }
+                                        @if (Model.Contains("/ConfiguracionUsuarioRelator/"))
+                                        {
+                                            <li>
+                                                <a href="@Url.Action("ConfiguracionUsuarioRelator", "Home")">
+                                                    Configurar Usuario Relator
+                                                </a>
+                                            </li>
+                                        }
+                                        @if (Model.Contains("/Permissions/"))
+                                        {
+                                            <li>
+                                                <a href="@Url.Action("Permissions", "Home")">
+                                                    Permisos y Menú
+                                                </a>
+                                            </li>
+                                        }
+                                        @if (Model.Contains("/AdminRoles/"))
+                                        {
+                                            <li>
+                                                <a href="@Url.Action("AdminRoles", "Home")">
+                                                    Roles
+                                                </a>
+                                            </li>
+                                        }
+                                        @if (Model.Contains("/Sucursal/"))
+                                        {
+                                            <li>
+                                                <a href="@Url.Action("Sucursal", "Home")">
+                                                    Sucursales
+                                                </a>
+                                            </li>
+                                        }
+                                        @if (Model.Contains("/AdminUsers/"))
+                                        {
+                                            <li>
+                                                <a href="@Url.Action("AdminUsers", "Home")">
+                                                    Usuarios
+                                                </a>
+                                            </li>
+                                        }
+                                    </ul>
+                                </li>
+                            }
+                            @if (Model.Contains("/LandingPageParticipante/"))
+                            {
+                                <li class="">
+                                    <h4>Perfil Participante</h4>
+                                    <ul class="list-grup">
+                                        @if (Model.Contains("/LandingPageParticipante/"))
+                                        {
+                                            <li>
+                                                <a href="@Url.Action("LandingPageParticipante", "Home")">
+                                                    Perfil Participante
+                                                </a>
+                                            </li>
+                                        }
+                                    </ul>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        @if (Model.Contains("/LugarAlmuerzoes/"))
+        {
+            <hr id="LugarAlmuerzoes" style="margin-bottom: 40px; margin-top: 0px;" />
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="portlet light bordered">
+                        <div class="portlet-title">
+                            <div class="caption">
+                                Lugares de Almuerzo
+                            </div>
+                            <div class="tools">
+                                <a href="javascript:;" class="collapse"> </a>
+                                <a href="javascript:;" class="fullscreen"> </a>
+                            </div>
+                            <div class="actions">
+                                <button type="button" class="btn btn-default" onclick="window.scrollTo(0, $('#menu').offset().top);">
+                                    <i class="fa fa-arrow-up"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="portlet-body text-center">
+                            <video width="720" height="540" controls>
+                                <source src="~/Videos/Manual_Usuario/lugares_almuerzo_1080p.mp4" type="video/mp4">
+                                Su navegador no soporta la reproducción del video.
+                            </video>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="form-group">
+        <div class="col-md-6">
+            <button type="button" class="btn btn-default" onclick="javascript:history.back()">Volver</button>
+        </div>
+    </div>
+</div>
+
+
+
+
+

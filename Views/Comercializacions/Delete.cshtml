@@ -1,0 +1,96 @@
+﻿@model SGC.Models.Comercializacion
+
+@{
+    ViewBag.Title = "Eliminar";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@if (ViewBag.sence != null && Model.cotizacion.tieneCodigoSence != "on")
+{
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Confirmar eliminación</h2>
+            <div class="alert alert-danger text-center" style="margin-bottom: 5px; padding: 5px">SENCE</div>
+        </div>
+    </div>
+}
+else
+{
+    <h2>Confirmar eliminación</h2>
+}
+<div class="portlet light bordered">
+    <div class="portlet-title">
+        <div class="caption">
+            Comercialización
+        </div>
+        <div class="tools">
+            <a href="javascript:;" class="collapse"> </a>
+            <a href="javascript:;" class="fullscreen"> </a>
+        </div>
+    </div>
+    <div class="portlet-body" id="datos-comercializacion">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Código Cotización</label>
+                    <hr class="separador-ver" />
+                    <div class="form-control" style="border: 0px">
+                        @Model.cotizacion.codigoCotizacion
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <label class="control-label">Lider Comercial</label>
+                <hr class="separador-ver" />
+                <div class="form-control" style="border: 0px">
+                    @Model.usuarioCreador.UserName
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Estado</label>
+                    <hr class="separador-ver" />
+                    <div class="form-control" style="border: 0px">
+                        @Model.comercializacionEstadoComercializacion.Last().EstadoComercializacion
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.cotizacion.curso.nombreCurso, htmlAttributes: new { @class = "control-label" })
+                    <hr class="separador-ver" />
+                    @Html.EditorFor(model => model.cotizacion.curso.nombreCurso, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", @style = "border: 0;" } })
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.fechaInicio, htmlAttributes: new { @class = "control-label" })
+                    <hr class="separador-ver" />
+                    @Html.EditorFor(model => model.fechaInicio, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", @style = "border: 0;" } })
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.fechaTermino, htmlAttributes: new { @class = "control-label" })
+                    <hr class="separador-ver" />
+                    @Html.EditorFor(model => model.fechaTermino, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", @style = "border: 0;" } })
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="row">
+        <div class="col-md-6">
+            @Html.ActionLink("Volver", "Index", "", new { @class = "btn btn-default" })
+        </div>
+        <div class="col-md-6 text-right">
+            <div class="form-actions no-color">
+                <input type="submit" value="Eliminar" class="btn btn-danger" />
+            </div>
+        </div>
+    </div>
+}

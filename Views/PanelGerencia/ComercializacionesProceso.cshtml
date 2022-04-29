@@ -1,0 +1,155 @@
+﻿@model IEnumerable<SGC.Models.ViewModelDocCompromisoComercializacionEstado>
+
+<style>
+    #table-wrapper {
+        position: relative;
+    }
+
+    #table-scroll {
+        overflow: auto;
+    }
+
+    #table-wrapper table {
+        width: 100%;
+    }
+
+    #table-wrapper td {
+        white-space: nowrap;
+    }
+
+    #table-wrapper th {
+        white-space: nowrap;
+    }
+
+    th {
+        background-color: yellow;
+    }
+</style>
+
+<div id="table-wrapper">
+    <div id="table-scroll">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayName("Código")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Fecha Creación")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Doc Compromiso")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Curso")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Tipo de Ejecución")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Cant Alumnos")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Precio Final")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Cliente")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Fecha Inicio")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Fecha Término")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Tipo")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Ciudad")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Estado")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Tipo Doc Compromiso")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Monto Doc Compromiso")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Factura")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Monto Factura")
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.docCompromisoComercializacion.comercializacion.cotizacion.codigoCotizacion)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.docCompromisoComercializacion.comercializacion.fechaCreacion)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.docCompromisoComercializacion.documentoCompromiso.numeroSerie)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.docCompromisoComercializacion.comercializacion.cotizacion.curso.nombreCurso)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.docCompromisoComercializacion.comercializacion.cotizacion.curso.tipoEjecucion)
+                        </td>
+                        <td data-cell-type="number">
+                            @Html.DisplayFor(modelItem => item.docCompromisoComercializacion.comercializacion.cotizacion.cantidadParticipante)
+                        </td>
+                        <td data-cell-type="number">
+                            @(item.docCompromisoComercializacion.comercializacion.valorFinal - item.docCompromisoComercializacion.comercializacion.descuento)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.docCompromisoComercializacion.comercializacion.cotizacion.cliente.nombreEmpresa)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.docCompromisoComercializacion.comercializacion.fechaInicio)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.docCompromisoComercializacion.comercializacion.fechaTermino)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.docCompromisoComercializacion.comercializacion.cotizacion.tipoCurso)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.docCompromisoComercializacion.comercializacion.ciudad.nombreCiudad)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.estado.EstadoComercializacion)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.docCompromisoComercializacion.documentoCompromiso.tipoDocCompromiso.nombre)
+                        </td>
+                        <td data-cell-type="number">
+                            @item.docCompromisoComercializacion.documentoCompromiso.monto
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.docCompromisoComercializacion.documentoCompromiso.factura.numero)
+                        </td>
+                        <td data-cell-type="number">
+                            @if (item.docCompromisoComercializacion.documentoCompromiso.factura != null)
+                            {
+                                @item.docCompromisoComercializacion.documentoCompromiso.factura.costo
+                            }
+                            else
+                            {
+                                <div>0</div>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+

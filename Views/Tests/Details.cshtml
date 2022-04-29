@@ -1,0 +1,43 @@
+﻿@model SGC.Models.Test
+
+@{
+     ViewBag.Title = "Detalle Test";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Detalle Test</h2>
+
+<div>
+    
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ModifiedDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ModifiedDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LastName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LastName)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Editar", "Edit", new { id = Model.idCliente },new {@class= "btn btn-info" }) 
+    @Html.ActionLink("Volver", "Index","",new {@class= "btn btn-default" })
+</p>

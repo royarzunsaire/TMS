@@ -1,0 +1,325 @@
+﻿@{
+    ViewBag.Title = "Resumen";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var fechaInicio = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+    fechaInicio = fechaInicio.Date;
+    var fechaTermino = fechaInicio.AddMonths(1).AddDays(-1).Date;
+}
+@{
+
+    var fecha = ViewBag.fechaInicio + " - " + ViewBag.fechaTermino;
+}
+@section Styles {
+    <link href="~/Content/css/PanelGerencia.css" rel="stylesheet" type="text/css" />
+}
+
+<h2 class="page-title">Panel de Gerencia</h2>
+
+@using (Html.BeginForm("Replace", "PanelGerencia", FormMethod.Post, new { @target = "_blank", @id = ("form-filter") }))
+{
+    @Html.AntiForgeryToken()
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                @Html.Label("Fecha de Inicio", htmlAttributes: new { @class = "control-label" })
+                <div class="input-group">
+                    @Html.EditorFor(model => fechaInicio, new { htmlAttributes = new { @class = "form-control datepicker date" } })
+                    <span class="input-group-addon">
+                        <i class="fa fa-calendar"></i>
+                    </span>
+                </div>
+                @Html.ValidationMessageFor(model => fechaInicio, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="form-group">
+                @Html.Label("Fecha de Termino", htmlAttributes: new { @class = "control-label" })
+                <div class="input-group">
+                    @Html.EditorFor(model => fechaTermino, new { htmlAttributes = new { @class = "form-control datepicker date" } })
+                    <span class="input-group-addon">
+                        <i class="fa fa-calendar"></i>
+                    </span>
+                </div>
+                @Html.ValidationMessageFor(model => fechaTermino, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                @Html.Label("Filtrar", htmlAttributes: new { @class = "control-label" })
+                <div class="input-group">
+                    <button class="filter" type="button"><i class="fa fa-filter"></i></button>
+                </div>
+                @Html.ValidationMessageFor(model => fechaTermino, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+
+}
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet light ">
+            <div class="portlet-title">
+                <div class="caption caption-md">
+                    <i class="icon-bar-chart font-dark hide"></i>
+                    <span class="caption-subject bold uppercase">Ventas Por Sucursal </span>
+                </div>
+                <div class="actions">
+
+                    <button id="VentasPorSucursal" type="button" class="excel btn btn-primary btn-sm  glyphicon glyphicon-file"></button>
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="tab-content">
+                    <div class="tab-pane active" id="tab_ventas_vendedor_mes">
+                        <div class="table-scrollable table-scrollable-borderless">
+                            <div class="scroll">
+                                <div id="table-wrapper">
+                                    <div id="table-scroll" class="VentasPorSucursalReporte">
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet light ">
+            <div class="portlet-title">
+                <div class="caption caption-md">
+                    <i class="icon-bar-chart font-dark hide"></i>
+                    <span class="caption-subject bold uppercase">Cotizaciones realizadas</span>
+                </div>
+                <div class="actions">
+
+                    <button id="Kpi" type="button" class="excel  btn btn-primary btn-sm  glyphicon glyphicon-file"></button>
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="tab-content">
+                    <div class="tab-pane active" id="tab_ventas_vendedor_mes">
+                        <div class="table-scrollable table-scrollable-borderless">
+                            <div class="scroll">
+                                <div id="table-wrapper">
+                                    <div id="table-scroll" class="KpiReporte">
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*//-----------------------*@
+
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet light ">
+            <div class="portlet-title">
+                <div class="caption caption-md">
+                    <i class="icon-bar-chart font-dark hide"></i>
+                    <span class="caption-subject bold uppercase">KPI Eficacia Cotizaciones</span>
+                </div>
+                <div class="actions">
+
+                    <button id="Eficacia" type="button" class=" excel  btn btn-primary btn-sm  glyphicon glyphicon-file"></button>
+
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="tab-content">
+                    <div class="tab-pane active" id="tab_ventas_vendedor_mes">
+                        <div class="table-scrollable table-scrollable-borderless">
+                            <div class="scroll">
+                                <div id="table-wrapper">
+                                    <div id="table-scroll" class="EficaciaReporte">
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet light ">
+            <div class="portlet-title">
+                <div class="caption caption-md">
+                    <i class="icon-bar-chart font-dark hide"></i>
+                    <span class="caption-subject bold uppercase">Cotizaciones Comercializadas</span>
+                </div>
+                <div class="actions">
+                    <button id="Comercializados" type="button" class=" excel  btn btn-primary btn-sm  glyphicon glyphicon-file"></button>
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="tab-content">
+                    <div class="tab-pane active" id="tab_ventas_vendedor_mes">
+                        <div class="table-scrollable table-scrollable-borderless">
+                            <div class="scroll">
+                                <div id="table-wrapper">
+                                    <div id="table-scroll" class="ComercializadosReporte">
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*//-----------------------*@
+
+<div hidden>
+    @using (Html.BeginForm("EficaciaReporte", "PanelGerencia", FormMethod.Post, new { @id = ("form-EficaciaReporte") }))
+    {
+        @Html.AntiForgeryToken()
+    }
+</div>
+<div hidden>
+    @using (Html.BeginForm("VentasPorSucursalReporte", "PanelGerencia", FormMethod.Post, new { @id = ("form-VentasPorSucursalReporte") }))
+    {
+        @Html.AntiForgeryToken()
+    }
+</div>
+<div hidden>
+    @using (Html.BeginForm("KpiReporte", "PanelGerencia", FormMethod.Post, new { @id = ("form-KpiReporte") }))
+    {
+        @Html.AntiForgeryToken()
+    }
+</div>
+<div hidden>
+    @using (Html.BeginForm("ComercializadosReporte", "PanelGerencia", FormMethod.Post, new { @id = ("form-ComercializadosReporte") }))
+    {
+        @Html.AntiForgeryToken()
+    }
+</div>
+
+@section Scripts{
+
+    <script>
+        //EficaciaReporte KpiReporte  VentasPorSucursalReporte
+
+        $(".filter").on('click', function () {
+            $('.EficaciaReporte').html("Cargando contenido ...");
+            $('.KpiReporte').html("Cargando contenido ...");
+            $('.VentasPorSucursalReporte').html("Cargando contenido ...");
+            $('.ComercializadosReporte').html("Cargando contenido ...");
+
+            var inicio = $("#fechaInicio").val().toString();
+            var end = $("#fechaTermino").val().toString();
+
+            var form = $('#form-EficaciaReporte');
+            var url = form.attr('action');
+
+            $.ajax({
+                method: "GET",
+                url: url,
+                dataType: "json",
+                data: { fechaInicio: inicio, fechaTermino: end },
+                error: function (request, status, error) {
+                    alert(request.responseText);
+                },
+            }).done(function (result) {
+                $('.EficaciaReporte').html(result.data);
+
+            });
+
+            form = $('#form-KpiReporte');
+            url = form.attr('action');
+
+            $.ajax({
+                method: "GET",
+                url: url,
+                dataType: "json",
+                data: { fechaInicio: inicio, fechaTermino: end },
+                error: function (request, status, error) {
+                    alert(request.responseText);
+                },
+            }).done(function (result) {
+
+                $('.KpiReporte').html(result.data);
+
+            });
+
+            form = $('#form-VentasPorSucursalReporte');
+            url = form.attr('action');
+
+            $.ajax({
+                method: "GET",
+                url: url,
+                dataType: "json",
+                data: { fechaInicio: inicio, fechaTermino: end },
+                error: function (request, status, error) {
+                    alert(request.responseText);
+                },
+            }).done(function (result) {
+
+                $('.VentasPorSucursalReporte').html(result.data);
+            });
+
+            form = $('#form-ComercializadosReporte');
+            url = form.attr('action');
+
+            $.ajax({
+                method: "GET",
+                url: url,
+                dataType: "json",
+                data: { fechaInicio: inicio, fechaTermino: end },
+                error: function (request, status, error) {
+                    alert(request.responseText);
+                },
+            }).done(function (result) {
+
+                $('.ComercializadosReporte').html(result.data);
+            });
+        })
+
+        var id = "";
+
+        $('.excel').on('click', function () {
+            var form = $('#form-filter');
+            url = form.attr('action');
+            if (id == "") {
+                url = url.replace("Replace", this.id);
+            } else {
+                url = url.replace(id, this.id);
+            }
+            form.attr('action', url);
+            console.log(form.attr('action'));
+            id = this.id;
+            form.submit();
+
+        });
+        $(document).ready(function () {
+            $(".filter").trigger('click');
+        });
+    </script>
+}

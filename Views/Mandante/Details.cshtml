@@ -1,0 +1,56 @@
+﻿@model SGC.Models.Mandante
+
+@{
+    ViewBag.Title = "Detalles Mandante";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h3 class="page-title">Detalles</h3>
+
+<div class="portlet light bordered col-md-6">
+    <div class="portlet-title">
+        <div class="caption">
+            Mandante
+        </div>
+        @*<div class="actions">
+            @Html.ActionLink("Editar", "Edit", new { id = Model.idMandante }, new { @class = "btn btn-default" })
+        </div>*@
+    </div>
+    <div class="portlet-body">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.nombreMandante, htmlAttributes: new { @class = "control-label" })
+                    <hr class="separador-ver" />
+                    @Html.EditorFor(model => model.nombreMandante, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", style = "border:0" } })
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.rut, htmlAttributes: new { @class = "control-label" })
+                    <hr class="separador-ver" />
+                    @Html.EditorFor(model => model.rut, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", style = "border:0" } })
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.direccion, htmlAttributes: new { @class = "control-label" })
+                    <hr class="separador-ver" />
+                    @Html.EditorFor(model => model.direccion, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", style = "border:0" } })
+                </div>
+            </div>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="form-group">
+                <div class="col-md-6">
+                    @Html.ActionLink("Volver", "Index", new { }, new { @class = "btn btn-default" })
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

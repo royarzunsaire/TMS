@@ -1,0 +1,227 @@
+﻿@model SGC.Models.ViewModelDatoCurricular
+
+@{
+    ViewBag.Title = "DatosCurriculares";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>
+    Datos Curriculares
+    <button class="btn btn-primary btn-large glyphicon glyphicon-plus" onclick="ShowModalDatosCurriculares()"> </button>
+</h2>
+
+<div class="portlet light bordered">
+    <div class="portlet-body form">
+        @Html.ValidationMessage("datosCurriculares", "", new { @class = "text-danger" })
+        <div class="row">
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4>
+                            Estudios Universitarios
+                        </h4>
+                    </div>
+                </div>
+                <table class="table">
+                    <tbody>
+                        @foreach (var item in Model.relator.tituloCurricular)
+                        {
+                            if (item.nombreTitulo == SGC.Models.TipoTitulo.UNIVERSITARIO)
+                            {
+                                <tr>
+                                    <td data-sort="@DateTime.Parse("01-01-" + item.fecha).ToString("MM/dd/yyyy")" style="width:10%">
+                                        @Html.DisplayFor(modelItem => item.fecha)
+                                    </td>
+                                    <td style="width:30%">
+                                        @Html.DisplayFor(modelItem => item.descripcion)
+                                    </td>
+                                    <td style="width:30%">
+                                        @Html.DisplayFor(modelItem => item.institucion)
+                                    </td>
+                                    <td style="width:25%">
+                                        @if (item.documento != null)
+                                        {
+                                            <i class="fa fa-download"></i>
+                                            @Html.ActionLink(item.documento.nombreArchivo, "Descargar", new { id = item.documento.idStorage }, new { })
+                                        }
+                                    </td>
+                                    <td class="text-center" style="width:5%">
+                                        @using (Html.BeginForm("BorrarDatoCurricular", "Relator", FormMethod.Post, new { @style = "float: left" }))
+                                        {
+                                            @Html.AntiForgeryToken()
+                                            @Html.HiddenFor(model => model.relator.idRelator)
+                                            @Html.HiddenFor(modelItem => item.idTituloCurricular)
+                                            <input type="hidden" name="urlAnterior" value="@ViewBag.urlAnterior" />
+                                            <button type="submit" value="" class="btn btn-danger btn-icon-only" datatoggle="tooltip" title="Borrar"><i class="fa fa-trash"></i></button>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4>
+                            Estudios Técnicos
+                        </h4>
+                    </div>
+                </div>
+                <table class="table">
+                    <tbody>
+                        @foreach (var item in Model.relator.tituloCurricular)
+                        {
+                            if (@item.nombreTitulo == SGC.Models.TipoTitulo.TECNICO)
+                            {
+                                <tr>
+                                    <td style="width:10%">
+                                        @Html.DisplayFor(modelItem => item.fecha)
+                                    </td>
+                                    <td style="width:30%">
+                                        @Html.DisplayFor(modelItem => item.descripcion)
+                                    </td>
+                                    <td style="width:30%">
+                                        @Html.DisplayFor(modelItem => item.institucion)
+                                    </td>
+                                    <td style="width:25%">
+                                        @if (item.documento != null)
+                                        {
+                                            <i class="fa fa-download"></i>
+                                            @Html.ActionLink(item.documento.nombreArchivo, "Descargar", new { id = item.documento.idStorage }, new { })
+                                        }
+                                    </td>
+                                    <td class="text-center" style="width:5%">
+                                        @using (Html.BeginForm("BorrarDatoCurricular", "Relator", FormMethod.Post, new { @style = "float: left" }))
+                                        {
+                                            @Html.AntiForgeryToken()
+                                            @Html.HiddenFor(model => model.relator.idRelator)
+                                            @Html.HiddenFor(modelItem => item.idTituloCurricular)
+                                            <input type="hidden" name="urlAnterior" value="@ViewBag.urlAnterior" />
+                                            <button type="submit" value="" class="btn btn-danger btn-icon-only" datatoggle="tooltip" title="Borrar"><i class="fa fa-trash"></i></button>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4>
+                            Cursos de Capacitación
+                        </h4>
+                    </div>
+                </div>
+                <table class="table">
+                    <tbody>
+                        @foreach (var item in Model.relator.tituloCurricular)
+                        {
+                            if (@item.nombreTitulo == SGC.Models.TipoTitulo.CAPACITACION)
+                            {
+                                <tr>
+                                    <td  data-sort="@DateTime.Parse(item.fecha).ToString("MM/dd/yyyy")" style="width:10%">
+                                        @Html.DisplayFor(modelItem => item.fecha)
+                                    </td>
+                                    <td style="width:30%">
+                                        @Html.DisplayFor(modelItem => item.descripcion)
+                                    </td>
+                                    <td style="width:30%">
+                                        @Html.DisplayFor(modelItem => item.institucion)
+                                    </td>
+                                    <td style="width:25%">
+                                        @if (item.documento != null)
+                                        {
+                                            <i class="fa fa-download"></i>
+                                            @Html.ActionLink(item.documento.nombreArchivo, "Descargar", new { id = item.documento.idStorage }, new { })
+                                        }
+                                    </td>
+                                    <td class="text-center" style="width:5%">
+                                        @using (Html.BeginForm("BorrarDatoCurricular", "Relator", FormMethod.Post, new { @style = "float: left" }))
+                                        {
+                                            @Html.AntiForgeryToken()
+                                            @Html.HiddenFor(model => model.relator.idRelator)
+                                            @Html.HiddenFor(modelItem => item.idTituloCurricular)
+                                            <input type="hidden" name="urlAnterior" value="@ViewBag.urlAnterior" />
+                                            <button type="submit" value="" class="btn btn-danger btn-icon-only" datatoggle="tooltip" title="Borrar"><i class="fa fa-trash"></i></button>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-md-12">
+                @*@Html.ActionLink("Volver", "Perfil", new { id = Model.idRelator }, new { @class = "btn btn-default" })*@
+                <a href="@ViewBag.urlAnterior" class="btn btn-default">Volver</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modal-datos-curriculares" class="modal fade draggable-modal modalx" tabindex="-1" data-backdrop="static" data-keyboard="false" role="alertdialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div id="modal-content" class="modal-content">
+            @using (Html.BeginForm("DatosCurriculares", "Relator", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                <div class="modal-header">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4 class="modal-title">Datos Curriculares</h4>
+                        </div>
+                        <div class="col-md-6">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    @Html.AntiForgeryToken()
+                    @Html.HiddenFor(model => model.relator.idRelator)
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.tituloCurricular.nombreTitulo, htmlAttributes: new { @class = "control-label" })
+                        @Html.EnumDropDownListFor(model => model.tituloCurricular.nombreTitulo, htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.tituloCurricular.nombreTitulo, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.tituloCurricular.descripcion, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.tituloCurricular.descripcion, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.tituloCurricular.descripcion, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.tituloCurricular.institucion, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.tituloCurricular.institucion, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.tituloCurricular.institucion, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.tituloCurricular.fecha, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.tituloCurricular.fecha, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.tituloCurricular.fecha, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="form-group">
+                        @Html.Label("Seleccionar documento", htmlAttributes: new { @class = "control-label" })
+                        <input type="file" name="fileTituloCurricular" accept="application/pdf" style="padding-top:10px" />
+                        @Html.ValidationMessage("documento", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="submit" value="Guardar" class="btn btn-primary" />
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
+                <input type="hidden" name="urlAnterior" value="@ViewBag.urlAnterior" />
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function ShowModalDatosCurriculares() {
+            $('#modal-datos-curriculares').modal({ keyboard: true }, 'show');
+        }
+    </script>
+}

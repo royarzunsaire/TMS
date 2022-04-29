@@ -1,0 +1,165 @@
+﻿@model SGC.Models.Factura
+@using SGC.Models
+@{
+    ViewBag.Title = "Editar Factura";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+<h2 class="page-title">Editar</h2>
+
+@using (Html.BeginForm("Edit", "Factura", FormMethod.Post, new { enctype = "multipart/form-data", @id = "form" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="portlet light bordered">
+                <div class="portlet-title">
+                    <div class="caption">
+                        Factura
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    @Html.HiddenFor(model => model.idFactura)
+                    <input type="hidden" name="idComercializacion" value="@ViewBag.idComercializacion" />
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.numero, htmlAttributes: new { @class = "control-label" })
+                                @Html.EditorFor(model => model.numero, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.numero, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.costo, htmlAttributes: new { @class = "control-label" })
+                                @Html.EditorFor(model => model.costo, new { htmlAttributes = new { @class = "form-control currency", @type = "text" } })
+                                @Html.ValidationMessageFor(model => model.costo, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.tipo, htmlAttributes: new { @class = "control-label" })
+                                @Html.EditorFor(model => model.tipo, new { htmlAttributes = new { @class = "form-control", disabled = "disabled" } })
+                                @*@Html.EnumDropDownListFor(model => model.tipo, "Seleccionar", htmlAttributes: new { @class = "form-control", disabled = "disabled" })*@
+                                @Html.ValidationMessageFor(model => model.tipo, "", new { @class = "text-danger" })
+                                @Html.HiddenFor(model => model.tipo)
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="input-group">
+                                @Html.LabelFor(model => model.fechaFacturacion, htmlAttributes: new { @class = "control-label" })
+
+                                @Html.EditorFor(model => model.fechaFacturacion, new { htmlAttributes = new { @class = "form-control datepicker " } })
+
+                                <span class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </span>
+                                @Html.ValidationMessageFor(model => model.fechaFacturacion, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            @Html.Label("", "Archivo", htmlAttributes: new { @class = "control-label" })
+                        </div>
+                        <div class="col-md-12">
+                            @if (Model.archivo != null)
+                            {
+                                <i class="fa fa-download"></i>
+                                @Html.ActionLink(Model.archivo.nombreArchivo, "Descargar", new { id = Model.archivo.idStorage }, new { })
+                            }
+                        </div>
+                        <div class="col-md-12">
+
+                            @if (ViewBag.files != null && ((List<Storage>)ViewBag.files).Count() > 0)
+                            {
+                                foreach (Storage file in ViewBag.files)
+                                {
+                                    <div class="row col-md-12">
+
+                                        <div class="col-md-8 text-left">
+                                            <span class="glyphicon glyphicon-save"></span>
+                                            @Html.ActionLink(file.nombreArchivo, "Descargar", new { id = file.idStorage }, new { })
+                                        </div>
+
+                                        <div class="col-md-4  text-right">
+                                            <span class="glyphicon glyphicon-remove"></span>
+                                            @Html.ActionLink("Eliminar", "DeleteFacturaStorage", "Factura", new { idFactura = Model.idFactura, idStorage = file.idStorage, idComercializacion = ViewBag.idComercializacion }, new { onclick = "return confirm('Está seguro que desea eliminar el R24: " + file.nombreArchivo + "?');" })
+                                        </div>
+                                    </div>
+                                    <hr />
+
+                                }
+
+                            }
+                            <div class="col-md-12 text-right">
+                                @Html.Label(" ", htmlAttributes: new { @class = "btn btn-info btn-sm glyphicon glyphicon-plus", @datatoggle = "tooltip", @id = "add_file" })
+
+                            </div>
+
+                            <div id="archivos_cont" class="col-md-12">
+                                <input class="archivos" type="file" name="files[0]" id="files_0" accept="application/pdf" />
+                                <input class="archivos" type="file" name="files[1]" id="files_1" accept="application/pdf" />
+                            </div>
+                            @Html.ValidationMessage("archivo", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group" style="padding-top: 15px">
+                                @Html.LabelFor(model => model.observacion, htmlAttributes: new { @class = "control-label" })
+                                @Html.EditorFor(model => model.observacion, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.observacion, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="row">
+                        <div class="form-group">
+                            <div class="col-md-6">
+                                @if (ViewBag.idComercializacion != null)
+                                {
+                                    @Html.ActionLink("Volver", "Facturas", new { id = ViewBag.idComercializacion }, new { @class = "btn btn-default" })
+                                }
+                                else
+                                {
+                                    @Html.ActionLink("Volver", "Index", new { }, new { @class = "btn btn-default" })
+                                }
+                            </div>
+                            <div class="col-md-6 text-right">
+                                <input type="submit" value="Guardar" class="btn btn-primary" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $('#form').submit(function () {
+                $('#form input').unmask();
+            });
+            $("#add_file").on("click", function () {
+                var archivos = $(".archivos");
+                var idList = new Array();
+
+                var i;
+                for (i = 0; i < archivos.length; i++) {
+                    idList.push(parseInt(archivos[i].id.split("_")[1]));
+                }
+                var max = Math.max.apply(null, idList) + 1;
+                var archivos = $("#archivos_cont");
+
+                var new_child = jQuery(document.createElement('div')).html('<input class="archivos" type="file" name="files[' + max + ']" id="files_' + max + '" accept="application/pdf" />');
+                archivos.append(new_child);
+
+            
+            });
+
+
+        });
+    </script>
+}

@@ -1,0 +1,89 @@
+﻿@model IEnumerable<SGC.Models.Calendarizacion>
+
+@{
+    ViewBag.Title = "Administrar Calendarizaciones";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2 class="page-title">Administrar Cursos Abiertos</h2>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-dark">
+            <div class="portlet-title">
+                <div class="caption">
+                    Periodos
+                </div>
+                <div class="tools">
+                    <a href="javascript:;" class="collapse"> </a>
+                    <a href="javascript:;" class="fullscreen"> </a>
+                </div>
+                <div class="actions">
+                    <a href="@Url.Action("Create", "Calendarizacions") " class="btn btn-circle btn-sm btn-default btn-group-lg" style="margin-right:10px; margin-left:10px;">
+                        <i class="fa fa-plus-circle"></i> Nuevo
+                    </a>
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <table class="table table-striped table-bordered table-hover dt-responsive dataTable" id="sys-table" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.inicioPeriodo)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.finPeriopdo)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.sucursal)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.detalle)
+                                    </th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.inicioPeriodo)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.finPeriopdo)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.sucursal.nombre)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.detalle)
+                                    </td>
+                                    <td class="text-center">
+                                        @using (Html.BeginForm("Delete", "Calendarizacions", FormMethod.Post, new { @id = "notificationForm_" + @item.idCalendarizacion }))
+                                        {
+                                            <div class="input-group-btn">
+                                                @Html.ActionLink(" ", "Calendario", new { id = item.idCalendarizacion }, htmlAttributes: new { @class = "btn btn-default btn-sm glyphicon glyphicon-calendar", @datatoggle = "tooltip", @title = "Calendario" })
+                                                @Html.ActionLink(" ", "Edit", new { id = item.idCalendarizacion }, htmlAttributes: new { @class = "btn btn-warning btn-sm glyphicon glyphicon-edit", @datatoggle = "tooltip", @title = "Editar" })
+                                                @Html.ActionLink(" ", "Details", new { id = item.idCalendarizacion }, htmlAttributes: new { @class = "btn btn-info btn-sm glyphicon glyphicon-list", @datatoggle = "tooltip", @title = "Ver" })
+                                                @Html.AntiForgeryToken()
+                                                <a class="btn btn-danger btn-sm glyphicon glyphicon-trash" href="javascript:confirmDelete('Delete','@(item.idCalendarizacion)','Calendarizacions')" title="Eliminar"></a>
+                                            </div>
+                                        }
+                                    </td>
+                                </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section topLevel{
+    @{Html.RenderPartial("_RenderConfirm.Modal"); }
+}

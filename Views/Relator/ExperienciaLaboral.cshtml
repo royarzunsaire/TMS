@@ -1,0 +1,183 @@
+﻿@model SGC.Models.ViewModelExperienciaLaboral
+
+@{
+    ViewBag.Title = "ExperienciaLaboral";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>
+    Experiencia Laboral
+    <button class="btn btn-primary btn-large glyphicon glyphicon-plus" onclick="ShowModalExperienciaLaboral()"> </button>
+</h2>
+
+<div class="portlet light bordered">
+    <div class="portlet-body form">
+        @Html.ValidationMessage("experienciaLaboral", "", new { @class = "text-danger" })
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayName("Inicio")
+                            </th>
+                            <th>
+                                @Html.DisplayName("Término")
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.experienciaLaboral.cargo)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.experienciaLaboral.empresa)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.experienciaLaboral.faena)
+                            </th>
+                            <th>
+                                @Html.DisplayName("Documento")
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.relator.experienciaLaboral)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.fechaInicio)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.fechaTermino)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.cargo)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.empresa)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.faena)
+                                </td>
+                                <td>
+                                    @if (item.documento != null)
+                                    {
+                                        <i class="fa fa-download"></i>
+                                        @Html.ActionLink(item.documento.nombreArchivo, "Descargar", new { id = item.documento.idStorage }, new { })
+                                    }
+                                </td>
+                                <td class="text-center">
+                                    @using (Html.BeginForm("BorrarExperienciaLaboral", "Relator", FormMethod.Post, new { }))
+                                    {
+                                        @Html.AntiForgeryToken()
+                                        @Html.HiddenFor(model => model.relator.idRelator)
+                                        @Html.HiddenFor(modelItem => item.idExperienciaLaboral)
+                                        <input type="hidden" name="urlAnterior" value="@ViewBag.urlAnterior" />
+                                        <button type="submit" value="" class="btn btn-danger btn-icon-only" datatoggle="tooltip" title="Borrar"><i class="fa fa-trash"></i></button>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-md-12">
+                @*@Html.ActionLink("Volver", "Perfil", new { id = Model.idRelator }, new { @class = "btn btn-default" })*@
+                <a href="@ViewBag.urlAnterior" class="btn btn-default">Volver</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modal-experiencia-laboral" class="modal fade draggable-modal modalx" tabindex="-1" data-backdrop="static" data-keyboard="false" role="alertdialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div id="modal-content" class="modal-content">
+            @using (Html.BeginForm("ExperienciaLaboral", "Relator", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                <div class="modal-header">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4 class="modal-title">Experiencia Laboral</h4>
+                        </div>
+                        <div class="col-md-6">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    @Html.AntiForgeryToken()
+                    @Html.HiddenFor(model => model.relator.idRelator)
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.experienciaLaboral.cargo, htmlAttributes: new { @class = "control-label" })
+                                @Html.EditorFor(model => model.experienciaLaboral.cargo, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.experienciaLaboral.cargo, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.experienciaLaboral.empresa, htmlAttributes: new { @class = "control-label" })
+                                @Html.EditorFor(model => model.experienciaLaboral.empresa, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.experienciaLaboral.empresa, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.experienciaLaboral.faena, htmlAttributes: new { @class = "control-label" })
+                                @Html.EditorFor(model => model.experienciaLaboral.faena, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.experienciaLaboral.faena, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.experienciaLaboral.fechaInicio, htmlAttributes: new { @class = "control-label" })
+                                @Html.EditorFor(model => model.experienciaLaboral.fechaInicio, new { htmlAttributes = new { @class = "form-control datepicker datetimepicker" } })
+                                @Html.ValidationMessageFor(model => model.experienciaLaboral.fechaInicio, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.experienciaLaboral.fechaTermino, htmlAttributes: new { @class = "control-label" })
+                                @Html.EditorFor(model => model.experienciaLaboral.fechaTermino, new { htmlAttributes = new { @class = "form-control datepicker datetimepicker" } })
+                                @Html.ValidationMessageFor(model => model.experienciaLaboral.fechaTermino, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                @Html.Label("Seleccionar documento", htmlAttributes: new { @class = "control-label" })
+                                <input type="file" name="fileExperienciaLaboral" accept="application/pdf" style="padding-top:10px" />
+                                @Html.ValidationMessage("documento", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="submit" value="Guardar" class="btn btn-primary" />
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
+                <input type="hidden" name="urlAnterior" value="@ViewBag.urlAnterior" />
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function ShowModalExperienciaLaboral() {
+            $('#modal-experiencia-laboral').modal({ keyboard: true }, 'show');
+        }
+    </script>
+}

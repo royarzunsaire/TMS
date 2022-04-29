@@ -1,0 +1,125 @@
+﻿@model SGC.Models.Participante
+
+@{
+    ViewBag.Title = "Credenciales";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles{
+    <style>
+        .container {
+            position: relative;
+            width: 100%;
+        }
+
+            .container img {
+                height: auto;
+            }
+
+            .container .btn {
+                position: absolute;
+                top: 0%;
+                left: 0%;
+                transform: translate(43%, 3%);
+                background-color: #555;
+                border: none;
+            }
+
+                .container .btn:hover {
+                    background-color: black;
+                }
+    </style>
+}
+
+<div class="page-title" style="margin-bottom: 0">
+    <div class="row">
+        <div class="col-md-12">
+            Administrar Participantes
+        </div>
+        <div class="col-md-4">
+            <small>Curso: @Model.comercializacion.cotizacion.curso.nombreCurso</small>
+        </div>
+        <div class="col-md-4">
+            <small>Comercialización: @Model.comercializacion.cotizacion.codigoCotizacion</small>
+        </div>
+        <div class="col-md-4">
+            <small>Participante: @Model.contacto.nombreCompleto</small>
+        </div>
+    </div>
+</div>
+
+<div class="portlet light bordered">
+    <div class="portlet-title">
+        <div class="caption">
+            Credenciales
+        </div>
+    </div>
+    <div class="portlet-body">
+        @*<div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.contacto.nombreCompleto, htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.contacto.nombreCompleto, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", style = "border: 0px" } })
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.contacto.run, htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.contacto.run, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", style = "border: 0px" } })
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    @Html.Label("curso", "Curso", htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.comercializacion.cotizacion.curso.nombreCurso, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", style = "border: 0px" } })
+                </div>
+            </div>
+        </div>
+        <hr />*@
+        @if (Model.credenciales != null)
+        {
+            <div class="row">
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <div class="container">
+                            <img src="~/Files/@Model.credenciales.nombreArchivo" style="max-width:450px; max-height:450px;border:1px solid grey" />
+                            @Html.ActionLink(" ", "Descargar", new { id = Model.credenciales.idStorage }, new { @class = "btn btn-primary glyphicon glyphicon-save", style = "vertical-align:top" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr />
+        }
+        @using (Html.BeginForm("Credenciales", "Participante", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.idParticipante)
+            <input type="hidden" name="returnUrl" value="@ViewBag.returnUrl" />
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        @Html.Label("credenciales", "Seleccionar archivo", htmlAttributes: new { @class = "control-label" })
+                        <input type="file" name="myFile" accept="image/png, image/jpeg" /> <br>
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="row">
+                <div class="col-md-6">
+                    @if (ViewBag.returnUrl != null)
+                    {
+                        <a class="btn btn-default" href="@ViewBag.returnUrl">Volver</a>
+                    }
+                    else
+                    {
+                        @Html.ActionLink("Volver", "List", new { id = ViewBag.idComercializacion }, new { @class = "btn btn-default" })
+                    }
+                </div>
+                <div class="col-md-6 text-right">
+                    <input type="submit" value="Guardar" class="btn btn-primary" />
+                </div>
+            </div>
+        }
+    </div>
+</div>

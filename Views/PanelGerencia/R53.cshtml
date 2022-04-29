@@ -1,0 +1,139 @@
+﻿@model IEnumerable<SGC.Models.R53>
+
+<style>
+    #table-wrapper {
+        position: relative;
+    }
+
+    #table-scroll {
+        overflow: auto;
+    }
+
+    #table-wrapper table {
+        width: 100%;
+    }
+
+    #table-wrapper td {
+        white-space: nowrap;
+    }
+
+    #table-wrapper th {
+        white-space: nowrap;
+    }
+
+    th {
+        background-color: yellow;
+    }
+</style>
+
+<div id="table-wrapper">
+    <div id="table-scroll">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayName("Código Comercialización")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Fecha Creación Comercialización")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Fecha Inicio Comercialización")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Fecha Término Comercialización")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Cliente")
+                    </th>
+                    <th>
+                        @Html.DisplayName("RUT Cliente")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Curso")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Modalidad")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Tipo Ejecución")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Sucursal")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Fecha R53")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Nombre Relator")
+                    </th>
+                    <th>
+                        @Html.DisplayName("RUN Relator")
+                    </th>
+                    @*<th>
+                        @Html.DisplayName("Puntaje")
+                    </th>*@
+                    <th>
+                        @Html.DisplayName("% Resultado")
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var r53 in Model)
+                {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => r53.comercializacion.cotizacion.codigoCotizacion)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => r53.comercializacion.fechaCreacion)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => r53.comercializacion.fechaInicio)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => r53.comercializacion.fechaTermino)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => r53.comercializacion.cotizacion.cliente.nombreEmpresa)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => r53.comercializacion.cotizacion.cliente.rut)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => r53.comercializacion.cotizacion.curso.nombreCurso)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => r53.comercializacion.cotizacion.modalidad)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => r53.comercializacion.cotizacion.curso.tipoEjecucion)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => r53.comercializacion.cotizacion.sucursal.nombre)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => r53.fecha)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => r53.relator.contacto.nombreCompleto)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => r53.relator.contacto.run)
+                    </td>
+                    @{ 
+                        var resultado = 0;
+                        var sumR53 = r53.encuesta.respuestas.Sum(x => int.TryParse(x.respuesta, out resultado) ? int.Parse(x.respuesta) : 0);
+                        var contR53 = r53.encuesta.respuestas.Where(x => int.TryParse(x.respuesta, out resultado)).Count();
+                        var puntaje = contR53 > 0 ? sumR53 / contR53 : 0;
+                    }
+                    <td data-cell-type="number">
+                        @String.Format("{0:N0}", puntaje)
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+

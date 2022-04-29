@@ -1,0 +1,189 @@
+﻿@model IEnumerable<SGC.Models.Participante>
+
+<style>
+    #table-wrapper {
+        position: relative;
+    }
+
+    #table-scroll {
+        overflow: auto;
+    }
+
+    #table-wrapper table {
+        width: 100%;
+    }
+
+    #table-wrapper td {
+        white-space: nowrap;
+    }
+
+    #table-wrapper th {
+        white-space: nowrap;
+    }
+
+    th {
+        background-color: yellow;
+    }
+</style>
+
+<div id="table-wrapper">
+    <div id="table-scroll">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayName("Código Comercialización")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Curso")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Tipo de Ejecución")
+                    </th>
+                    <th>
+                        @Html.DisplayName("RUN")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Nombre")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Fecha de Curso")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Nombre Curso Diplomas")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Nota Final")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Porcentaje Asistencia")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Fecha de Vencimiento")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Nombre Contacto")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Correo Contacto")
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                <tr>
+                    @{
+                        var asistencia = "-";
+                        var cantBloques = item.comercializacion.bloques.Count();
+                        var cantAsistencias = item.asistencia.Where(x => x.asistio == true).Count();
+                        if (cantBloques > 0)
+                        {
+                            asistencia = String.Format("{0:N0}", cantAsistencias * 100 / cantBloques) + "%";
+                        }
+                        var nota = 0.0;
+                        var notaTeorica = 0.0;
+                        var contTeorica = 0;
+                        foreach (var evaluacion in item.comercializacion.evaluaciones)
+                        {
+                            if (evaluacion.categoria == SGC.Models.CategoriaEvaluacion.Teorico)
+                            {
+                                if (item.notas.Where(n => n.evaluacion.idEvaluacion == evaluacion.idEvaluacion).FirstOrDefault() != null)
+                                {
+                                    if (item.notas.Where(n => n.evaluacion.idEvaluacion == evaluacion.idEvaluacion).FirstOrDefault().nota != ""
+                                        && item.notas.Where(n => n.evaluacion.idEvaluacion == evaluacion.idEvaluacion).FirstOrDefault().nota != "-")
+                                    {
+                                        notaTeorica += double.Parse(item.notas.Where(n => n.evaluacion.idEvaluacion == evaluacion.idEvaluacion).FirstOrDefault().nota);
+                                    }
+                                }
+                                contTeorica++;
+                            }
+                        }
+                        if (contTeorica > 0)
+                        {
+                            notaTeorica = notaTeorica / contTeorica;
+                        }
+                        var notaPractica = 0.0;
+                        var contPractica = 0;
+                        foreach (var evaluacion in item.comercializacion.evaluaciones)
+                        {
+                            if (evaluacion.categoria == SGC.Models.CategoriaEvaluacion.Practico)
+                            {
+                                if (item.notas.Where(n => n.evaluacion.idEvaluacion == evaluacion.idEvaluacion).FirstOrDefault() != null)
+                                {
+                                    if (item.notas.Where(n => n.evaluacion.idEvaluacion == evaluacion.idEvaluacion).FirstOrDefault().nota != ""
+                                        && item.notas.Where(n => n.evaluacion.idEvaluacion == evaluacion.idEvaluacion).FirstOrDefault().nota != "-")
+                                    {
+                                        notaPractica += double.Parse(item.notas.Where(n => n.evaluacion.idEvaluacion == evaluacion.idEvaluacion).FirstOrDefault().nota);
+                                    }
+                                }
+                                contPractica++;
+                            }
+                        }
+                        if (contPractica > 0)
+                        {
+                            notaPractica = notaPractica / contPractica;
+                        }
+                        if (item.comercializacion.evaluaciones.Where(x => x.categoria == SGC.Models.CategoriaEvaluacion.Teorico).Count() > 0
+                            && item.comercializacion.evaluaciones.Where(x => x.categoria == SGC.Models.CategoriaEvaluacion.Practico).Count() > 0)
+                        {
+                            nota = (notaTeorica + notaPractica) / 2;
+                        }
+                        else
+                        {
+                            if (item.comercializacion.evaluaciones.Where(x => x.categoria == SGC.Models.CategoriaEvaluacion.Teorico).Count() > 0)
+                            {
+                                nota = notaTeorica;
+                            }
+                            else
+                            {
+                                if (item.comercializacion.evaluaciones.Where(x => x.categoria == SGC.Models.CategoriaEvaluacion.Practico).Count() > 0)
+                                {
+                                    nota = notaPractica;
+                                }
+                            }
+                        }
+                    }
+                    <td>
+                        @Html.DisplayFor(modelItem => item.comercializacion.cotizacion.codigoCotizacion)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.comercializacion.cotizacion.curso.nombreCurso)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.comercializacion.cotizacion.curso.tipoEjecucion)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.contacto.run)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.contacto.nombreCompleto)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.comercializacion.fechaInicio)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.comercializacion.cotizacion.nombreDiploma)
+                    </td>
+                    <td>
+                        @String.Format("{0:N1}", nota)
+                    </td>
+                    <td>
+                        @asistencia
+                    </td>
+                    <td>
+                        @item.comercializacion.fechaTermino.AddMonths(item.comercializacion.vigenciaCredenciales).ToString("dd'/'MM'/'yyyy")
+                    </td>
+                    <td>
+                        @item.comercializacion.cotizacion.cliente.clienteContactos.Where(x => x.contacto.idContacto == item.comercializacion.cotizacion.contacto.Value).Select(x => x.contacto.nombreCompleto).FirstOrDefault()
+                    </td>
+                    <td>
+                        @item.comercializacion.cotizacion.cliente.clienteContactos.Where(x => x.contacto.idContacto == item.comercializacion.cotizacion.contacto.Value).Select(x => x.contacto.correo).FirstOrDefault()
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+

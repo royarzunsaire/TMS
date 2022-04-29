@@ -1,0 +1,102 @@
+﻿@model SGC.Models.viewModelAdministrarFormularios
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    ViewBag.Title = "Detalles Formulario";
+}
+
+<h2 class="page-title">Detalles</h2>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet light bordered">
+            <div class="portlet-title">
+                <div class="caption">
+                    Formulario
+                </div>
+            </div>
+            <div class="portlet-body">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Formulario.nombre)
+                            <hr class="separador-ver" />
+                            @Html.EditorFor(model => model.Formulario.nombre, new { htmlAttributes = new { @class = "form-control ver", @readonly = "readonly" } })
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(model => Model.Formulario.tipoFormulario)
+                            <hr class="separador-ver" />
+                            @Html.EditorFor(model => model.Formulario.tipoFormulario, new { htmlAttributes = new { @class = "form-control ver", @readonly = "readonly" } })
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Formulario.descripcion)
+                            <hr class="separador-ver" />
+                            @Html.EditorFor(model => model.Formulario.descripcion, new { htmlAttributes = new { @class = "form-control ver", @readonly = "readonly" } })
+                        </div>
+                    </div>
+                </div>
+                <hr />
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4>Preguntas</h4>
+                    </div>
+                    <div class="col-md-12">
+                        @foreach (var pregunta in Model.Formulario.preguntasFormularios.OrderBy(p => p.orden))
+                        {
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        @if (pregunta.obligatoria)
+                                        {
+                                            <label class="control-label">@pregunta.pregunta *</label>
+                                        }
+                                        else
+                                        {
+                                            <label class="control-label">@pregunta.pregunta</label>
+                                        }
+                                        @if (pregunta.tipo == SGC.Models.TipoPregunta.Abierta)
+                                        {
+                                            <textarea class="form-control" name="@pregunta.idPreguntasFormulario" disabled></textarea>
+                                        }
+                                        @if (pregunta.tipo == SGC.Models.TipoPregunta.Corta)
+                                        {
+                                            <input class="form-control" name="@pregunta.idPreguntasFormulario" value="" disabled />
+                                        }
+                                        @if (pregunta.tipo == SGC.Models.TipoPregunta.Alternativa)
+                                        {
+                                            <div class="form-group">
+                                                @foreach (var respuesta in pregunta.respuestaFormulario)
+                                                {
+                                                    <div class="form-check" id="@pregunta.idPreguntasFormulario">
+                                                        <label class="form-check-label">
+                                                            <input class="form-check-input" type="radio" name="@pregunta.idPreguntasFormulario" value="@respuesta.puntaje" disabled />
+                                                            @respuesta.respuesta
+                                                        </label>
+                                                    </div>
+                                                }
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <hr />
+                <div class="row">
+                    <div class="form-group">
+                        <div class="col-md-6">
+                            @Html.ActionLink("Volver", "Index", new { id = ViewBag.idComercializacion }, new { @class = "btn btn-default" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

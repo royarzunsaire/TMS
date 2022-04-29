@@ -1,0 +1,9 @@
+﻿@using Microsoft.AspNet.Identity
+@if (Request.IsAuthenticated)
+{
+    <li class="dropdown dropdown-user">
+        <a href="@Url.Action("Ayuda", "Home")" class="dropdown-toggle" data-hover="dropdown" data-close-others="true" style="padding-right: 8px;" title="Ayuda">
+            <i class="icon-question" style="font-size: 20px"></i>
+        </a>
+    </li>
+}

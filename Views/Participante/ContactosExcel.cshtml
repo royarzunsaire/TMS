@@ -1,0 +1,62 @@
+﻿@model SGC.Models.Comercializacion
+
+@{
+    string value = "";
+}
+
+<table class="table table-striped table-bordered table-hover dt-responsive " cellspacing="0">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayName("Participante")
+            </th>
+            <th>
+                @Html.DisplayName("RUN")
+            </th>
+            <th>
+                @Html.DisplayName("Teléfono")
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.participantes.OrderBy(x => x.contacto.nombreCompleto))
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.contacto.nombreCompleto)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.contacto.run)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.contacto.telefono)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts{
+    <script>
+        function cont() {
+            $(".cont").each(function () {
+                var cont = $("#" + this.id);
+                var total = parseInt(cont.html().split("/")[1]);
+                cont.html("0/" + total);
+            });
+
+            $('input[type=checkbox]').each(function () {
+                if (this.checked) {
+                    var id = this.id.split("-")[1];
+                    var cont = $("#" + id);
+                    var cant = parseInt(cont.html().split("/")[0]);
+                    var total = parseInt(cont.html().split("/")[1]);
+                    cont.html((cant + 1) + "/" + total);
+                }
+            });
+        }
+        $(document).ready(function () {
+            cont();
+        });
+    </script>
+}

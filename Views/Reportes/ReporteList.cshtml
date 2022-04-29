@@ -1,0 +1,173 @@
+﻿@model IEnumerable<SGC.Models.ViewModelCurso>
+
+@{
+    ViewBag.Title = "Lista Cursos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles{
+    <style>
+        div.scroll {
+            /*height: 500px;*/
+            max-height: 450px;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+    </style>
+}
+
+<div class="page-title"> Reportes </div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-dark">
+            <div class="portlet-title">
+                <div class="caption">
+                    Listado de Cursos
+                </div>
+                <div class="tools">
+                    <a href="javascript:;" class="collapse"> </a>
+                    <a href="javascript:;" class="fullscreen"> </a>
+                </div>
+                <div class="actions">
+                    <a href="@Url.Action("ReporteListExcel", "Reportes") " class="btn btn-circle btn-sm btn-default btn-group-lg" style="margin-right:10px;">
+                        Descargar
+                    </a>
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="scroll">
+                            <div id="table-wrapper">
+                                <div id="table-scroll">
+                                    <table class="table table-striped table-bordered table-hover dt-responsive dataTable" id="table" cellspacing="0">
+                                        <thead>
+                                            <tr>
+                                                <th>
+                                                    @Html.DisplayName("Código SENCE")
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayName("Nombre Curso")
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayName("Tipo de Ejecución")
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayName("Horas Totales")
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayName("Horas Prácticas")
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayName("Horas Teóricas")
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayName("Valor Unitario")
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayName("Fecha de Vencimiento")
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var item in Model)
+                                            {
+                                                <tr>
+                                                    @if (item.r11 != null)
+                                                    {
+                                                        <td>
+                                                            @Html.DisplayFor(modelItem => item.r11.codigoSence)
+                                                        </td>
+                                                    }
+                                                    else
+                                                    {
+                                                        <td></td>
+                                                    }
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.curso.nombreCurso)
+                                                    </td>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.curso.tipoEjecucion)
+                                                    </td>
+                                                    @if (item.r11 != null)
+                                                    {
+                                                    <td class="text-right">
+                                                        @String.Format("{0:0.#}", item.r11.horasPracticas + item.r11.horasTeoricas)
+                                                    </td>
+                                                    }
+                                                    else
+                                                    {
+                                                        <td></td>
+                                                    }
+                                                    @if (item.r11 != null)
+                                                    {
+                                                        <td class="text-right">
+                                                            @Html.DisplayFor(modelItem => item.r11.horasPracticas)
+                                                        </td>
+                                                    }
+                                                    else
+                                                    {
+                                                        <td></td>
+                                                    }
+                                                    @if (item.r11 != null)
+                                                    {
+                                                        <td class="text-right">
+                                                            @Html.DisplayFor(modelItem => item.r11.horasTeoricas)
+                                                        </td>
+                                                    }
+                                                    else
+                                                    {
+                                                        <td></td>
+                                                    }
+                                                    @if (item.r12 != null)
+                                                    {
+                                                        var costo = 0;
+                                                        if (item.r12.costoParticularCurso != null)
+                                                        {
+                                                            costo = item.r12.costoParticularCurso.Sum(x => x.costo);
+                                                        }
+                                                        <td class="text-right">
+                                                            @String.Format("{0:C}", costo)
+                                                        </td>
+                                                    }
+                                                    else
+                                                    {
+                                                        <td></td>
+                                                    }
+                                                    @if (item.r11 != null)
+                                                    {
+                                                        <td class="text-right">
+                                                            @Html.DisplayFor(modelItem => item.r11.fechaCaducidad)
+                                                        </td>
+                                                    }
+                                                    else
+                                                    {
+                                                        <td></td>
+                                                    }
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr />
+                <button type="button" class="btn btn-default" onclick="javascript:history.back()">Volver</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        var table = $('#table').DataTable({
+            "paging": false,
+            "ordering": false,
+            "info": false,
+            //"searching": false
+        });
+    </script>
+}

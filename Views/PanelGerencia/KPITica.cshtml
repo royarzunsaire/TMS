@@ -1,0 +1,197 @@
+﻿@{
+    ViewBag.Title = "KPI Tica";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var fechaInicio = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+    fechaInicio = fechaInicio.Date;
+    var fechaTermino = fechaInicio.AddMonths(1).AddDays(-1).Date;
+}
+@{
+
+    var fecha = ViewBag.fechaInicio + " - " + ViewBag.fechaTermino;
+}
+@section Styles {
+    <link href="~/Content/css/PanelGerencia.css" rel="stylesheet" type="text/css" />
+}
+
+<h2 class="page-title">Panel de Gerencia</h2>
+
+@using (Html.BeginForm("Replace", "PanelGerencia", FormMethod.Post, new { @target = "_blank", @id = ("form-filter") }))
+{
+    @Html.AntiForgeryToken()
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                @Html.Label("Fecha de Inicio", htmlAttributes: new { @class = "control-label" })
+                <div class="input-group">
+                    @Html.EditorFor(model => fechaInicio, new { htmlAttributes = new { @class = "form-control datepicker date" } })
+                    <span class="input-group-addon">
+                        <i class="fa fa-calendar"></i>
+                    </span>
+                </div>
+                @Html.ValidationMessageFor(model => fechaInicio, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="form-group">
+                @Html.Label("Fecha de Termino", htmlAttributes: new { @class = "control-label" })
+                <div class="input-group">
+                    @Html.EditorFor(model => fechaTermino, new { htmlAttributes = new { @class = "form-control datepicker date" } })
+                    <span class="input-group-addon">
+                        <i class="fa fa-calendar"></i>
+                    </span>
+                </div>
+                @Html.ValidationMessageFor(model => fechaTermino, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                @Html.Label("Filtrar", htmlAttributes: new { @class = "control-label" })
+                <div class="input-group">
+                    <button class="filter" type="button"><i class="fa fa-filter"></i></button>
+                </div>
+                @Html.ValidationMessageFor(model => fechaTermino, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet light ">
+            <div class="portlet-title">
+                <div class="caption caption-md">
+                    <i class="icon-bar-chart font-dark hide"></i>
+                    <span class="caption-subject bold uppercase">Acceso de Clientes a la plataforma</span>
+                </div>
+                <div class="actions">
+                    <button id="Login" type="button" class="excel btn btn-primary btn-sm  glyphicon glyphicon-file"></button>
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="tab-content">
+                    <div class="tab-pane active" id="tab_ventas_vendedor_mes">
+                        <div class="table-scrollable table-scrollable-borderless">
+                            <div class="scroll">
+                                <div id="table-wrapper">
+                                    <div id="table-scroll" class="LoginReporte">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet light ">
+            <div class="portlet-title">
+                <div class="caption caption-md">
+                    <i class="icon-bar-chart font-dark hide"></i>
+                    <span class="caption-subject bold uppercase">Acceso de Clientes Comercializados a la plataforma</span>
+                </div>
+                <div class="actions">
+                    <button id="LoginComercializados" type="button" class="excel btn btn-primary btn-sm  glyphicon glyphicon-file"></button>
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="tab-content">
+                    <div class="tab-pane active" id="tab_ventas_vendedor_mes">
+                        <div class="table-scrollable table-scrollable-borderless">
+                            <div class="scroll">
+                                <div id="table-wrapper">
+                                    <div id="table-scroll" class="LoginComercializadosReporte">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*//-----------------------*@
+
+<div hidden>
+    @using (Html.BeginForm("LoginReporte", "PanelGerencia", FormMethod.Post, new { @id = ("form-LoginReporte") }))
+    {
+        @Html.AntiForgeryToken()
+    }
+</div>
+<div hidden>
+    @using (Html.BeginForm("LoginComercializadosReporte", "PanelGerencia", FormMethod.Post, new { @id = ("form-LoginComercializadosReporte") }))
+    {
+        @Html.AntiForgeryToken()
+    }
+</div>
+
+@section Scripts{
+
+    <script>
+        $(".filter").on('click', function () {
+            $('.LoginReporte').html("Cargando contenido ...");
+            $('.LoginComercializadosReporte').html("Cargando contenido ...");
+
+            var inicio = $("#fechaInicio").val().toString();
+            var end = $("#fechaTermino").val().toString();
+
+            var form = $('#form-LoginReporte');
+            var url = form.attr('action');
+
+            $.ajax({
+                method: "GET",
+                url: url,
+                dataType: "json",
+                data: { fechaInicio: inicio, fechaTermino: end },
+                error: function (request, status, error) {
+                    alert(request.responseText);
+                },
+            }).done(function (result) {
+                $('.LoginReporte').html(result.data);
+
+            });
+
+            var form = $('#form-LoginComercializadosReporte');
+            var url = form.attr('action');
+
+            $.ajax({
+                method: "GET",
+                url: url,
+                dataType: "json",
+                data: { fechaInicio: inicio, fechaTermino: end },
+                error: function (request, status, error) {
+                    alert(request.responseText);
+                },
+            }).done(function (result) {
+                $('.LoginComercializadosReporte').html(result.data);
+
+            });
+        })
+
+        var id = "";
+
+        $('.excel').on('click', function () {
+            var form = $('#form-filter');
+            url = form.attr('action');
+            if (id == "") {
+                url = url.replace("Replace", this.id);
+            } else {
+                url = url.replace(id, this.id);
+            }
+            form.attr('action', url);
+            console.log(form.attr('action'));
+            id = this.id;
+            form.submit();
+
+        });
+        $(document).ready(function () {
+            $(".filter").trigger('click');
+        });
+    </script>
+}

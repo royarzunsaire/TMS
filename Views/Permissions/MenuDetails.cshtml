@@ -1,0 +1,59 @@
+﻿@model SGC.Models.Menu
+
+@{
+    ViewBag.Title = "Detalles";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Detalles</h2>
+
+<div>
+    <h4>Menú</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayName("Nombre")
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DisplayName)
+        </dd>
+
+        <dt>
+            @Html.DisplayName("ID Menú Padre")
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ParentMenuID)
+        </dd>
+
+        <dt>
+            @Html.DisplayName("Orden")
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.OrderNumber)
+        </dd>
+
+        <dt>
+            @Html.DisplayName("Ruta")
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.MenuURL)
+        </dd>
+
+        <dt>
+            @Html.DisplayName("Icono")
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.MenuIcon)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @*@Html.ActionLink("Editar", "MenuEdit", new { id = Model.MenuID }) |*@
+    @Html.ActionLink("Volver", "MenuIndex")
+</p>

@@ -1,0 +1,53 @@
+﻿@model List<SGC.Models.Publicidad>
+@using System.Web.Optimization
+
+@{
+    int i = -1;
+    string active = "active";
+}
+
+
+
+
+
+<div class=" slider-container">
+    <div class="slider-control left inactive"></div>
+    <div class="slider-control right"></div>
+    <ul class="slider-pagi" style="display:none"></ul>
+    <div class="slider">
+        @foreach (var item in Model)
+        {
+            i++;
+            if (i == 0)
+            {
+                active = "active";
+            }
+            else
+            {
+                active = "";
+            }
+
+            <div class="slide slide-@i @active">
+                <div class="slide__bg"></div>
+                <div class="slide__content">
+                    <svg class="slide__overlay" viewBox="0 0 720 405" preserveAspectRatio="xMaxYMax slice">
+                        <path class="slide__overlay-path" d="M0,0 150,0 500,405 0,405" />
+                    </svg>
+                    <div class="slide__text">
+                        <h5 class="slide__text-heading">@item.titulo</h5>
+                        <p class="slide__text-desc">@item.descripcion</p>
+                        <a class="slide__text-link" target="_blank" href="@item.link">Haz Clic Aquí</a>
+                    </div>
+                </div>
+            </div>
+        }
+
+
+    </div>
+</div>
+
+
+
+
+
+

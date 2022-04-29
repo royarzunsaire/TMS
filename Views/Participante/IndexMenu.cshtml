@@ -1,0 +1,32 @@
+﻿@model SGC.Models.Participante
+@{
+
+    var participante = Model;
+    int id = 0;
+    int id2 = 0;
+    var relator = Model.comercializacion.relatoresCursos.FirstOrDefault();
+    if (relator != null)
+    {
+        id2 = relator.idRelator;
+    }
+    if (Model != null)
+    {
+        id = Model.idParticipante;
+    }
+    if (Model.comercializacion.cotizacion.curso.tipoEjecucion == SGC.Models.TipoEjecucion.Elearning_Asincrono
+        || Model.comercializacion.cotizacion.curso.tipoEjecucion == SGC.Models.TipoEjecucion.Recertificacion_Asincronica)
+    {
+        id2 = 0;
+    }
+}
+
+@if (id != 0)
+{
+    using (Html.BeginForm("GenerarPdfR23Uno", "Comercializacions", FormMethod.Post, new { @id = "formUno", target = "_blank" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.Hidden("id2", id2)
+        @Html.Hidden("id", id)
+        <button type="submit" class="btn btn-primary btn-sm glyphicon glyphicon-download-alt" style="margin-right: 0px;" title="Diplomas"> R23 (Diplomas)</button>
+    }
+}

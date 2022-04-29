@@ -1,0 +1,208 @@
+﻿@model SGC.Models.R11
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>R11</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.idCurso)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.idCurso)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.nombreCurso)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.nombreCurso)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.fundamentacionTecnica)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.fundamentacionTecnica)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.objetivoGeneral)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.objetivoGeneral)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.cantPersona)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.cantPersona)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.poblacionObjetivo)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.poblacionObjetivo)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.requisitosIngreso)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.requisitosIngreso)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.tecnicaMetodologica)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.tecnicaMetodologica)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.materialDidactico)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.materialDidactico)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.materialEntregable)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.materialEntregable)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.requisitosReglamentarios)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.requisitosReglamentarios)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.nombreModulo)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.nombreModulo)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.instructor)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.instructor)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.requisitosTecnicos)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.requisitosTecnicos)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.requisitosTecnicosRelatores)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.requisitosTecnicosRelatores)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.fechaCreacion)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.fechaCreacion)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.horasTeoricas)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.horasTeoricas)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.horasPracticas)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.horasPracticas)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.mesesDuracionVigencia)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.mesesDuracionVigencia)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.fechaCaducidad)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.fechaCaducidad)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.codigoSence)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.codigoSence)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.diplomaAprobacion)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.diplomaAprobacion)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DiplomaParticipacion)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DiplomaParticipacion)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Eliminar" class="btn btn-default" /> |
+             @Html.ActionLink("Volver", "Index",new { },new {@class= "btn btn-default" })
+        </div>
+    }
+</div>

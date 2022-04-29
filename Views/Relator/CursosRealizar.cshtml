@@ -1,0 +1,360 @@
+﻿@model IEnumerable<SGC.Models.Comercializacion>
+
+@{
+    ViewBag.Title = "Cursos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Cursos</h2>
+
+<div class="portlet light bordered">
+    <div class="portlet-title">
+        <div id="titulo" class="caption">
+            Todos los Cursos
+        </div>
+        <div class="tools">
+            <a href="javascript:;" class="collapse"> </a>
+            <a href="javascript:;" class="fullscreen"> </a>
+        </div>
+        <div class="actions" style="margin-right: 15px">
+            @Html.ActionLink("Mi Perfil", "Perfil", "Relator", new { }, new { @class = "btn btn-default btn-circle" })
+            @*<button type="button" class="btn btn-default btn-circle" id="btnCursosRealizar">Ver cursos por realizar</button>
+                <button type="button" class="btn btn-default btn-circle" id="btnTodosCursos">Ver todos los cursos</button>*@
+        </div>
+    </div>
+    <div class="portlet-body">
+        <input type="hidden" id="fechaActual" value="" />
+        <div class="row">
+            <div class="col-md-12">
+                <table id="table" class="table table-striped table-bordered table-hover dt-responsive dataTable no-footer">
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayName("Código")
+                            </th>
+                            <th>
+                                @Html.DisplayName("Curso")
+                            </th>
+
+                            <th>
+                                @Html.DisplayName("Tipo de Ejecución")
+                            </th>
+                            <th hidden>
+                                @Html.DisplayName("Fecha Inicio")
+                            </th>
+                            <th> Horario </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var comercializacion in Model.OrderByDescending(x => x.fechaInicio))
+                        {
+                            <tr>
+                                <td style="vertical-align:middle">
+                                    @comercializacion.cotizacion.codigoCotizacion
+                                </td>
+                                <td style="vertical-align:middle">
+                                    @comercializacion.cotizacion.nombreDiploma
+                                </td>
+                                <td style="vertical-align:middle">
+                                    @comercializacion.cotizacion.curso.tipoEjecucion
+                                </td>
+                                <td style="vertical-align:middle" hidden>
+                                    @comercializacion.fechaInicio.Ticks
+                                </td>
+                                <td style="vertical-align:middle">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>
+                                                    @Html.DisplayName("Fecha")
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayName("Inicio")
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayName("Término")
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayName("Coordinador")
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var bloque in comercializacion.bloques)
+                                            {
+                                                <tr>
+                                                    <td data-sort="@bloque.fecha.ToString("MM/dd/yyyy")">
+                                                        @Html.DisplayFor(modelItem => bloque.fecha)
+                                                    </td>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => bloque.horarioInicio)
+                                                    </td>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => bloque.horarioTermino)
+                                                    </td>
+                                                    @if (bloque.coordinador != null)
+                                                    {
+                                                        <td>
+                                                            @Html.DisplayFor(modelItem => bloque.coordinador.nombres) (@Html.DisplayFor(modelItem => bloque.coordinador.telefono))
+                                                        </td>
+                                                    }
+                                                    else
+                                                    {
+                                                        <td>
+                                                            <p>-</p>
+                                                        </td>
+
+                                                    }
+
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </td>
+                                <td class="text-center" style="vertical-align:middle">
+
+
+                                    <div class="btn-group">
+                                        <button id="btnGroupVerticalDrop4" type="button" class="btn btn-default btn-sm dropdown-toggle glyphicon glyphicon-cog" data-toggle="dropdown" aria-expanded="false" style="margin-right: 0px;" title="Opciones"></button>
+                                        <ul class="dropdown-menu" role="menu" aria-labelledby="btnGroupVerticalDrop4" style="        min-width: 0px;right: 4px;left: auto;
+">
+
+                                            <li>
+                                                @using (Html.BeginForm("GenerarPdfR17", "Comercializacions", FormMethod.Post, new { }))
+                                                {
+                                                    @Html.AntiForgeryToken()
+                                                    <input type="hidden" name="id" value="@comercializacion.idComercializacion" />
+                                                    <input type="hidden" name="id2" value="@ViewBag.idRelator" />
+                                                    <button type="submit" style="border:0px;background-color:white">
+                                                        <i class="glyphicon glyphicon-file"></i> Contrato Honorarios
+                                                    </button>
+                                                }
+
+                                            </li>
+                                            @if (!comercializacion.relatoresConfirmados.Any(x => x.idRelator == ViewBag.idRelator))
+
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("ConfirmarCurso", "Comercializacions",new { id = comercializacion.idComercializacion+"-"+ViewBag.idRelator })">
+                                                        <i class="glyphicon glyphicon-ok"></i> Confirmar Curso
+                                                    </a>
+                                                </li>
+                                            }
+
+                                            @if (comercializacion.cotizacion.curso.tipoEjecucion == SGC.Models.TipoEjecucion.Presencial)
+                                            {
+                                                <li>
+                                                    <a datatoggle="tooltip" target="_blank" href="@Url.Action("RegistroQR", "Comercializacions",new { id = comercializacion.idComercializacion })" title="Generar QR">
+                                                        <i class="fa fa-qrcode" aria-hidden="true"></i> Generar QR
+                                                    </a>
+                                                </li>
+                                            }
+
+                                            <li>
+                                                <a datatoggle="tooltip" target="_blank" href="@Url.Action("GetQuizAprendizaje", "Participante",new { id = comercializacion.idComercializacion })" title="Obtener Quiz Aprendizaje">
+                                                    <i class="fa fa-book" aria-hidden="true"></i> Obtener Quiz Aprendizaje
+                                                </a>
+                                            </li>
+
+                                            <li>
+                                                <a datatoggle="tooltip" target="_blank" href="@ViewBag.link" title="Videollamada">
+                                                    <i class="fa fa-external-link" aria-hidden="true"></i> Videollamada
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="@Url.Action("IngresarNotas", "Evaluacion",new { id = comercializacion.idComercializacion })">
+                                                    <i class="glyphicon glyphicon-list-alt"></i> Calificaciones
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="@Url.Action("Asistencia", "Participante",new { id = comercializacion.idComercializacion })">
+                                                    <i class="glyphicon glyphicon-check"></i> Asistencia
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a onclick="mostrarParticipantes('@comercializacion.idComercializacion')">
+                                                    <i class="glyphicon glyphicon-user"></i> Participantes
+                                                </a>
+                                            </li>
+
+                                            <li>
+                                                <a href="@Url.Action("GenerarR18", "Comercializacions",new { id = comercializacion.idComercializacion })">
+                                                    <i class="glyphicon glyphicon-book"></i> Libro de Clases
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="@Url.Action("ComentariosR50Relator", "Comercializacions",new { id = comercializacion.idComercializacion, id2 = ViewBag.idRelator })">
+                                                    <i class="glyphicon glyphicon-list"></i> Observaciones
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="@Url.Action("LlenarR53", "Relator",new { id = comercializacion.idComercializacion, id2 = ViewBag.idRelator })">
+                                                    <i class="glyphicon glyphicon-list"></i> Encuesta Aplicación Metodología
+                                                </a>
+                                            </li>
+
+
+                                        </ul>
+                                    </div>
+                                    <div id="divParticipantes-@comercializacion.idComercializacion" hidden>
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th> Nombre Participante </th>
+                                                    <th> RUN Participante </th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var participante in comercializacion.participantes)
+                                                {
+                                                    <tr>
+                                                        <td>
+                                                            @participante.contacto.nombreCompleto
+                                                        </td>
+                                                        <td>
+                                                            @participante.contacto.run
+                                                        </td>
+                                                        <td>
+                                                            @if (participante.credenciales == null)
+                                                            {
+                                                                @Html.ActionLink(" ", "Credenciales", "Participante", new { id = participante.idParticipante }, htmlAttributes: new { @class = "btn btn-default btn-sm glyphicon glyphicon-picture", @datatoggle = "tooltip", @title = "Foto Credenciales" })
+                                                            }
+                                                            else
+                                                            {
+                                                                @Html.ActionLink(" ", "Credenciales", "Participante", new { id = participante.idParticipante }, htmlAttributes: new { @class = "btn btn-success btn-sm glyphicon glyphicon-picture", @datatoggle = "tooltip", @title = "Foto Credenciales" })
+                                                            }
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-md-12">
+                @*@Html.ActionLink("Volver", "Home", "Relator", new { }, new { @class = "btn btn-default" })*@
+                @*<button type="button" class="btn btn-default" onclick="javascript:history.back()">Volver</button>*@
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade draggable-modal modalx"
+     id="modalParticipantes"
+     tabindex="-1"
+     data-backdrop="static"
+     data-keyboard="false"
+     role="dialog"
+     aria-labelledby="deleteLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="row">
+                    <div class="col-md-10">
+                        <h4 class="modal-title">Participantes</h4>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div id="divContenidoParticipantes"></div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-md-12 text-left">
+                        <button type="button" id="btnCancelar" class="btn btn-primary" data-dissmiss="modal">Cancelar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script>
+        /* Custom filtering function which will search data in column 3 between two values */
+        $.fn.dataTable.ext.search.push(
+            function (settings, data, dataIndex) {
+                //fa = $("#fechaActual").val().split("-")
+                ft = data[0].split("-");
+                //fechaActual = $("#fechaActual").val();
+                fechaActual = Date.parse($("#fechaActual").val());
+                fechaTabla = new Date(ft[2], ft[1] - 1, ft[0]);
+                if ((isNaN(fechaActual)) || (fechaActual <= fechaTabla)) {
+                    return true;
+                }
+                return false;
+            }
+        );
+
+        $(document).ready(function () {
+            $('#btnTodosCursos').hide();
+
+            var table = $('#table').DataTable({
+                stateSave: true,
+                scrollY: "900px",
+                "aaSorting": [],
+                "order": [],
+                scrollCollapse: true,
+                "language": {
+                    "lengthMenu": "Mostrar _MENU_ registros",
+                    "zeroRecords": "No se encontraron resultados",
+                    "info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                    "infoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                    "infoFiltered": "(filtrado de un total de _MAX_ registros)",
+                    "sSearch": "Buscar:",
+
+                    "oPaginate": {
+                        "sFirst": "Primero",
+                        "sLast": "Último",
+                        "sNext": "Siguiente",
+                        "sPrevious": "Anterior"
+                    },
+                    "sProcessing": "Procesando...",
+                }
+            });
+
+            $('#btnCursosRealizar').click(function () {
+                fecha = new Date;
+                $('#titulo').html('Cursos por Realizar');
+                $('#btnTodosCursos').show();
+                $('#btnCursosRealizar').hide();
+                $('#fechaActual').val(fecha);
+                table.draw();
+            });
+
+            $('#btnTodosCursos').click(function () {
+                $('#titulo').html('Todos los Cursos');
+                $('#btnCursosRealizar').show();
+                $('#btnTodosCursos').hide();
+                $('#fechaActual').val('');
+                table.draw();
+            });
+
+            $('#btnCancelar').click(function () {
+                $('#modalParticipantes').modal('hide');
+            });
+        });
+
+        function mostrarParticipantes(idComercializacion) {
+            $('#divContenidoParticipantes').html($('#divParticipantes-' + idComercializacion).html());
+            $('#modalParticipantes').modal({ keyboard: true }, 'show');
+        }
+    </script>
+}

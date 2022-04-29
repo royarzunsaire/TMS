@@ -1,0 +1,67 @@
+﻿@model SGC.Models.SalidaTerreno
+
+@{
+    ViewBag.Title = "Delete | Eliminar";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Confirmar eliminación</h2>
+<div class="portlet light bordered">
+    <div class="portlet-body" id="datos-cliente">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.estado, htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.estado, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", @style = "border: 0px" } })
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.cliente.nombreEmpresa, htmlAttributes: new { @class = "control-label" })
+                    @if (Model.cliente != null)
+                    {
+                        @Html.EditorFor(model => model.cliente.nombreEmpresa, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", @style = "border: 0px" } })
+                    }
+                    @if (Model.posibleCliente != null)
+                    {
+                        @Html.EditorFor(model => model.posibleCliente, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", @style = "border: 0px" } })
+                    }
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.hora, htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.hora, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", @style = "border: 0px" } })
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.fecha, htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.fecha, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", @style = "border: 0px" } })
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.motivo, htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.motivo, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", @style = "border: 0px" } })
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.observacion, htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.observacion, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", @style = "border: 0px" } })
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Eliminar" class="btn btn-danger" />
+            @Html.ActionLink("Volver", "MisSalidas", "",new {@class= "btn btn-default" })
+        </div>
+    }

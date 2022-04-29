@@ -1,0 +1,108 @@
+﻿@model SGC.Models.Participante
+
+@{
+    ViewBag.Title = "Agregar Participante";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles
+{
+    <style>
+        .datepicker {
+            z-index: 9999 !important;
+        }
+    </style>
+}
+
+<div class="page-title" style="margin-bottom: 0">
+    <div class="row">
+        <div class="col-md-12">
+            Agregar Nuevo
+        </div>
+        <div class="col-md-4">
+            <small>Comercialización: @ViewBag.comercializacion.cotizacion.codigoCotizacion</small>
+        </div>
+        <div class="col-md-8">
+            <small>Curso: @ViewBag.comercializacion.cotizacion.curso.nombreCurso</small>
+        </div>
+    </div>
+</div>
+
+@using (Html.BeginForm("CreatePorCliente", "Participante", FormMethod.Post, new { }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="portlet light bordered">
+        <div class="portlet-title">
+            <div class="caption">
+                Participante
+            </div>
+        </div>
+        <div class="portlet-body">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <input type="hidden" name="idComercializacion" value="@ViewBag.comercializacion.idComercializacion" />
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.contacto.nombres, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.contacto.nombres, new { htmlAttributes = new { @class = "form-control nombre-propio", placeholder = "Nombres" } })
+                        @Html.ValidationMessageFor(model => model.contacto.nombres, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.contacto.apellidoPaterno, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.contacto.apellidoPaterno, new { htmlAttributes = new { @class = "form-control nombre-propio", placeholder = "Apellido Paterno" } })
+                        @Html.ValidationMessageFor(model => model.contacto.apellidoPaterno, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.contacto.apellidoMaterno, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.contacto.apellidoMaterno, new { htmlAttributes = new { @class = "form-control nombre-propio", placeholder = "Apellido Materno" } })
+                        @Html.ValidationMessageFor(model => model.contacto.apellidoMaterno, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.contacto.run, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.contacto.run, new { htmlAttributes = new { @class = "form-control", placeholder = "R.U.N", id = "run" } })
+                        @Html.ValidationMessageFor(model => model.contacto.run, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                @*<div class="col-md-4">
+            <div class="form-group">
+                @Html.LabelFor(model => model.contacto.fechaNacimiento, htmlAttributes: new { @class = "control-label" })
+                @Html.EditorFor(model => model.contacto.fechaNacimiento, new { htmlAttributes = new { @class = "form-control datepicker datetimepicker", placeholder = "Fecha Nacimiento" } })
+                @Html.ValidationMessageFor(model => model.contacto.fechaNacimiento, "", new { @class = "text-danger" })
+            </div>
+        </div>*@
+                <div class="col-md-4">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.contacto.correo, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.contacto.correo, new { htmlAttributes = new { @class = "form-control", placeholder = "Correo electrónico" } })
+                        @Html.ValidationMessageFor(model => model.contacto.correo, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.contacto.telefono, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.contacto.telefono, new { htmlAttributes = new { @class = "form-control", placeholder = "Teléfono/Celular" } })
+                        @Html.ValidationMessageFor(model => model.contacto.telefono, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="row">
+                <div class="col-md-6">
+                    @Html.ActionLink("Volver", "LandingPage", "ClienteContacto", new { id = ViewBag.idComercializacion }, new { @class = "btn btn-default" })
+                </div>
+                <div class="col-md-6 text-right">
+                    <input type="submit" value="Guardar" class="btn btn-primary" />
+                </div>
+            </div>
+        </div>
+    </div>
+}

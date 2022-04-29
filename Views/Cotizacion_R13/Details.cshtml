@@ -1,0 +1,328 @@
+﻿@model SGC.Models.ViewModelCotizacion
+
+<style>
+    textarea {
+        resize: none;
+    }
+
+    .modal {
+        text-align: center;
+        padding: 0 !important;
+    }
+
+        .modal:before {
+            content: '';
+            display: inline-block;
+            height: 100%;
+            vertical-align: middle;
+            margin-right: -4px;
+        }
+
+    .modal-dialog {
+        display: inline-block;
+        text-align: left;
+        vertical-align: middle;
+    }
+
+    div.scroll {
+        height: 333px;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+</style>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    ViewBag.Title = "Cotización";
+
+}
+
+<h2 class="page-title">Detalles</h2>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet light bordered">
+            <div class="portlet-title">
+                <div class="caption">
+                    Cotización
+                </div>
+                @*<div class="actions">
+                    <div class="inputs pull-right">
+                        @Html.ActionLink("Descargar", "DescargarR13", new { id = Model.cotizacion.idCotizacion_R13 }, new { @class = "btn btn-default btn-circle btn-sm" })
+                    </div>
+                </div>*@
+            </div>
+            <div class="portlet-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-horizontal">
+                            <div class="form-group">
+                                <div class="col-md-6">
+                                    @Html.LabelFor(model => model.cotizacion.codigoCotizacion, "Código", htmlAttributes: new { @class = "control-label" })
+                                    <hr class="separador-ver" />
+                                    @Html.EditorFor(model => model.cotizacion.codigoCotizacion, new { htmlAttributes = new { @class = "form-control ver", @readonly = "readonly" } })
+                                </div>
+                                <div class="col-md-6">
+                                    @Html.LabelFor(model => model.cotizacion.sucursal.nombre, "Sucursal", htmlAttributes: new { @class = "control-label" })
+                                    <hr class="separador-ver" />
+                                    @Html.EditorFor(model => model.cotizacion.sucursal.nombre, new { htmlAttributes = new { @class = "form-control ver", @readonly = "readonly" } })
+                                </div>
+                                <div class="col-md-12"><h3>Datos Cliente </h3></div>
+                                <div class="col-md-6">
+                                    <label class="control-label">RUT</label>
+                                    <hr class="separador-ver" />
+                                    @Html.EditorFor(model => model.cotizacion.cliente.rut, new { htmlAttributes = new { @class = "form-control ver", @readonly = "readonly" } })
+                                </div>
+                                <div class="col-md-6">
+                                    @Html.LabelFor(model => model.cotizacion.nombreEmpresa, htmlAttributes: new { @class = "control-label" })
+                                    <hr class="separador-ver" />
+                                    @Html.EditorFor(model => model.cotizacion.nombreEmpresa, new { htmlAttributes = new { @class = "form-control ver", @readonly = "readonly" } })
+                                </div>
+                                <div class="col-md-6">
+                                    @Html.LabelFor(model => model.cotizacion.razonSocial, htmlAttributes: new { @class = "control-label" })
+                                    <hr class="separador-ver" />
+                                    @Html.EditorFor(model => model.cotizacion.razonSocial, new { htmlAttributes = new { @class = "form-control ver", @readonly = "readonly" } })
+                                </div>
+                                <div class="col-md-6">
+                                    @Html.LabelFor(model => model.cotizacion.giro, htmlAttributes: new { @class = "control-label" })
+                                    <hr class="separador-ver" />
+                                    @Html.EditorFor(model => model.cotizacion.giro, new { htmlAttributes = new { @class = "form-control ver", @readonly = "readonly" } })
+                                </div>
+                                <div class="col-md-6">
+                                    @Html.LabelFor(model => model.cotizacion.faena.nombre, htmlAttributes: new { @class = "control-label" })
+                                    <hr class="separador-ver" />
+                                    @Html.EditorFor(model => model.cotizacion.faena.nombre, new { htmlAttributes = new { @class = "form-control ver", @readonly = "readonly" } })
+                                </div>
+                                <div class="col-md-6">
+                                    @Html.LabelFor(model => model.cotizacion.telefonoCorporativo, htmlAttributes: new { @class = "control-label" })
+                                    <hr class="separador-ver" />
+                                    @Html.EditorFor(model => model.cotizacion.telefonoCorporativo, new { htmlAttributes = new { @class = "form-control ver", @readonly = "readonly" } })
+                                </div>
+                                <div class="col-md-12"><h3>Facturacion </h3></div>
+                                <div class="col-md-6">
+                                    <label class="control-label">Encargado de Pago</label>
+                                    <hr class="separador-ver" />
+                                    <input type="text" class="form-control ver" readonly value="@ViewBag.encargadoPago" />
+                                </div>
+                                <div class="col-md-6">
+                                    @Html.LabelFor(model => model.cotizacion.direccion, htmlAttributes: new { @class = "control-label" })
+                                    <hr class="separador-ver" />
+                                    @Html.EditorFor(model => model.cotizacion.direccion, new { htmlAttributes = new { @class = "form-control ver" } })
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="control-label">Contacto</label>
+                                    <hr class="separador-ver" />
+                                    <input type="text" class="form-control ver" readonly value="@ViewBag.contacto" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-12"><h3>Datos Venta</h3></div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="col-md-6">
+                                            @Html.Label("Tipo")
+                                            <hr class="separador-ver" />
+                                            @Html.EditorFor(model => model.cotizacion.tipoCurso, new { htmlAttributes = new { @class = "form-control ver" } })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="col-md-6">
+                                            @Html.LabelFor(model => model.cotizacion.fechaInicio)
+                                            <hr class="separador-ver" />
+                                            @Html.EditorFor(model => model.cotizacion.fechaInicio, new { htmlAttributes = new { @class = "form-control ver", @readonly = "readonly" } })
+                                        </div>
+                                        <div class="col-md-6">
+                                            @Html.LabelFor(model => model.cotizacion.fechaTermino)
+                                            <hr class="separador-ver" />
+                                            @Html.EditorFor(model => model.cotizacion.fechaTermino, new { htmlAttributes = new { @class = "form-control ver", @readonly = "readonly" } })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            @if (Model.cotizacion.tipoCurso == "Arriendo de Sala" || Model.cotizacion.tipoCurso == "Duplicado Credencial" || Model.cotizacion.tipoCurso == "Tramitación Licencia")
+                            {
+                                <div class="form-group" id="idCostosCursoDivCorto">
+                                    <div class="col-md-12"><h2>Costos </h2></div>
+                                    <div>
+                                        <div class="col-md-6">
+                                            <label class="control-label">Valor</label>
+                                            <hr class="separador-ver" />
+                                            <input class="form-control ver" name="cotizacion.valorUnico" value="@String.Format("{0:C}", Model.cotizacion.valorUnico)" />
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="form-group">
+                                    <div class="col-md-12"><h3>Datos Curso</h3></div>
+                                    <div class="col-md-8">
+                                        <div class="col-md-6">
+                                            <label class="control-label">Modalidad</label>
+                                            <hr class="separador-ver" />
+                                            @Html.EditorFor(model => model.cotizacion.modalidad, new { htmlAttributes = new { @class = "form-control ver" } })
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="control-label">Tipo de Ejecución</label>
+                                            <hr class="separador-ver" />
+                                            @Html.EditorFor(model => model.cotizacion.curso.tipoEjecucion, new { htmlAttributes = new { @class = "form-control ver" } })
+                                        </div>
+                                        <div class="col-md-12">
+                                            <label class="control-label">Curso</label>
+                                            <hr class="separador-ver" />
+                                            @Html.EditorFor(model => model.cotizacion.curso.nombreCurso, new { htmlAttributes = new { @class = "form-control ver" } })
+                                        </div>
+                                        <div class="col-md-3">
+                                            <button style="margin-top:26px; display:none;" id="idButtonSENCE" class="btn btn-danger form-control" disabled>SENCE</button>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <button style="margin-top:26px; display:none;" id="idButtonR51" class="btn btn-warning form-control" disabled>Solo tiene R51</button>
+                                        </div>
+                                        <div class="col-md-12">
+                                            @Html.LabelFor(model => model.cotizacion.nombreDiploma, htmlAttributes: new { @class = "control-label" })
+                                            <hr class="separador-ver" />
+                                            @Html.EditorFor(model => model.cotizacion.nombreDiploma, new { htmlAttributes = new { @class = "form-control ver", @disabled = "disabled" } })
+                                        </div>
+                                        <div class="col-md-4">
+                                            @Html.LabelFor(model => model.cotizacion.lugarRealizacion, htmlAttributes: new { @class = "control-label" })
+                                            <hr class="separador-ver" />
+                                            @Html.EditorFor(model => model.cotizacion.lugarRealizacion, new { htmlAttributes = new { @class = "form-control ver", @disabled = "disabled" } })
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label style="margin-top:26px" class="control-label">Proceso Practico:</label>
+                                            @Html.CheckBoxFor(model => model.cotizacion.procesoPractico, new { @class = "custom-checkbox", @id = "idCheckBoxProcesoPractico", @disabled = "disabled" })
+                                        </div>
+                                        <div class="col-md-4">
+                                            @Html.LabelFor(model => model.cotizacion.vigenciaCredenciales, htmlAttributes: new { @class = "control-label" })
+                                            <hr class="separador-ver" />
+                                            @Html.EditorFor(model => model.cotizacion.vigenciaCredenciales, new { htmlAttributes = new { @class = "form-control ver", @disabled = "disabled" } })
+                                        </div>
+                                        <div class="col-md-12"><h3>SENCE </h3></div>
+                                        <div class="col-md-6">
+                                            <label class="control-label">Código SENCE:</label>
+                                            <hr class="separador-ver" />
+                                            @Html.EditorFor(model => model.cotizacion.codigoSence, new { htmlAttributes = new { @class = "form-control ver", @disabled = "disabled" } })
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label style="margin-top:26px" class="control-label">Sin Código SENCE:</label>
+                                            @if (Model.cotizacion.tieneCodigoSence == "on")
+                                            {
+                                                <input disabled id="idCheckBoxCodigoSENCE" name="cotizacion.tieneCodigoSence" type="checkbox" checked />
+                                            }
+                                            else
+                                            {
+                                                <input disabled id="idCheckBoxCodigoSENCE" name="cotizacion.tieneCodigoSence" type="checkbox" />
+                                            }
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 vl">
+                                        <h4>Aportes Capacitacion</h4>
+                                        <div class="scroll">
+                                            <table class="table">
+                                                <tbody>
+                                                    @foreach (var item in Model.cotizacion.cotizacionAporteCapacitacion.Where(x => x.aCargo != SGC.Models.ACargo.No_Aplica))
+                                                    {
+                                                        <tr>
+                                                            <td>
+                                                                @item.aporteCapacitacion.nombre
+                                                            </td>
+                                                            <td>
+                                                                @item.aCargo
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-12"><h2>Costos </h2></div>
+                                    <div>
+                                        <div class="col-md-6">
+                                            @Html.LabelFor(model => model.cotizacion.cantidadParticipante)
+                                            <hr class="separador-ver" />
+                                            <div class="form-control ver">
+                                                
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label>Valor por Participante</label>
+                                            <hr class="separador-ver" />
+                                            <div class="form-control ver">
+                                                @String.Format("{0:C}", Model.cotizacion.costo.Where(x => x.idCotizacion == Model.cotizacion.idCotizacion_R13).Select(y => y.total).Sum() / Model.cotizacion.cantidadParticipante)
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="control-label">Condiciones de Pago</label>
+                                            <hr class="separador-ver" />
+                                            @Html.EditorFor(model => model.cotizacion.condicionesDePago, new { htmlAttributes = new { @class = "form-control ver", @readonly = "readonly" } })
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="control-label">Tipo Menu</label>
+                                            <hr class="separador-ver" />
+                                            @Html.EditorFor(model => model.cotizacion.tipoMenu, new { htmlAttributes = new { @class = "form-control ver", @readonly = "readonly" } })
+                                        </div>
+                                        <div class="col-md-12" style="margin-top: 20px">
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="col-md-6">
+                                                            Detalle
+                                                        </th>
+                                                        <th class="col-md-2">
+                                                            Cantidad
+                                                        </th>
+                                                        <th class="col-md-2">
+                                                            Valor
+                                                        </th>
+                                                        <th class="col-md-2">
+                                                            Total
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach (var item in Model.cotizacion.costo)
+                                                    {
+                                                        <tr>
+                                                            <td>@item.detalle</td>
+                                                            <td>@item.cantidad</td>
+                                                            <td>@String.Format("{0:C}", item.valor)</td>
+                                                            <td>@String.Format("{0:C}", item.total)</td>
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                            <small>* Costo P/P</small>
+                                        </div>
+                                        <div class="col-md-12">
+                                            @if (Model.cotizacion.costo.Count() == 0)
+                                            {
+                                                <h2 style="float:right">0</h2>
+                                            }
+                                            else
+                                            {
+                                                <h2 style="float:right">@String.Format("{0:C}", Model.cotizacion.costo.Where(x => x.idCotizacion == Model.cotizacion.idCotizacion_R13).Select(y => y.total).Sum())</h2>
+
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <hr />
+                <div class="row">
+                    <div class="form-group">
+                        <div class="col-md-6">
+                            <button type="button" class="btn btn-default" onclick="javascript:history.back()">Volver</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

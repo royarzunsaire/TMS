@@ -1,0 +1,32 @@
+﻿@model IEnumerable<SGC.Models.Notificacion>
+
+@foreach (var item in Model)
+{
+    var color = "";
+    if (item.color == SGC.Models.ColorNotificacion.blue)
+    {
+        color = "info";
+    }
+    if (item.color == SGC.Models.ColorNotificacion.green)
+    {
+        color = "success";
+    }
+    if (item.color == SGC.Models.ColorNotificacion.orange)
+    {
+        color = "warning";
+    }
+    if (item.color == SGC.Models.ColorNotificacion.red)
+    {
+        color = "danger";
+    }
+    if (item.color == SGC.Models.ColorNotificacion.white)
+    {
+        color = "info";
+    }
+    <div class="note note-@color" style="padding-top: 5px; margin-bottom: 10px;">
+        <h4 class="block">@item.titulo</h4>
+        <p>
+            @item.mensaje
+        </p>
+    </div>
+}

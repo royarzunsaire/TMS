@@ -1,0 +1,70 @@
+﻿@model IEnumerable<SGC.Models.Giro>
+
+@{
+    ViewBag.Title = "Administrar Giros";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h3 class="page-title">Administrar Giros</h3>
+<div class="portlet box blue-dark">
+    <div class="portlet-title">
+        <div class="caption">
+            Giros
+        </div>
+        <div class="tools">
+            <a href="javascript:;" class="collapse"> </a>
+            <a href="javascript:;" class="fullscreen"> </a>
+        </div>
+        <div class="actions">
+            <div class="inputs pull-right">
+                <a href="@Url.Action("Create") " class="btn btn-circle btn-sm btn-default btn-group-lg" style="margin-right:10px; margin-left:10px;">
+                    <i class="fa fa-plus-circle"></i> Nuevo
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="portlet-body">
+        <table class="table table-striped table-bordered table-hover dt-responsive dataTable" id="sys-table" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.codigo)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.descripcion)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.codigo)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.descripcion)
+                        </td>
+                        <td class="text-center">
+                            @using (Html.BeginForm("Delete", "Giro", FormMethod.Post, new { @id = "notificationForm_" + @item.idGiro }))
+                            {
+                                <div class="input-group-btn">
+                                    @Html.ActionLink(" ", "Edit", new { id = item.idGiro }, htmlAttributes: new { @class = "btn btn-warning btn-sm glyphicon glyphicon-edit", @datatoggle = "tooltip", @title = "Editar" })
+                                    @Html.ActionLink(" ", "Details", new { id = item.idGiro }, htmlAttributes: new { @class = "btn btn-info btn-sm glyphicon glyphicon-list", @datatoggle = "tooltip", @title = "Detalles" })
+                                    @Html.AntiForgeryToken()
+                                    <a class="btn btn-danger btn-sm glyphicon glyphicon-trash" href="javascript:confirmDelete('Delete','@item.idGiro','Giro')" title="Eliminar"></a>
+                                    @*@Html.ActionLink(" ", "Delete", new { id = item.idGiro }, htmlAttributes: new { @class = "btn btn-danger btn-sm glyphicon glyphicon-trash", @datatoggle = "tooltip", @title = "Eliminar" })*@
+                                </div>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section topLevel{
+    @{Html.RenderPartial("_RenderConfirm.Modal"); }
+}

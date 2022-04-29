@@ -1,0 +1,141 @@
+﻿@model SGC.Models.ViewModelPanelGerencia
+<div class="row">
+<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+    <ul class="nav nav-tabs pull-right">
+        <li class="active">
+            <a href="#tab_visitas_terreno_mes_icono" data-toggle="tab"> Mes </a>
+        </li>
+        <li>
+            <a href="#tab_visitas_terreno_anio_icono" data-toggle="tab"> Año </a>
+        </li>
+    </ul>
+    <div class="dashboard-stat2 ">
+        <div class="tab-content">
+            <div class="tab-pane active" id="tab_visitas_terreno_mes_icono">
+                <div class="display">
+                    <div class="number">
+                        <h3 class="font-green-sharp">
+                            <span data-counter="counterup" data-value="@String.Format("{0:N0}", Model.visitasTerrenoRealizadasMensual)">@String.Format("{0:N0}", Model.visitasTerrenoRealizadasMensual)</span>
+                        </h3>
+                        <small>Visitas a Terreno</small>
+                    </div>
+                </div>
+                <div class="progress-info">
+                    <div class="progress">
+                        @{
+                            double porcentajevisitasTerrenoMensual = 0.0;
+                            if (Model.visitasTerrenoProgramadasMensual > 0)
+                            {
+                                porcentajevisitasTerrenoMensual = (long)Model.visitasTerrenoRealizadasMensual * 100 / Model.visitasTerrenoProgramadasMensual;
+                                if (porcentajevisitasTerrenoMensual > 100)
+                                {
+                                    porcentajevisitasTerrenoMensual = 100;
+                                }
+                            }
+                        }
+                        <span style="width: @String.Format("{0:N0}", porcentajevisitasTerrenoMensual)%;" class="progress-bar progress-bar-success green-sharp">
+                            <span class="sr-only"></span>
+                        </span>
+                    </div>
+                    <div class="status">
+                        <div class="status-title"> Programadas </div>
+                        <div class="status-number"> @String.Format("{0:N0}", Model.visitasTerrenoProgramadasMensual) </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane" id="tab_visitas_terreno_anio_icono">
+                <div class="display">
+                    <div class="number">
+                        <h3 class="font-green-sharp">
+                            <span data-counter="counterup" data-value="@String.Format("{0:N0}", Model.visitasTerrenoRealizadasAnual)">@String.Format("{0:N0}", Model.visitasTerrenoRealizadasAnual)</span>
+                        </h3>
+                        <small>Visitas a Terreno</small>
+                    </div>
+                </div>
+                <div class="progress-info">
+                    <div class="progress">
+                        @{
+                            double porcentajevisitasTerrenoAnual = 0.0;
+                            if (Model.visitasTerrenoProgramadasAnual > 0)
+                            {
+                                porcentajevisitasTerrenoAnual = (long)Model.visitasTerrenoRealizadasAnual * 100 / Model.visitasTerrenoProgramadasAnual;
+                                if (porcentajevisitasTerrenoAnual > 100)
+                                {
+                                    porcentajevisitasTerrenoAnual = 100;
+                                }
+                            }
+                        }
+                        <span style="width: @String.Format("{0:N0}", porcentajevisitasTerrenoAnual)%;" class="progress-bar progress-bar-success green-sharp">
+                            <span class="sr-only"></span>
+                        </span>
+                    </div>
+                    <div class="status">
+                        <div class="status-title"> Programadas </div>
+                        <div class="status-number"> @String.Format("{0:N0}", Model.visitasTerrenoProgramadasAnual) </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+    <ul class="nav nav-tabs pull-right">
+        <li class="active">
+            <a href="#tab_efectividad_visitas_mes_icono" data-toggle="tab"> Mes </a>
+        </li>
+        <li>
+            <a href="#tab_efectividad_visitas_anio_icono" data-toggle="tab"> Año </a>
+        </li>
+    </ul>
+    <div class="dashboard-stat2 ">
+        <div class="tab-content">
+            <div class="tab-pane active" id="tab_efectividad_visitas_mes_icono">
+                <div class="display">
+                    <div class="number">
+                        <h3 class="font-green-sharp">
+                            <small class="font-green-sharp">$</small>
+                            <span data-counter="counterup" data-value="@String.Format("{0:N0}", Model.montoEfectividadVisitasMensual)">@String.Format("{0:N0}", Model.montoEfectividadVisitasMensual)</span>
+
+                        </h3>
+                        <small>Efectividad Visitas</small>
+                    </div>
+                </div>
+                <div class="progress-info">
+                    <div class="progress">
+                        <span style="width: 100%;" class="progress-bar progress-bar-success green-sharp">
+                            <span class="sr-only"></span>
+                        </span>
+                    </div>
+                    <div class="status">
+                        <div class="status-title"> Visitas </div>
+                        <div class="status-number"> @Model.cantEfectividadVisitasMensual </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane" id="tab_efectividad_visitas_anio_icono">
+                <div class="display">
+                    <div class="number">
+                        <h3 class="font-green-sharp">
+                            <small class="font-green-sharp">$</small>
+                            <span data-counter="counterup" data-value="@String.Format("{0:N0}", Model.montoEfectividadVisitasAnual)">@String.Format("{0:N0}", Model.montoEfectividadVisitasAnual)</span>
+
+                        </h3>
+                        <small>Efectividad Visitas</small>
+                    </div>
+                </div>
+                <div class="progress-info">
+                    <div class="progress">
+                        <span style="width: 100%;" class="progress-bar progress-bar-success green-sharp">
+                            <span class="sr-only"></span>
+                        </span>
+                    </div>
+                    <div class="status">
+                        <div class="status-title"> Ventas </div>
+                        <div class="status-number"> @Model.cantEfectividadVisitasAnual </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</div>

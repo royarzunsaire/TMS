@@ -1,0 +1,203 @@
+﻿@model SGC.Models.ViewModelEvaluacionesParticipante
+@using SGC.Models
+@{
+    ViewBag.Title = "Calificaciones Participante";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="page-title" style="margin-bottom: 0">
+    <div class="row">
+        <div class="col-md-12">
+            Administrar Participantes
+        </div>
+        <div class="col-md-4">
+            <small>Curso: @Model.comercializacion.cotizacion.curso.nombreCurso</small>
+        </div>
+        <div class="col-md-4">
+            <small>Comercialización: @Model.comercializacion.cotizacion.codigoCotizacion</small>
+        </div>
+        <div class="col-md-4">
+            <small>Participante: @Model.participante.contacto.nombreCompleto</small>
+        </div>
+    </div>
+</div>
+
+<div class="portlet light bordered">
+    <div class="portlet-title">
+        <div class="caption">
+            Calificaciones
+        </div>
+        <div class="tools">
+            <a href="javascript:;" class="collapse"> </a>
+            <a href="javascript:;" class="fullscreen"> </a>
+        </div>
+    </div>
+    <div class="portlet-body">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <table class="table table-striped table-bordered table-hover dt-responsive" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayName("Evaluación")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Calificación")
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.comercializacion.evaluaciones)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.nombre)
+                        </td>
+                        <td class="text-center">
+                            @if (Model.participante.notas.Where(p => p.evaluacion.idEvaluacion == item.idEvaluacion).FirstOrDefault() != null)
+                            {
+                                @Model.participante.notas.Where(p => p.evaluacion.idEvaluacion == item.idEvaluacion).FirstOrDefault().nota
+                            }
+                            else
+                            {
+                                <label>-</label>
+                            }
+                        </td>
+                        <td class="text-center">
+                            @if (item.tipo == SGC.Models.TipoEvaluacion.Cuestionario)
+                            {
+                                @Html.ActionLink(" ", "LlenarEvaluacion", "Evaluacion", new { id = Model.participante.idParticipante, id2 = item.idEvaluacion }, htmlAttributes: new { @class = "btn btn-default btn-sm glyphicon glyphicon-list-alt", @datatoggle = "tooltip", @title = "Ingresar Evaluación" })
+                                @Html.ActionLink(" ", "RevisarEvaluacion", "Evaluacion", new { id = Model.participante.idParticipante, id2 = item.idEvaluacion }, htmlAttributes: new { @class = "btn btn-default btn-sm glyphicon glyphicon-list", @datatoggle = "tooltip", @title = "Revisar Evaluación" })
+                            }
+                            @if (item.tipo != SGC.Models.TipoEvaluacion.Moodle)
+                            {
+                                <button type="button" onclick="mostrarModificarCalificacion('@item.idEvaluacion', '@Model.participante.idParticipante')" class="btn btn-default btn-sm glyphicon glyphicon-edit" title="Modificar Calificación"></button>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+
+        <div class="caption">
+            <h3>Intentos realizados</h3>
+        </div>
+        <hr>
+        <table class="table table-striped table-bordered table-hover dt-responsive" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayName("Intento")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Calificación")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Fecha")
+                    </th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Attempts item in Model.participante.attempts)
+                {
+                    double porcent = Convert.ToDouble(item.sumGrades) * 100 / Convert.ToDouble(item.totalGrades);
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.attempt)
+                        </td>
+                        <td>
+                            @porcent %
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.timeFinish)
+                        </td>
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        @Html.ActionLink("Volver", "Notas", "Participante", new { id = Model.comercializacion.idComercializacion }, new { @class = "btn btn-default" })
+    </div>
+</div>
+
+<div class="modal fade draggable-modal modalx"
+     id="modalModificarCalificacion"
+     tabindex="-1"
+     data-backdrop="static"
+     data-keyboard="false"
+     role="dialog"
+     aria-labelledby="deleteLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="row">
+                    <div class="col-md-10">
+                        <h4 class="modal-title">Modificar Calificación</h4>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("ModificarCalificacion", "Evaluacion", FormMethod.Post, new { id = "form" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="idEvaluacion" id="idEvaluacionModificada" value="" />
+                    <input type="hidden" name="idParticipante" id="idParticipanteModificada" value="" />
+                    <label class="control-label">Calificación</label>
+                    <input id="inptNota" class="form-control" type="text" name="nota" value="" />
+                    <span id="errorNota" class="field-validation-error text-danger" hidden>La Calificación debe se un número entre 0,0 y 7,0</span>
+                }
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-md-6 text-left">
+                        <button id="btnCancelar" type="button" class="btn btn-default" data-dissmiss="modal">Cancelar</button>
+                    </div>
+                    <div class="col-md-6">
+                        <button id="btnEnviar" type="submit" class="btn btn-primary">Guardar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $('#btnEnviar').click(function () {
+                if (!ValidarNota($('#inptNota').val())) {
+                    $('#errorNota').show();
+                    return;
+                }
+                $('#modalModificarCalificacion').modal('hide');
+                $('#form').submit();
+            });
+            $('#btnCancelar').click(function () {
+                $('#modalModificarCalificacion').modal('hide');
+            });
+            $('#inptNota').change(function () {
+                if (!ValidarNota($(this).val())) {
+                    $('#errorNota').show();
+                }
+            });
+        });
+        function mostrarModificarCalificacion(idEvaluacion, idParticipante) {
+            $('#idEvaluacionModificada').val(idEvaluacion);
+            $('#idParticipanteModificada').val(idParticipante);
+            $('#modalModificarCalificacion').modal({ keyboard: true }, 'show');
+        };
+        function ValidarNota(nota) {
+            re = /^[0-7](,[0-9])?$/;
+            return re.test(String(nota));
+        }
+    </script>    
+}

@@ -1,0 +1,110 @@
+﻿@model SGC.Models.Bloque
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles
+{
+    <style>
+        .datepicker {
+            z-index: 9999 !important;
+        }
+    </style>
+}
+
+<h2>Editar</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="portlet light bordered">
+        <div class="portlet-title">
+            <div class="caption">
+                Bloque
+            </div>
+        </div>
+        <div class="portlet-body">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.idBloque)
+            <input type="hidden" name="idComercializacion" value="@ViewBag.idComercializacion" />
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.fecha, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.fecha, new { htmlAttributes = new { @class = "form-control datepicker", placeholder = "dd-mm-yyyy" } })
+                        @Html.ValidationMessageFor(model => model.fecha, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.horarioInicio, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.horarioInicio, new { htmlAttributes = new { @class = "form-control ", placeholder = "HH:mm",type ="time" } })
+                        @Html.ValidationMessageFor(model => model.horarioInicio, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.horarioTermino, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.horarioTermino, new { htmlAttributes = new { @class = "form-control ", placeholder = "HH:mm", type = "time" } })
+                        @Html.ValidationMessageFor(model => model.horarioTermino, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="relator" class="control-label">Relator</label>
+                        @Html.DropDownListFor(model => model.relator.idRelator, (SelectList)ViewBag.relatores, "", htmlAttributes: new { @class = "form-control select2" })
+                        @Html.ValidationMessage("relator", "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="sala" class="control-label">Sala</label>
+                        @Html.DropDownListFor(model => model.sala.idSala, (SelectList)ViewBag.salas, "", htmlAttributes: new { @class = "form-control select2" })
+                        @Html.ValidationMessage("sala", "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="lugarAlmuerzo" class="control-label">Lugar de Almuerzo</label>
+                        @Html.DropDownListFor(model => model.lugarAlmuerzo.idLugarAlmuerzo, (SelectList)ViewBag.lugaresAlmuerzo, "", htmlAttributes: new { @class = "form-control select2" })
+                        @Html.ValidationMessage("lugarAlmuerzo", "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="Coordinador" class="control-label">Coordinador</label>
+                        @Html.DropDownList("idCoordinador", new SelectList(ViewBag.coordinador, "Value", "Text", Model.coordinador == null? " ":  Model.coordinador.Id), "Seleccione un coordinador", htmlAttributes: new { @class = "form-control select2", id = "idCoordinador"})
+                        @Html.ValidationMessage("coordinador", new { @class = "text-danger" })
+                    </div>
+
+                </div>
+           
+
+            </div>
+            <hr />
+            <div class="row">
+                <div class="form-group">
+                    <div class="col-md-6">
+                        @Html.ActionLink("Volver", "List", new { id = ViewBag.idComercializacion }, new { @class = "btn btn-default" })
+                    </div>
+                    <div class="col-md-6 text-right">
+                        <input type="submit" value="Guardar" class="btn btn-primary" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+
+
+}

@@ -1,0 +1,105 @@
+﻿@model IEnumerable<SGC.Models.FileAzure>
+
+@{
+    ViewBag.Title = "Repositorio ";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Registros @Html.ActionLink(" Nuevo", "Create", new { }, new { @class = "btn btn-primary btn-large glyphicon glyphicon-plus" })</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table  class="table table-striped table-bordered table-hover dt-responsive dataTable"  id="myTable">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.nombreArchivo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.fechaSubida)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.tamañoArchivo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Vigencia)
+            </th>
+
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.nombreArchivo)
+                </td>
+                <td data-sort="@item.fechaSubida.ToString("MM/dd/yyyy")">
+                    @Html.DisplayFor(modelItem => item.fechaSubida)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.tamañoArchivo)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Vigencia)
+                </td>
+
+                <td>
+
+                    @Html.ActionLink(" ", "BorrarBlob", "FileAzures", new { nombre = item.nombreArchivo }, new { @class = "btn btn-sm btn-danger glyphicon glyphicon-trash" })
+
+                    @Html.ActionLink(" ", "Index", "FileAzures", new RouteValueDictionary(new { nombre = item.nombreArchivo }), new Dictionary<string, object> { { "class", "btn btn-sm btn-info glyphicon glyphicon-fullscreen" }, { "data-value", item.nombreArchivo } })
+
+
+                    @*new { @class = "btn btn-sm btn-info glyphicon glyphicon-fullscreen", title = "Visualizar PDF" })*@
+
+                    @Html.ActionLink(" ", "DescargarBlob", "FileAzures", new { fileName = item.nombreArchivo }, new { @class = "btn btn-sm btn-default glyphicon glyphicon-cloud-download" })
+
+                    <button class="btn btn-sm btn-info glyphicon glyphicon-fullscreen", value="@item.nombreArchivo" >
+                </td>
+            </tr>
+        }
+    </tbody>
+
+</table>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/Scripts/jquery-1.12.4.js");
+    @Scripts.Render("~/Scripts/jquery-ui-1.12.1.js");
+    <script type="text/javascript">
+        function PopupCenter(url, title, w, h) {
+            // Fixes dual-screen position                         Most browsers      Firefox
+            var dualScreenLeft = window.screenLeft != undefined ? window.screenLeft : screen.left;
+            var dualScreenTop = window.screenTop != undefined ? window.screenTop : screen.top;
+
+            var width = window.innerWidth ? window.innerWidth : document.documentElement.clientWidth ? document.documentElement.clientWidth : screen.width;
+            var height = window.innerHeight ? window.innerHeight : document.documentElement.clientHeight ? document.documentElement.clientHeight : screen.height;
+
+            var left = ((width / 2) - (w / 2)) + dualScreenLeft;
+            var top = ((height / 2) - (h / 2)) + dualScreenTop;
+            var newWindow = window.open(url, title, 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width=' + w + ', height=' + h + ', top=' + top + ', left=' + left);
+
+            // Puts focus on the newWindow
+            if (window.focus) {
+                newWindow.focus();
+            }
+        }
+
+        $(document).ready(function () {
+            $(".btn.btn-info").click(function () {
+                var fName = encodeURIComponent($(this).attr('value'));
+                PopupCenter('/Document/Index/?fn=' + fName, 'View PDF', 550, 550);
+            });
+        });
+
+         $(document).ready(function () {
+            $(".btn.btn-info").click(function () {
+                var fName = encodeURIComponent($(this).attr('data-value'));
+                PopupCenter('/Document/Index/?fn=' + fName, 'View PDF', 550, 550);
+            });
+        });
+    </script>
+
+}

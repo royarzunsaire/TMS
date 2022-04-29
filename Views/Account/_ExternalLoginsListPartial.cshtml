@@ -1,0 +1,47 @@
+﻿@model SGC.Models.ExternalLoginListViewModel
+@using Microsoft.Owin.Security
+
+<hr />
+<div class="login-title">
+    Conectarse usando
+</div>
+
+@{
+    var loginProviders = Context.GetOwinContext().Authentication.GetExternalAuthenticationTypes();
+    if (loginProviders.Count() == 0)
+    {
+        <div>
+            <p>
+                No hay servicios de autenticacion externos configurados.
+            </p>
+        </div>
+    }
+    else
+    {
+        using (Html.BeginForm("ExternalLogin", "Account", new { ReturnUrl = Model.ReturnUrl }, FormMethod.Post, new { id = "frm-extlogin" }))
+        {
+            @Html.AntiForgeryToken()
+            <div>
+                <p>
+                @foreach (AuthenticationDescription p in loginProviders)
+                {
+                    var icon = @p.AuthenticationType;
+                    icon = icon.ToLower();                   
+                    <div class="col-md-4">
+                        <button type="submit"
+                                class="btn btn-info btn-block btn-@icon"
+                                id="@p.AuthenticationType"
+                                name="provider"
+                                value="@p.AuthenticationType"
+                                title="Log in using your @p.Caption account">
+                                <span class="fa fa-@icon"></span>
+                            @p.AuthenticationType
+                        </button>
+                    </div>
+                   
+                }
+                </p>
+            </div>
+        }
+    }
+}

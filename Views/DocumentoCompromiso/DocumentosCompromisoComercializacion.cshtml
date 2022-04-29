@@ -1,0 +1,522 @@
+﻿@model SGC.Models.ViewModelFacturacion
+
+@{
+    ViewBag.Title = "Documentos de Compromiso";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int i = 0;
+}
+
+@if (Model.r11 != null)
+{
+    if (Model.r11.codigoSence != null && Model.comercializacion.cotizacion.tieneCodigoSence != "on")
+    {
+        <div class="row">
+            <div class="col-md-12">
+                <h2 class="page-title">Administrar Documentos de Compromiso de la Comercialización </h2>
+                <div class="alert alert-default text-center" style="margin-bottom: 5px; padding: 5px; background-color:#add8e6">SENCE</div>
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    }
+    else
+    {
+        <h2 class="page-title">Administrar Facturas de la Comercialización - @Model.comercializacion.cotizacion.codigoCotizacion</h2>
+    }
+}
+else
+{
+    <h2 class="page-title">Administrar Facturas de la Comercialización</h2>
+}
+
+
+<div class="row">
+    <div class="col-md-3">
+        <div class="form-group">
+            @Html.Label("Código: ", htmlAttributes: new { @class = "control-label" })
+
+            @Html.Label(Model.comercializacion.cotizacion.codigoCotizacion, new { htmlAttributes = new { @class = "form-control ver", @readonly = "readonly" } })
+        </div>
+
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            @Html.Label("Estado :", htmlAttributes: new { @class = "control-label" })
+
+            @Html.Label(Model.comercializacion.comercializacionEstadoComercializacion.OrderByDescending(x => x.fechaCreacion).FirstOrDefault().EstadoComercializacion.ToString(), new { htmlAttributes = new { @class = "form-control ver", @readonly = "readonly" } })
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            @Html.Label("Comercial :", htmlAttributes: new { @class = "control-label" })
+
+            @Html.Label(Model.comercializacion.usuarioCreador.nombreCompleto, new { htmlAttributes = new { @class = "form-control ver", @readonly = "readonly" } })
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            @Html.Label("Valor Total: ", htmlAttributes: new { @class = "control-label" })
+
+            @String.Format("{0:C}", Model.comercializacion.valorFinal - Model.comercializacion.descuento)
+
+        </div>
+    </div>
+</div>
+
+
+
+<div class="portlet box blue-dark">
+    <div class="portlet-title">
+        <div class="caption">
+            Documentos de Compromiso
+        </div>
+        <div class="tools">
+            <a href="javascript:;" class="collapse"> </a>
+            <a href="javascript:;" class="fullscreen"> </a>
+        </div>
+        <div class="actions">
+            <a href="@Url.Action("Create", "DocumentoCompromiso", new { id = Model.comercializacion.idComercializacion }) " class="btn btn-circle btn-sm btn-default btn-group-lg">
+                <i class="fa fa-plus-circle"></i> Nuevo
+            </a>
+            @Html.ActionLink("Ver R24", "VerR24", "DocumentoCompromiso", new { id = Model.comercializacion.idComercializacion }, htmlAttributes: new { @class = "btn btn-default btn-circle btn-sm", @datatoggle = "tooltip", @title = "Ver R24" })
+
+            <button type="button" class="btn btn-default btn-circle btn-sm" onclick="ShowModalInformacion()" style="margin-right: 10px">
+                Información de la Comercialización
+            </button>
+        </div>
+    </div>
+    <div class="portlet-body">
+        <div class="row">
+            <div class="col-md-12">
+                <div id="alerta" class="alert alert-danger" role="alert" hidden>
+                    No se puede eliminar el documento de compromiso debido a que tiene una factura.
+                </div>
+                <table class="table table-striped table-bordered table-hover dt-responsive dataTable" id="sys-table" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayName("Tipo de Venta")
+                            </th>
+                            <th>
+                                @Html.DisplayName("Documento")
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.comercializacion.cotizacion.documentosCompromiso.LastOrDefault().numeroSerie)
+                            </th>
+
+                            <th>
+                                @Html.DisplayNameFor(model => model.comercializacion.cotizacion.documentosCompromiso.LastOrDefault().monto)
+                            </th>
+
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.comercializacion.cotizacion.documentosCompromiso != null)
+                        {
+                            foreach (var item in Model.comercializacion.cotizacion.documentosCompromiso.Where(dc => dc.softDelete == false).OrderByDescending(x => x.fechaCreacion))
+                            {
+                                <div id="modal-ordenCompra-@i" class="modal fade modalx" tabindex="-1" data-keyboard="false" role="alertdialog" aria-hidden="true">
+                                    <div class="modal-dialog modal-lg">
+                                        <div id="modal-content" class="modal-content">
+                                            <div class="modal-header">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <h4 class="modal-title">Ordenes de compra duplicadas</h4>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal-body">
+
+                                                @if (item.documento != null)
+                                                {
+                                                    string[] codigosCot = ViewBag.codigoCot[i].Split(',');
+                                                    int j = 0;
+                                                    foreach (string codigoCot in codigosCot)
+                                                    {
+                                                        var idCom = @ViewBag.idCom[i].Split(',')[j];
+                                                        <a href="/Comercializacions/Details/@idCom">@codigoCot</a>
+
+                                                        j++;
+                                                    }
+
+                                                }
+
+
+
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+
+                                <tr>
+                                    @if (item.tipoVenta.otic != null)
+                                    {
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.tipoVenta.tipoPago) - @Html.DisplayFor(modelItem => item.tipoVenta.otic.nombre)
+                                        </td>
+                                    }
+                                    else
+                                    {
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.tipoVenta.tipoPago)
+                                        </td>
+                                    }
+                                    @if (item.tipoDocCompromiso == null)
+                                    {
+                                        <td> OC </td>
+                                    }
+                                    else
+                                    {
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.tipoDocCompromiso.nombre)
+                                        </td>
+                                    }
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.numeroSerie)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.monto)
+                                    </td>
+
+                                    <td class="text-center">
+                                        @using (Html.BeginForm("Delete", "DocumentoCompromiso", FormMethod.Post, new { @id = "notificationForm_" + @item.idDocumentoCompromiso }))
+                                        {
+                                            <div class="input-group-btn">
+                                                @{
+                                                    List<string> duplicados = ViewBag.idCom;
+                                                    var count = @ViewBag.idCom[i] != "" ? @ViewBag.idCom[i].Split(',').Length : 0;
+
+
+                                                }
+                                                @if (count != 0)
+                                                {
+                                                    <a class="btn btn-sm" datatoggle="tooltip" onclick="ShowModalOrden(@i)" title="Orden de compra duplicada"><span class='badge'>@count </span></a>
+
+                                                }
+                                                @if (item.factura == null)
+                                                {
+                                                    @Html.ActionLink(" ", "Create", "Factura", new { id = item.idDocumentoCompromiso, id2 = Model.comercializacion.idComercializacion }, htmlAttributes: new { @class = "btn btn-default btn-sm glyphicon glyphicon-unchecked", @datatoggle = "tooltip", @title = "Facturar" })
+                                                }
+                                                else
+                                                {
+                                                    if (item.factura.softDelete == true)
+                                                    {
+                                                        @Html.ActionLink(" ", "Create", "Factura", new { id = item.idDocumentoCompromiso, id2 = Model.comercializacion.idComercializacion }, htmlAttributes: new { @class = "btn btn-default btn-sm glyphicon glyphicon-unchecked", @datatoggle = "tooltip", @title = "Facturar" })
+                                                    }
+                                                    else
+                                                    {
+                                                        @Html.ActionLink(" ", "Details", "Factura", new { id = item.factura.idFactura }, htmlAttributes: new { @class = "btn btn-default btn-sm glyphicon glyphicon-check", @datatoggle = "tooltip", @title = "Ver Factura" })
+                                                    }
+                                                }
+                                                @if (item.tipoVenta.tipoPago == SGC.Models.TipoPago.CostoEmpresa)
+                                                {
+                                                    @Html.ActionLink(" ", "Create", "DocumentoCompromiso", new { id = Model.comercializacion.idComercializacion, id2 = item.idDocumentoCompromiso }, htmlAttributes: new { @class = "btn btn-default btn-sm glyphicon glyphicon-retweet", @datatoggle = "tooltip", @title = "Remplazar" })
+                                                }
+                                                @Html.ActionLink(" ", "Edit", "DocumentoCompromiso", new { id = item.idDocumentoCompromiso, id2 = Model.comercializacion.idComercializacion }, htmlAttributes: new { @class = "btn btn-warning btn-sm glyphicon glyphicon-edit", @datatoggle = "tooltip", @title = "Editar" })
+                                                @Html.ActionLink(" ", "Details", "DocumentoCompromiso", new { id = item.idDocumentoCompromiso }, htmlAttributes: new { @class = "btn btn-info btn-sm glyphicon glyphicon-list", @datatoggle = "tooltip", @title = "Ver" })
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="idComercializacion" value="@Model.comercializacion.idComercializacion" />
+                                                @if (item.factura == null)
+                                                {
+                                                    <a class="btn btn-danger btn-sm glyphicon glyphicon-trash" href="javascript:confirmDelete('Delete','@(item.idDocumentoCompromiso)','DocumentoCompromiso')" title="Eliminar"></a>
+                                                }
+                                                else
+                                                {
+                                                    if (item.factura.softDelete == true)
+                                                    {
+                                                        <a class="btn btn-danger btn-sm glyphicon glyphicon-trash" href="javascript:confirmDelete('Delete','@(item.idDocumentoCompromiso)','DocumentoCompromiso')" title="Eliminar"></a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <a class="btn btn-danger btn-sm glyphicon glyphicon-trash" href="javascript:mostrarAlerta();" title="Eliminar"></a>
+                                                    }
+                                                }
+                                                @{
+                                                    i++;
+                                                }
+                                            </div>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div>
+    @Html.ActionLink("Volver", "Facturable", "Factura", new { id = Model.comercializacion.idComercializacion }, new { @class = "btn btn-default" })
+</div>
+
+@section topLevel{
+    @{Html.RenderPartial("_RenderConfirm.Modal"); }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div id="modal-informacion" class="modal fade modalx" tabindex="-1" data-keyboard="false" role="alertdialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div id="modal-content" class="modal-content">
+            <div class="modal-header">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4 class="modal-title">Información de la Comercialización</h4>
+                    </div>
+                    <div class="col-md-6">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.comercializacion.cotizacion.codigoCotizacion, htmlAttributes: new { @class = "control-label" })
+                            <hr class="separador-ver" />
+                            @Html.EditorFor(model => model.comercializacion.cotizacion.codigoCotizacion, new { htmlAttributes = new { @class = "form-control ver", @readonly = "readonly" } })
+                        </div>
+
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            @Html.Label("Lider Comercial", htmlAttributes: new { @class = "control-label" })
+                            <hr class="separador-ver" />
+                            @Html.EditorFor(model => model.comercializacion.usuarioCreador.UserName, new { htmlAttributes = new { @class = "form-control ver", @readonly = "readonly" } })
+                        </div>
+                    </div>
+                    @if (Model.comercializacion.cotizacion.tipoCurso != "Duplicado Credencial" && Model.comercializacion.cotizacion.tipoCurso != "Arriendo de Sala" && Model.comercializacion.cotizacion.tipoCurso != "Tramitación Licencia")
+                    {
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.comercializacion.cotizacion.modalidad, htmlAttributes: new { @class = "control-label" })
+                                <hr class="separador-ver" />
+                                @Html.EditorFor(model => model.comercializacion.cotizacion.modalidad, new { htmlAttributes = new { @class = "form-control ver", @readonly = "readonly" } })
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.comercializacion.senceNet, htmlAttributes: new { @class = "control-label" })
+                                <hr class="separador-ver" />
+                                @if (Model.r11 != null)
+                                {
+                                    if (Model.r11.codigoSence != null && Model.comercializacion.cotizacion.tieneCodigoSence != "on")
+                                    {
+                                        @Html.EditorFor(model => model.comercializacion.senceNet, new { htmlAttributes = new { @class = "form-control ver", @readonly = "readonly" } })
+                                    }
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            @Html.Label("Estado", htmlAttributes: new { @class = "control-label" })
+                            <hr class="separador-ver" />
+                            @Html.Label(Model.comercializacion.comercializacionEstadoComercializacion.OrderByDescending(x => x.fechaCreacion).FirstOrDefault().EstadoComercializacion.ToString(), new { htmlAttributes = new { @class = "form-control ver", @readonly = "readonly" } })
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.comercializacion.fechaInicio, htmlAttributes: new { @class = "control-label" })
+                            <hr class="separador-ver" />
+                            @Html.EditorFor(model => model.comercializacion.fechaInicio, new { htmlAttributes = new { @class = "form-control ver", @readonly = "readonly" } })
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.comercializacion.fechaTermino, htmlAttributes: new { @class = "control-label" })
+                            <hr class="separador-ver" />
+                            @Html.EditorFor(model => model.comercializacion.fechaTermino, new { htmlAttributes = new { @class = "form-control ver", @readonly = "readonly" } })
+                        </div>
+                    </div>
+                    <div class="col-md-offset-3 col-md-3">
+                        <div class="form-group">
+                            @Html.Label("Valor Total", htmlAttributes: new { @class = "control-label" })
+                            <hr class="separador-ver" />
+                            <div class="form-control" style="border: 0">
+                                @String.Format("{0:C}", Model.comercializacion.valorFinal - Model.comercializacion.descuento)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr />
+                @if (Model.comercializacion.cotizacion.tipoCurso != "Duplicado Credencial" && Model.comercializacion.cotizacion.tipoCurso != "Arriendo de Sala" && Model.comercializacion.cotizacion.tipoCurso != "Tramitación Licencia")
+                {
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.comercializacion.cotizacion.curso.nombreCurso, htmlAttributes: new { @class = "control-label" })
+                                <hr class="separador-ver" />
+                                @Html.EditorFor(model => model.comercializacion.cotizacion.curso.nombreCurso, new { htmlAttributes = new { @class = "form-control ver", @readonly = "readonly" } })
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.comercializacion.cotizacion.nombreDiploma, htmlAttributes: new { @class = "control-label" })
+                                <hr class="separador-ver" />
+                                @Html.EditorFor(model => model.comercializacion.cotizacion.nombreDiploma, new { htmlAttributes = new { @class = "form-control ver", @readonly = "readonly" } })
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.comercializacion.cotizacion.tipoCurso, htmlAttributes: new { @class = "control-label" })
+                                <hr class="separador-ver" />
+                                @Html.EditorFor(model => model.comercializacion.cotizacion.tipoCurso, new { htmlAttributes = new { @class = "form-control ver", @readonly = "readonly" } })
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.comercializacion.cotizacion.curso.tipoEjecucion, htmlAttributes: new { @class = "control-label" })
+                                <hr class="separador-ver" />
+                                @Html.EditorFor(model => model.comercializacion.cotizacion.curso.tipoEjecucion, new { htmlAttributes = new { @class = "form-control ver", @readonly = "readonly" } })
+                            </div>
+                        </div>
+                        @if (@Model.r11 != null)
+                        {
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.r11.horasTeoricas, htmlAttributes: new { @class = "control-label" })
+                                    <hr class="separador-ver" />
+                                    <div class="form-control" style="border: 0">
+                                        @String.Format("{0:0.#}", Model.r11.horasTeoricas)
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.r11.horasPracticas, htmlAttributes: new { @class = "control-label" })
+                                    <hr class="separador-ver" />
+                                    <div class="form-control" style="border: 0">
+                                        @String.Format("{0:0.#}", Model.r11.horasPracticas)
+                                    </div>
+                                </div>
+                            </div>
+
+                        }
+
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.comercializacion.cotizacion.cantidadParticipante, htmlAttributes: new { @class = "control-label" })
+                                <hr class="separador-ver" />
+                                @Html.EditorFor(model => model.comercializacion.cotizacion.cantidadParticipante, new { htmlAttributes = new { @class = "form-control ver", @readonly = "readonly" } })
+                            </div>
+                        </div>
+                    </div>
+                    <hr />
+                }
+
+
+                <h4>Facturación</h4>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.comercializacion.cotizacion.contactoEncargadoPago, htmlAttributes: new { @class = "control-label" })
+                            <hr class="separador-ver" />
+                            <a href="@String.Format("{0:C}","mailto:"+ @ViewBag.Encargado.correo)">@ViewBag.Encargado.nombreCompleto</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.comercializacion.cotizacion.contacto, htmlAttributes: new { @class = "control-label" })
+                            <hr class="separador-ver" />
+                            <a href="@String.Format("{0:C}","mailto:"+ @ViewBag.Contacto.correo)">@ViewBag.Contacto.nombreCompleto</a>
+
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.comercializacion.cotizacion.telefonoCorporativo, htmlAttributes: new { @class = "control-label" })
+                            <hr class="separador-ver" />
+                            @Html.EditorFor(model => model.comercializacion.cotizacion.telefonoCorporativo, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", @style = "border: 0" } })
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+
+
+
+
+
+
+
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.comercializacion.cotizacion.nombreEmpresa, htmlAttributes: new { @class = "control-label" })
+                            <hr class="separador-ver" />
+                            @Html.EditorFor(model => model.comercializacion.cotizacion.nombreEmpresa, new { htmlAttributes = new { @class = "form-control ver", @readonly = "readonly" } })
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.comercializacion.cotizacion.razonSocial, htmlAttributes: new { @class = "control-label" })
+                            <hr class="separador-ver" />
+                            @Html.EditorFor(model => model.comercializacion.cotizacion.razonSocial, new { htmlAttributes = new { @class = "form-control ver", @readonly = "readonly" } })
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.comercializacion.cotizacion.cliente.rut, htmlAttributes: new { @class = "control-label" })
+                            <hr class="separador-ver" />
+                            @Html.EditorFor(model => model.comercializacion.cotizacion.cliente.rut, new { htmlAttributes = new { @class = "form-control ver", @readonly = "readonly" } })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        function ShowModalInformacion() {
+            $('#modal-informacion').modal({ keyboard: true }, 'show');
+        }
+        function ShowModalOrden(i) {
+            $('#modal-ordenCompra-' + i).modal({ keyboard: true }, 'show');
+        }
+
+        function mostrarAlerta() {
+            $('#alerta').show();
+        }
+    </script>
+}

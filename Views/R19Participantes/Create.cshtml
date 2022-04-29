@@ -1,0 +1,120 @@
+﻿@model SGC.Models.ViewModelRespuestaFormulario
+<style>
+
+    .form-horizontal .checkbox, .form-horizontal .checkbox-inline, .form-horizontal .radio, .form-horizontal .radio-inline {
+        padding-top: 0px !important;
+    }
+
+    .modal {
+        text-align: center;
+        padding: 0 !important;
+    }
+
+    .modal:before {
+        content: '';
+        display: inline-block;
+        height: 100%;
+        vertical-align: middle;
+        margin-right: -4px;
+    }
+
+    .modal-dialog {
+        display: inline-block;
+        text-align: left;
+        vertical-align: middle;
+    }
+</style>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    ViewBag.Title = "Respuesta R19";
+
+}
+
+
+    <h2>Encuesta Reacción</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+<div class="form-horizontal">
+
+    <div class="form-group">
+        <div class="col-md-12">
+            @{ int i = 0;}
+            @{ int j = 1;}
+            @{ string categoria = null;}
+
+
+            @foreach (var item in Model.formulario.preguntasFormularios.OrderBy(x => x.orden))
+            {
+                if (categoria != item.categoria)
+                {
+                    <h4>@item.categoria</h4>
+
+                }
+
+
+                <p>@j -  @item.pregunta</p>
+
+                foreach (var itemRespuesta in Model.respuestas.Where(x => x.preguntasFormulario.idPreguntasFormulario == item.idPreguntasFormulario))
+                {
+                    string nameRespuesta = "respuestasContestadas[" + i.ToString() + "].idRespuestasFormulario";
+                    string nameRespuestaAbierta = "respuestasContestadas[" + i.ToString() + "].respuesta";
+
+                    if (itemRespuesta.tipoRespuesta == "Abierta")
+                    {
+                        <textarea class="form-control" name="@nameRespuestaAbierta" rows="3"></textarea>
+
+                        <input type="hidden" name="@nameRespuesta" value="@itemRespuesta.idRespuestasFormulario" />
+                        continue;
+                    }
+
+
+                    <label class="radio-inline">
+                        <input type="radio" name="@nameRespuesta" value="@itemRespuesta.idRespuestasFormulario">@itemRespuesta.respuesta
+                    </label>
+                }
+                { i++; }
+                { j++; }
+                { categoria = item.categoria; }
+            }
+
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-12">
+            <!--<input type="submit" value="Cancelar" class="btn btn-danger" />-->
+            @Html.ActionLink("Volver", "Index", "R19Participantes", new { }, new { @class = "btn btn-default" })
+
+            <button class="btn btn-primary" style="float:right" data-toggle="modal" data-target="#idModalConfirmR19Crear" type="button">Crear</button>
+
+            <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" id="idModalConfirmR19Crear">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="myModalLabel">Confirmar</h4>
+                        </div>
+                        <div class="modal-body">
+                            <p>¿Esta seguro que desea finalizar la encuesta?</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Aceptar</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </div>
+    }
+
+
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+    }
+

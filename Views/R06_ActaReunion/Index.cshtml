@@ -1,0 +1,130 @@
+﻿@model IEnumerable<SGC.Models.R06_ActaReunion>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@section Styles{
+    <style>
+        .sence {
+            background-color: #add8e6;
+            vertical-align: middle;
+        }
+
+        .no_sence {
+            background-color: #9B59B6;
+            vertical-align: middle;
+        }
+
+        .arriendo {
+            background-color: #DAD7D6;
+            vertical-align: middle;
+        }
+
+        .btn-group, .btn-group-vertical {
+            position: unset;
+        }
+
+        .dropdown-menu {
+            left: auto;
+        }
+    </style>
+}
+
+<!DOCTYPE html>
+<h3 class="page-title">
+    Listado Actas de Reuniones
+</h3>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+</head>
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-dark">
+            <div class="portlet-title">
+                <div class="caption">
+                    Acta de reuniones
+                </div>
+                <div class="tools">
+                    <a href="javascript:;" class="collapse"> </a>
+                    <a href="javascript:;" class="fullscreen"> </a>
+                </div>
+            </div>
+            <div class="actions">
+
+                <div class="inputs pull-right">
+                    <a href="@Url.Action("Create" ) " class="btn btn-circle btn-sm btn-default" style="margin-right:10px;">
+                        <i class="fa fa-plus-circle"></i> Nuevo
+                    </a>
+                </div>
+            </div>
+            <table class="table table-striped table-bordered table-hover dt-responsive dataTable" cellspacing="0">
+                <tr>
+                    <th>
+                        Codigo
+                    </th>
+                    <th>
+                        Fecha de creación
+                    </th>
+                    <th>
+                        Fecha de la reunión
+                    </th>
+                    <th>
+                        Horario de inicio
+                    </th>
+                    <th>
+                        Horario de termino
+                    </th>
+                    <th>
+                        Temas tratados
+                    </th>
+                    <th>
+                        Acuerdos
+                    </th>
+                    <th></th>
+                </tr>
+
+                @foreach (var item in Model)
+                {
+                    if (item.softDelete == false)
+                    {
+                        <tr>
+                            <th>
+                                @Html.DisplayFor(model => item.idR06)
+                            </th>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.dateCreation)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.fecha)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.horarioInicio)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.horarioTermino)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.temasTratados)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.acuerdos)
+                            </td>
+                            <td>
+                                @Html.ActionLink(" ", "Edit", new { id = item.idR06 }, htmlAttributes: new { @class = "btn btn-warning btn-sm  glyphicon glyphicon-edit", @datatoggle = "tooltip", @title = "Editar" })
+                                @Html.ActionLink(" ", "Details", new { id = item.idR06 }, htmlAttributes: new { @class = "btn btn-info btn-sm glyphicon glyphicon-list", @datatoggle = "tooltip", @title = "Ver" })
+                                @Html.ActionLink(" ", "Delete", new { id = item.idR06 }, htmlAttributes: new { @class = "btn btn-danger btn-sm glyphicon glyphicon-trash", @datatoggle = "tooltip", @title = "Eliminar" })
+                            </td>
+                        </tr>
+                    }
+                }
+
+            </table>
+        </div>
+    </div>
+</div>
+
+</html>

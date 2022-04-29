@@ -1,0 +1,159 @@
+﻿@model IEnumerable<SGC.Models.Comercializacion>
+@using SGC.Models;
+@using System.Collections.Generic;
+@{
+    var data = Model.ToList();
+   }
+   
+    <style>
+        #table-wrapper {
+            position: relative;
+        }
+
+        #table-scroll {
+            overflow: auto;
+        }
+
+        #table-wrapper table {
+            width: 100%;
+        }
+
+        #table-wrapper td {
+            white-space: nowrap;
+        }
+
+        #table-wrapper th {
+            white-space: nowrap;
+        }
+
+        th {
+            background-color: yellow;
+        }
+    </style>
+
+    <div id="table-wrapper">
+        <div id="table-scroll">
+            <table class="table" data-sheet-name="Factura Realizada Lista">
+                <thead>
+                    @*<tr>
+                        <th colspan="5">
+                         @fecha
+                        </th>
+
+                    </tr>*@
+                    <tr>
+                        <th>
+                            Cotización
+                        </th>
+                        <th>
+                            Curso
+                        </th>
+                        <th>
+                            Tipo
+                        </th>
+                        <th>
+                            Cliente
+                        </th>
+                        <th>
+                            Ejecutivo
+                        </th>
+                        <th>
+                            Fecha Inicio
+                        </th>
+                        <th>
+                            Fecha Termino
+                        </th>
+                        <th>
+                            Fecha Facturación
+                        </th>
+                        <th>
+                            N° Factura
+                        </th>
+                        <th>
+                            N° Documento de compromiso
+                        </th>
+                        <th>
+                            Monto
+                        </th>
+
+
+                        <th>
+                            Observacion
+                        </th>
+
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @foreach (var comercializacion in data)
+                    {
+                        var tipo = comercializacion.cotizacion.curso != null ? comercializacion.cotizacion.curso.tipoEjecucion.ToString() : " ";
+
+                        var curso = "";
+                        if (comercializacion.cotizacion.tipoCurso != "Duplicado Credencial" && comercializacion.cotizacion.tipoCurso != "Arriendo de Sala" && comercializacion.cotizacion.tipoCurso != "Tramitación Licencia")
+                        {
+                            curso = comercializacion.cotizacion.curso.nombreCurso;
+                        }
+                        else
+                        {
+                            curso = comercializacion.cotizacion.tipoCurso;
+
+                        }
+                        foreach (var dc in comercializacion.cotizacion.documentosCompromiso.Where(x => x.factura != null))
+                        {
+                            var observacion = dc.factura.observacion == null ? "" : dc.factura.observacion;
+
+                            <tr>
+                                <td>
+                                    @comercializacion.cotizacion.codigoCotizacion
+                                </td>
+                                <td>
+                                    @curso
+                                </td>
+                                <td>
+
+                                    @tipo
+                                </td>
+                                <td>
+                                    @comercializacion.cotizacion.cliente.nombreEmpresa
+                                </td>
+                                <td>
+                                    @comercializacion.usuarioCreador.nombreCompleto
+                                </td>
+                                <td data-cell-type="date">
+                                    @comercializacion.fechaInicio.ToString("MM-dd-yy")
+                                </td>
+                                <td data-cell-type="date">
+                                    @comercializacion.fechaTermino.ToString("MM-dd-yy")
+                                </td>
+                                <td data-cell-type="date">
+                                    @dc.factura.fechaCreacion.ToString("MM-dd-yy")
+                                </td>
+                                <td>
+                                    @dc.factura.numero
+                                </td>
+                                <td>
+                                    @dc.numeroSerie
+                                </td>
+                                <td data-cell-type="number">
+                                    @dc.monto
+                                </td>
+
+                                <td>
+                                    @observacion
+                                </td>
+
+                            </tr>
+
+                        }
+
+
+
+                    }
+
+
+                </tbody>
+                </table>
+        </div>
+    </div>
+

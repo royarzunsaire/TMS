@@ -1,0 +1,131 @@
+﻿@model SGC.Models.Comercializacion
+
+@{
+    ViewBag.Title = "R52";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="page-title" style="margin-bottom: 0">
+    <div class="row">
+        <div class="col-md-12">
+            Administrar R52
+        </div>
+        <div class="col-md-12">
+            <small>Comercialización: @Model.cotizacion.codigoCotizacion</small>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-dark">
+            <div class="portlet-title">
+                <div class="caption">
+                    Relatores
+                </div>
+                <div class="tools">
+                    <a href="javascript:;" class="collapse"> </a>
+                    <a href="javascript:;" class="fullscreen"> </a>
+                </div>
+                <div class="actions">
+                    <a href="@Url.Action("ConfigurarR52", "R52", new { id = Model.idComercializacion }) " class="btn btn-circle btn-sm btn-default">
+                        Configurar R52
+                    </a>
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <table class="table table-striped table-bordered table-hover dt-responsive dataTable" id="sys-table" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        @Html.DisplayName("RUN")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("Nombre")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("Confirmado")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("Resultado")
+                                    </th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.relatoresCursos)
+                                {
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.relator.contacto.run)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.relator.contacto.nombreCompleto)
+                                    </td>
+                                    @if (item.relator.confirmadoEnComercializaciones.Contains(Model))
+                                    {
+                                        <td> Sí </td>
+                                    }
+                                    else
+                                    {
+                                        <td> No </td>
+                                    }
+                                    <td class="text-center">
+                                        @{
+                                            var resultado = 0.0;
+                                            int cont = 0;
+                                            if (Model.r52.Count() != 0)
+                                            {
+                                                foreach (var respuesta in Model.r52.Where(r => r.relator.idRelator == item.idRelator).FirstOrDefault().encuesta.respuestas)
+                                                {
+                                                    if (respuesta.pregunta.tipo == SGC.Models.TipoPregunta.Alternativa)
+                                                    {
+                                                        if (respuesta.respuesta != null)
+                                                        {
+                                                            resultado += int.Parse(respuesta.respuesta);
+                                                        }
+                                                        cont++;
+                                                    }
+                                                }
+                                            }
+                                            var resultadoString = "-";
+                                            if (cont > 0)
+                                            {
+                                                resultadoString = String.Format("{0:0.#}", resultado / cont);
+                                            }
+                                        }
+                                        @(resultadoString)%
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="input-group-btn">
+                                            @if (Model.r52.Count() == 0)
+                                            {
+                                                <button type="button" class="btn btn-default btn-sm glyphicon glyphicon-list-alt" title="Llenar R52" disabled></button>
+                                            }
+                                            else
+                                            {
+                                                if (Model.r52.Where(r => r.relator.idRelator == item.idRelator).FirstOrDefault().encuesta.respuestas.Count() == 0)
+                                                {
+                                                    @Html.ActionLink(" ", "LlenarR52", "R52", new { id = item.idRelator, id2 = Model.idComercializacion }, htmlAttributes: new { @class = "btn btn-default btn-sm glyphicon glyphicon-list-alt", @datatoggle = "tooltip", @title = "Llenar R52" })
+                                                }
+                                                else
+                                                {
+                                                    @Html.ActionLink(" ", "LlenarR52", "R52", new { id = item.idRelator, id2 = Model.idComercializacion }, htmlAttributes: new { @class = "btn btn-success btn-sm glyphicon glyphicon-list-alt", @datatoggle = "tooltip", @title = "Llenar R52" })
+                                                }
+                                            }
+                                        </div>
+                                    </td>
+                                </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@Html.ActionLink("Volver", "", "Comercializacions", new { id = Model.idComercializacion }, new { @class = "btn btn-default" })

@@ -1,0 +1,454 @@
+﻿@model SGC.Models.ViewModelCalendario
+
+@{
+    ViewBag.Title = "Calendario";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles {
+    <link href='~/Content/plugins/fullcalendar-4.2.0/fullcalendar/core/main.css' rel='stylesheet' />
+    <link href='~/Content/plugins/fullcalendar-4.2.0/fullcalendar/daygrid/main.css' rel='stylesheet' />
+
+    @*<style>
+        .modal-open .datepicker {
+            z-index: 0 !important;
+        }
+    </style>*@
+}
+
+<br />
+<div class="row">
+    <div class="col-md-offset-1 col-md-10">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-calendar"></i>
+                    Calendario
+                </div>
+                <div class="actions">
+                    <button class="btn btn-default btn-sm" onclick="ShowModalAgregar()">
+                        <i class="fa fa-plus"></i>
+                        Agregar
+                    </button>
+                    <button class="btn btn-default btn-sm" onclick="ShowModalProgramaciones()">
+                        <i class="fa fa-list"></i>
+                        Programaciones
+                    </button>
+                    <button class="btn btn-default btn-sm" onclick="ShowModalSeleccionarPeriodo()">
+                        <i class="fa fa-calendar"></i>
+                        Seleccionar Periodo
+                    </button>
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div id='calendar'></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modal-agregar-programacion" class="modal fade draggable-modal modalx" data-backdrop="static" data-keyboard="false" role="alertdialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div id="modal-content" class="modal-content">
+            @using (Html.BeginForm("CrearAbierto", "Calendarizacions", FormMethod.Post, new { id = "form-agregar-programacion" }))
+            {
+                @Html.AntiForgeryToken()
+                <div class="modal-header">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4 class="modal-title">Agregar Programación</h4>
+                        </div>
+                        <div class="col-md-6">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    @Html.HiddenFor(model => model.calendarizacion.idCalendarizacion)
+                    @Html.HiddenFor(model => model.calendarizacion.sucursal.idSucursal)
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.calendarizacionAbierta.curso, htmlAttributes: new { @class = "control-label" })
+                               
+
+                                @Html.DropDownListFor(model => model.calendarizacionAbierta.curso.idCurso, (SelectList)ViewBag.Cursos, "Seleccionar", htmlAttributes: new { @class = "form-control select2", id = "curso" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.calendarizacionAbierta.estado, htmlAttributes: new { @class = "control-label" })
+                                @Html.EnumDropDownListFor(model => model.calendarizacionAbierta.estado, htmlAttributes: new { @class = "form-control", id = "estado" })
+                                @Html.ValidationMessageFor(model => model.calendarizacionAbierta.estado, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.calendarizacionAbierta.fechaInicio, htmlAttributes: new { @class = "control-label" })
+                                @Html.EditorFor(model => model.calendarizacionAbierta.fechaInicio, new { htmlAttributes = new { @class = "form-control datepicker datetimepicker", id = "fechaInicio" } })
+                                @Html.ValidationMessageFor(model => model.calendarizacionAbierta.fechaInicio, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.calendarizacionAbierta.fechaTermino, htmlAttributes: new { @class = "control-label" })
+                                @Html.EditorFor(model => model.calendarizacionAbierta.fechaTermino, new { htmlAttributes = new { @class = "form-control datepicker datetimepicker", id = "fechaTermino" } })
+                                @Html.ValidationMessageFor(model => model.calendarizacionAbierta.fechaTermino, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.calendarizacionAbierta.descripcion, htmlAttributes: new { @class = "control-label" })
+                                @Html.EditorFor(model => model.calendarizacionAbierta.descripcion, new { htmlAttributes = new { @class = "form-control", id = "descripcion" } })
+                                @Html.ValidationMessageFor(model => model.calendarizacionAbierta.descripcion, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            @*<div class="form-group">
+                                    @Html.LabelFor(model => model.calendarizacionAbierta.colorEvento, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EnumDropDownListFor(model => model.calendarizacionAbierta.colorEvento, htmlAttributes: new { @class = "form-control", id = "color" })
+                                    @Html.ValidationMessageFor(model => model.calendarizacionAbierta.colorEvento, "", new { @class = "text-danger" })
+                                </div>*@
+                            <div class="row">
+                                <div class="col-md-12">
+                                    @Html.LabelFor(model => model.calendarizacionAbierta.colorEvento, htmlAttributes: new { @class = "control-label" })
+                                </div>
+                                <div class="col-md-12">
+                                    <button type="button" id="azul" class="btn btn-circle btn-sm blue" style="width:25%" value="0"></button>
+                                    <button type="button" id="rojo" class="btn btn-circle btn-sm red" style="width:24%" value="1"></button>
+                                    <button type="button" id="naranjo" class="btn btn-circle btn-sm yellow-gold" style="width:24%" value="2"></button>
+                                    <button type="button" id="verde" class="btn btn-circle btn-sm green-seagreen" style="width:25%" value="3"></button>
+                                    @Html.HiddenFor(model => model.calendarizacionAbierta.colorEvento)
+                                    <input type="hidden" id="color" value="" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="submit" value="Crear" class="btn btn-primary" />
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div id="modal-listar-programaciones" class="modal fade draggable-modal modalx" tabindex="-1" data-backdrop="static" data-keyboard="false" role="alertdialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div id="modal-content" class="modal-content">
+            <div class="modal-header">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4 class="modal-title">Programaciones</h4>
+                    </div>
+                    <div class="col-md-6 text-right">
+                        <button type="button" class="btn btn-circle" style="margin-right: 15px" onclick="location.reload();" title="Actualizar"><i class="fa fa-refresh "></i></button>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <table class="table table-striped table-bordered table-hover dt-responsive dataTable no-footer">
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayName("Inicio")
+                            </th>
+                            <th>
+                                @Html.DisplayName("Término")
+                            </th>
+                            <th>
+                                @Html.DisplayName("Curso")
+                            </th>
+                            <th>
+                                @Html.DisplayName("Tipo de Ejecución")
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.calendarizacionAbierta.descripcion)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.calendarizacionAbierta.estado)
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.calendarizacion.calendarizacionesAbiertas)
+                        {
+                        <tr>
+                            <td data-sort="@item.fechaInicio.ToString("MM/dd/yyyy")">
+                                @Html.DisplayFor(modelItem => item.fechaInicio)
+                            </td>
+                            <td data-sort="@item.fechaTermino.ToString("MM/dd/yyyy")">
+                                @Html.DisplayFor(modelItem => item.fechaTermino)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.curso.nombreCurso)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.curso.tipoEjecucion)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.descripcion)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.estado)
+                            </td>
+                            <td>
+                                @using (Html.BeginForm("EliminarAbierto", "Calendarizacions", FormMethod.Post, new { id = "form-eliminar-programacion" }))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" value="@Model.calendarizacion.idCalendarizacion" name="idCalendarizacion" />
+                                    <input type="hidden" value="@item.idCalendarizacionAbierta" name="id" />
+                                    <input type="submit" value="Eliminar" class="btn btn-danger" />
+                                }
+                            </td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modal-seleccionar-periodo" class="modal fade draggable-modal modalx" tabindex="-1" data-backdrop="static" data-keyboard="false" role="alertdialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div id="modal-content" class="modal-content">
+            <div class="modal-header">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4 class="modal-title">Seleccionar Periodo</h4>
+                    </div>
+                    <div class="col-md-6">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <table class="table table-striped table-bordered table-hover dt-responsive dataTable no-footer">
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.calendarizacion.inicioPeriodo)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.calendarizacion.finPeriopdo)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.calendarizacion.detalle)
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.calendarizaciones)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.inicioPeriodo)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.finPeriopdo)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.detalle)
+                                </td>
+                                <td>
+                                    <div class="text-right">
+                                        @Html.ActionLink("Seleccionar", "Calendario", new { id = item.idCalendarizacion }, new { @class = "btn btn-primary" })
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div>
+    @Html.ActionLink("Volver", "Index", "", new { @class = "btn btn-default" })
+</div>
+
+@section Scripts {
+    <script src='~/Content/plugins/fullcalendar-4.2.0/fullcalendar/core/main.js'></script>
+    <script src='~/Content/plugins/fullcalendar-4.2.0/fullcalendar/daygrid/main.js'></script>
+    <script src='~/Content/plugins/fullcalendar-4.2.0/fullcalendar/core/locales/es.js'></script>
+
+
+    <script>
+        $(".datepicker").datepicker({
+            format: 'dd/mm/yyyy',
+            autoclose: true
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            calendarEl = document.getElementById('calendar');
+
+            @*eventos = "@Model.eventosJson";
+            eventos = eventos.replace(/&quot;/g, '"');
+            eventos = JSON.parse(eventos);*@
+            
+            eventos = JSON.parse('@Html.Raw(Model.eventosJson)');
+
+            calendar = new FullCalendar.Calendar(calendarEl, {
+                locale: 'es',
+                plugins: ['dayGrid'],
+                defaultView: 'dayGridMonth',
+                defaultDate: new Date(),
+                eventClick: function (info) {
+                    bootbox.alert({
+                        message: 'Descripción : ' + info.event.extendedProps.description,
+                        title: info.event.title,
+                        buttons: {
+                            ok: {
+                                label: 'Cerrar'
+                            }
+                        }
+                    });
+                },
+                events: eventos
+            });
+
+            calendar.render();
+        });
+    </script>
+
+    <script>
+        $("#form-agregar-programacion").submit(function () {
+            $.ajax({
+                url: this.action,
+                type: this.method,
+                data: $(this).serialize(),
+                success: function (response) {
+                    console.log("Ajax call is done");
+                    if (response.HasErrors) {
+                        $('#modal-agregar-programacion').modal('hide');
+                        showErrorMessages(response.Errors);
+                    }
+                    else {
+                        fechaInicio = reordenarFecha($("#fechaInicio").val());
+                        fechaTermino = reordenarFecha($("#fechaTermino").val());
+                        evento = {
+                            allDay: true,
+                            title: $("#curso option:selected").text(),
+                            description: $("#descripcion").val(),
+                            start: addDays(Date.parse(fechaInicio), 1),
+                            end: addDays(Date.parse(fechaTermino), 2),
+                            color: $("#color").val()
+                        }
+                        console.log(evento);
+                        calendar.addEvent(evento);
+                        $('#modal-agregar-programacion').modal('hide');
+                    }
+                }
+            });
+            return false;
+        });
+        function reordenarFecha(fecha) {
+            fechaArray = fecha.split("/");
+            console.log(fecha);
+            console.log(fechaArray[2] + "-" + fechaArray[1] + "-" + fechaArray[0]);
+            return fechaArray[2] + "-" + fechaArray[1] + "-" + fechaArray[0];
+        }
+        function showErrorMessages(errors) {
+            errores = "";
+            for (i = 0; i < errors.length; i++) {
+                errores = errores + "<br>" + errors[i].Value;
+            }
+            Swal.fire({
+                title: 'Se produjo un error al agregar la programación.',
+                html: errores
+            })
+
+        }
+        function addDays(date, days) {
+            var result = new Date(date);
+            result.setDate(result.getDate() + days);
+            return result;
+        }
+    </script>
+
+    @*<script>
+        $(".datepicker").datepicker({
+            dateFormat: 'dd-mm-yy',
+            changeMonth: false,
+            changeYear: false
+        });
+    </script>*@
+
+    <script>
+        function ShowModalAgregar() {
+            $('#modal-agregar-programacion').modal({ keyboard: true }, 'show');
+        }
+        function ShowModalProgramaciones() {
+            $('#modal-listar-programaciones').modal('show');
+        }
+        function ShowModalSeleccionarPeriodo() {
+            $('#modal-seleccionar-periodo').modal({ keyboard: true }, 'show');
+        }
+    </script>
+
+    <script>
+        $("#azul").click(function () {
+            $("#calendarizacionAbierta_colorEvento").val($("#azul").val());
+            $("#color").val("blue");
+            $("#azul").attr("class", "btn btn-circle btn-lg blue");
+            $("#rojo").attr("class", "btn btn-circle btn-sm red");
+            $("#naranjo").attr("class", "btn btn-circle btn-sm yellow-gold");
+            $("#verde").attr("class", "btn btn-circle btn-sm green-seagreen");
+        });
+        $("#rojo").click(function () {
+            $("#calendarizacionAbierta_colorEvento").val($("#rojo").val());
+            $("#color").val("red");
+            $("#azul").attr("class", "btn btn-circle btn-sm blue");
+            $("#rojo").attr("class", "btn btn-circle btn-lg red");
+            $("#naranjo").attr("class", "btn btn-circle btn-sm yellow-gold");
+            $("#verde").attr("class", "btn btn-circle btn-sm green-seagreen");
+        });
+        $("#naranjo").click(function () {
+            $("#calendarizacionAbierta_colorEvento").val($("#naranjo").val());
+            $("#color").val("orange");
+            $("#azul").attr("class", "btn btn-circle btn-sm blue");
+            $("#rojo").attr("class", "btn btn-circle btn-sm red");
+            $("#naranjo").attr("class", "btn btn-circle btn-lg yellow-gold");
+            $("#verde").attr("class", "btn btn-circle btn-sm green-seagreen");
+        });
+        $("#verde").click(function () {
+            $("#calendarizacionAbierta_colorEvento").val($("#verde").val());
+            $("#color").val("green");
+            $("#azul").attr("class", "btn btn-circle btn-sm blue");
+            $("#rojo").attr("class", "btn btn-circle btn-sm red");
+            $("#naranjo").attr("class", "btn btn-circle btn-sm yellow-gold");
+            $("#verde").attr("class", "btn btn-circle btn-lg green-seagreen");
+        });
+    </script>
+}

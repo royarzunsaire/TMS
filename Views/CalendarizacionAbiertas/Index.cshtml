@@ -1,0 +1,60 @@
+﻿@model IEnumerable<SGC.Models.CalendarizacionAbierta>
+
+@{
+    ViewBag.Title = "Listado CalendarizacionAbierta";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Listado CalendarizacionAbierta @Html.ActionLink(" ", "Create","/Create",htmlAttributes: new { @class = "btn btn-primary btn-large glyphicon glyphicon-plus" , @datatoggle = "tooltip", @title = "Nuevo"})
+</h2>
+<p>
+   
+</p>
+<table class="table table-striped table-bordered table-hover dt-responsive dataTable no-footer">
+<thead>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.fechaInicio)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.fechaTermino)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.estado)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.descripcion)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.colorEvento)
+        </th>
+        <th></th>
+    </tr>
+</thead>
+	<tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td data-sort="@item.fechaInicio.ToString("MM/dd/yyyy")">
+                @Html.DisplayFor(modelItem => item.fechaInicio)
+            </td>
+            <td data-sort="@item.fechaTermino.ToString("MM/dd/yyyy")">
+                @Html.DisplayFor(modelItem => item.fechaTermino)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.estado)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.descripcion)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.colorEvento)
+            </td>
+            <td>
+                @Html.ActionLink(" ", "Edit", new { id = item.idCalendarizacionAbierta }, htmlAttributes: new { @class = "btn btn-warning  glyphicon glyphicon-edit", @datatoggle = "tooltip", @title = "Editar" })
+                @Html.ActionLink(" ", "Details", new { id = item.idCalendarizacionAbierta }, htmlAttributes: new { @class = "btn btn-info glyphicon glyphicon-list", @datatoggle = "tooltip", @title = "Ver" })
+                @Html.ActionLink(" ", "Delete", new { id = item.idCalendarizacionAbierta }, htmlAttributes: new { @class = "btn btn-danger glyphicon glyphicon-trash", @datatoggle = "tooltip", @title = "Borrar" })
+            </td>
+        </tr>
+}
+</tbody>
+</table>

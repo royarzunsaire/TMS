@@ -1,0 +1,127 @@
+﻿@model IEnumerable<SGC.Models.ViewModelComercializacionEstado>
+
+<style>
+    #table-wrapper {
+        position: relative;
+    }
+
+    #table-scroll {
+        overflow: auto;
+    }
+
+    #table-wrapper table {
+        width: 100%;
+    }
+
+    #table-wrapper td {
+        white-space: nowrap;
+    }
+
+    #table-wrapper th {
+        white-space: nowrap;
+    }
+
+    th {
+        background-color: yellow;
+    }
+</style>
+
+<div id="table-wrapper">
+    <div id="table-scroll">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayName("Código")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Sucursal")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Tipo")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Precio Final")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Curso")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Tipo de Ejecución")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Cant Alumnos")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Relator")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Cliente")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Fecha Inicio")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Fecha Término")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Ciudad")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Estado")
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.comercializacion.cotizacion.codigoCotizacion)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.comercializacion.cotizacion.sucursal.nombre)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.comercializacion.cotizacion.tipoCurso)
+                    </td>
+                    <td data-cell-type="number">
+                        @(item.comercializacion.valorFinal - item.comercializacion.descuento)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.comercializacion.cotizacion.curso.nombreCurso)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.comercializacion.cotizacion.curso.tipoEjecucion)
+                    </td>
+                    <td data-cell-type="number">
+                        @Html.DisplayFor(modelItem => item.comercializacion.cotizacion.cantidadParticipante)
+                    </td>
+
+                    <td>
+                        <label>@String.Join(",", item.comercializacion.relatoresCursos.Select(x => x.relator.contacto.nombreCompleto))</label>
+
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.comercializacion.cotizacion.cliente.nombreEmpresa)
+                    </td>
+                    <td>
+                        <label>@String.Format("{0:dd/MM/yyyy}", item.comercializacion.fechaInicio)</label>
+
+                    </td>
+                    <td>
+                        <label>@String.Format("{0:dd/MM/yyyy}", item.comercializacion.fechaTermino)</label>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.comercializacion.ciudad.nombreCiudad)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.estado.EstadoComercializacion)
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+

@@ -1,0 +1,156 @@
+﻿@model SGC.Models.Relator
+
+@{
+    ViewBag.Title = "Capacitaciones Administrativas";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="page-title" style="margin-bottom: 0">
+    <div class="row">
+        <div class="col-md-12">
+            Relator
+        </div>
+        <div class="col-md-6">
+            <small>Nombre: @Model.contacto.nombreCompleto</small>
+        </div>
+        <div class="col-md-6">
+            <small>RUT: @Model.contacto.run</small>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-dark">
+            <div class="portlet-title">
+                <div class="caption">
+                    Capacitaciones Administrativas
+                </div>
+                <div class="tools">
+                    <a href="javascript:;" class="collapse"> </a>
+                    <a href="javascript:;" class="fullscreen"> </a>
+                </div>
+                <div class="actions">
+                    <a href="@Url.Action("LlenarR16", "Relator", new { id = 0, id2 = Model.idRelator }) " class="btn btn-circle btn-sm btn-default btn-group-lg" style="margin-right:10px; margin-left:10px;">
+                        <i class="fa fa-plus-circle"></i> Nuevo
+                    </a>
+                </div>
+            </div>
+            <div class="portlet-body">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="row">
+                    <div class="col-md-12">
+                        <table class="table table-striped table-bordered table-hover dt-responsive dataTable" id="sys-table" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.r16)
+                                {
+                                    <tr>
+                                        <td data-sort="@item.fecha.ToString("MM/dd/yyyy")">
+                                            @Html.DisplayFor(modelItem => item.fecha)
+                                        </td>
+                                        <td>
+                                            @if (item.archivo != null)
+                                            {
+                                                <i class="fa fa-download"></i>
+                                                @Html.ActionLink(item.archivo.nombreArchivo, "DescargarArchivoR16", "Relator", new { id = item.archivo.idStorage }, new { })
+                                            }
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="input-group-btn">
+                                                <button type="button" class="btn btn-default btn-sm glyphicon glyphicon-open" onclick="mostrarSubir('@item.idR16')" title="Subir Archivo"></button>
+                                                @Html.ActionLink(" ", "GenerarPdfR16", new { id = item.idR16 }, htmlAttributes: new { @class = "btn btn-default btn-sm glyphicon glyphicon-list-alt", @datatoggle = "tooltip", @title = "Descargar Respuestas" })
+                                                @Html.ActionLink(" ", "LlenarR16", new { id = item.idR16, id2 = Model.idRelator }, htmlAttributes: new { @class = "btn btn-default btn-sm glyphicon glyphicon-list-alt", @datatoggle = "tooltip", @title = "R16" })
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <hr />
+                <div class="row">
+                    <div class="col-md-12">
+                        @Html.ActionLink("Volver", "", "Relator", new { @class = "btn btn-default" })
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade draggable-modal modalx"
+     id="modalSubir"
+     tabindex="-1"
+     data-backdrop="static"
+     data-keyboard="false"
+     role="dialog"
+     aria-labelledby="deleteLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="row">
+                    <div class="col-md-10">
+                        <h4 class="modal-title">Seleccionar Archivo</h4>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        @using (Html.BeginForm("SubirR16", "Relator", FormMethod.Post, new { @id = "form", enctype = "multipart/form-data" }))
+                        {
+                            @Html.AntiForgeryToken()
+
+                            <input type="hidden" name="idR16" id="idR16" />
+                            <div class="col-md-12">
+                                <input id="file" type="file" name="file" accept="application/pdf, image/png, image/jpeg" />
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-md-6 text-left">
+                        <button type="button" id="btnCerrar" class="btn btn-default" data-dissmiss="modal">Cancelar</button>
+                    </div>
+                    <div class="col-md-6">
+                        <button type="submit" id="btnEnviar" class="btn btn-primary">Enviar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $('#btnCerrar').click(function () {
+                $('#modalSubir').modal('hide');
+            });
+            $('#btnEnviar').click(function () {
+                $('#modalSubir').modal('hide');
+                $('#form').submit();
+            });
+        });
+        function mostrarSubir(idR16) {
+            $('#idR16').val(idR16);
+            $('#modalSubir').modal({ keyboard: true }, 'show');
+        }
+    </script>
+}

@@ -1,0 +1,77 @@
+﻿@model IEnumerable<SGC.Models.Template>
+
+@{
+    ViewBag.Title = "Listado Template";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2 class="page-title">Administrar Templates</h2>
+
+<div class="portlet box blue-dark">
+    <div class="portlet-title">
+        <div class="caption">
+            Templates
+        </div>
+        <div class="tools">
+            <a href="javascript:;" class="collapse"> </a>
+            <a href="javascript:;" class="fullscreen"> </a>
+        </div>
+        <div class="actions">
+            <a href="@Url.Action("Create", "Templates") " class="btn btn-circle btn-sm btn-default btn-group-lg" style="margin-right:10px; margin-left:10px;">
+                <i class="fa fa-plus-circle"></i> Nuevo
+            </a>
+        </div>
+    </div>
+    <div class="portlet-body">
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table table-striped table-bordered table-hover dt-responsive dataTable" id="sys-table" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.nombre)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.tipo)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.fechaUltimaModificacion)
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.nombre)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.tipo)
+                            </td>
+                            <td data-sort="@item.fechaUltimaModificacion.ToString("MM/dd/yyyy")">
+                                @Html.DisplayFor(modelItem => item.fechaUltimaModificacion)
+                            </td>
+                            <td class="text-center">
+                                @using (Html.BeginForm("Delete", "Templates", FormMethod.Post, new { @id = "notificationForm_" + @item.idTemplate }))
+                                {
+                                    <div class="input-group-btn">
+                                        @Html.ActionLink(" ", "Edit", new { id = item.idTemplate }, htmlAttributes: new { @class = "btn btn-warning btn-sm glyphicon glyphicon-edit", @datatoggle = "tooltip", @title = "Editar" })
+                                        @Html.AntiForgeryToken()
+                                        <a class="btn btn-danger btn-sm glyphicon glyphicon-trash" href="javascript:confirmDelete('Delete','@(item.idTemplate)','Templates')" title="Eliminar"></a>
+                                    </div>
+                                }
+                            </td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section topLevel{
+    @{Html.RenderPartial("_RenderConfirm.Modal"); }
+}

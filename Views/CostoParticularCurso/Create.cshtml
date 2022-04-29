@@ -1,0 +1,661 @@
+﻿@model SGC.Models.ViewModelCostoParticularCurso
+
+<style>
+    textarea {
+        resize: none;
+    }
+
+    .modal {
+        text-align: center;
+        padding: 0 !important;
+    }
+
+        .modal:before {
+            content: '';
+            display: inline-block;
+            height: 100%;
+            vertical-align: middle;
+            margin-right: -4px;
+        }
+
+    .modal-dialog {
+        display: inline-block;
+        text-align: left;
+        vertical-align: middle;
+    }
+</style>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    ViewBag.Title = "Precio Unitario";
+
+}
+
+
+
+
+<h2>Analisis Precios Unitarios</h2>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+
+<div class="form-horizontal">
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <input type="hidden" name="idCurso" value="@ViewBag.idCurso" />
+    <div class="form-group">
+        <div class="col-md-12">
+            @Html.LabelFor(model => model.idCurso, "Curso", htmlAttributes: new { @class = "control-label" })
+            <input type="text" name="" value="@ViewBag.nombreCurso" class="form-control" readonly />
+        </div>
+
+    </div>
+    @*<div class="form-group">
+        <div class="col-md-12">
+            @Html.LabelFor(model => model.idCurso, "Seleccione un Curso", htmlAttributes: new { @class = "control-label" })
+
+            @Html.DropDownList("idCurso", new SelectList(ViewBag.Cursos, "idCurso", "nombreCurso"), "", new { @class = "form-control select2-allow-clear" })
+            @Html.ValidationMessageFor(model => model.idCurso, "Debe seleccionar un curso", new { @class = "text-danger" })
+        </div>
+
+    </div>*@
+
+
+    <div class="form-group">
+        <div class="col-md-12">
+
+            <table id="costoParticularCursosManoDeObra" class="table table-striped table-bordered table-hover dt-responsive">
+                <thead>
+                    <tr>
+                        <th> Mano de obra categorias</th>
+                        <th>P/P</th>
+                        <th>Unidad</th>
+                        <th>Cantidad</th>
+                        <th>Costo Unitario</th>
+                        <th>SubTotal</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.costoParticularCursosManoDeObra != null)
+                    {
+                        var i = 0;
+                        foreach (var costoParticular in Model.costoParticularCursosManoDeObra)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => costoParticular.detalle)
+                                    @Html.HiddenFor(model => model.costoParticularCursosManoDeObra[i].detalle)
+                                </td>
+                                <td>
+                                    @if (costoParticular.porPersona)
+                                    {
+                                        <i class="fade fa-check"></i>
+                                    }
+                                    @Html.HiddenFor(model => model.costoParticularCursosManoDeObra[i].porPersona)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => costoParticular.unidad)
+                                    @Html.HiddenFor(model => model.costoParticularCursosManoDeObra[i].unidad)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => costoParticular.cantidad)
+                                    @Html.HiddenFor(model => model.costoParticularCursosManoDeObra[i].cantidad)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => costoParticular.costo)
+                                    @Html.HiddenFor(model => model.costoParticularCursosManoDeObra[i].costo)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => costoParticular.subTotal)
+                                    @Html.HiddenFor(model => model.costoParticularCursosManoDeObra[i].subTotal)
+                                </td>
+                                <td>
+                                    <input type="button" onclick="Remove(this)" value="Quitar" class="btn btn-primary" />
+                                </td>
+                            </tr>
+                            i++;
+                        }
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td width="45%">
+                            <input type="text" class="form-control detalle" list="detalleManoDeObra" />
+                            <datalist id="detalleManoDeObra">
+                                @foreach (var item in Model.listaCostoParticularCursos.Where(x => x.categoria == "Mano de Obra"))
+                                {
+                                    <option value="@item.detalle" />
+                                }
+                            </datalist>
+                            <p style="color:red" class="textDetalle"></p>
+                        </td>
+                        <td width="5%">
+                            <input type="checkbox" class="form-control porPersona" />
+                            <p style="color:red" class="textPorPersona"></p>
+                        </td>
+                        <td width="10%">
+                            <select type="text" class="form-control unidad">
+                                <option value="Un" selected>Un</option>
+                                <option value="Hrs">Hrs</option>
+                                <option value="Si">Si</option>
+                            </select>
+                            <p style="color:red" class="textUnidad"></p>
+                        </td>
+                        <td width="10%">
+                            <input type="number" class="form-control cantidad" />
+                            <p style="color:red" class="textCantidad"></p>
+                        </td>
+                        <td width="10%">
+                            <input type="number" class="form-control costo" />
+                            <p style="color:red" class="textCosto"></p>
+                        </td>
+                        <td width="10%">
+                            <input type="number" class="form-control subTotal" readonly />
+                        </td>
+                        <td width="10%"><input type="button" value="Agregar" class="btn btn-primary idButtonAddRow" /></td>
+
+                    </tr>
+
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+
+
+    <div class="form-group">
+        <div class="col-md-12">
+
+            <table id="costoParticularCursosEquiposYHerramientas" class="table table-striped table-bordered table-hover dt-responsive">
+                <thead>
+                    <tr>
+                        <th> Equipos y Herramientas</th>
+                        <th>P/P</th>
+                        <th>Unidad</th>
+                        <th>Cantidad</th>
+                        <th>Costo Unitario</th>
+                        <th>SubTotal</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.costoParticularCursosEquiposYHerramientas != null)
+                    {
+                        var i = 0;
+                        foreach (var costoParticular in Model.costoParticularCursosEquiposYHerramientas)
+                        {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => costoParticular.detalle)
+                            @Html.HiddenFor(model => model.costoParticularCursosEquiposYHerramientas[i].detalle)
+                        </td>
+                        <td>
+                            @if (costoParticular.porPersona)
+                            {
+                                <i class="fade fa-check"></i>
+                            }
+                            @Html.HiddenFor(model => model.costoParticularCursosEquiposYHerramientas[i].porPersona)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => costoParticular.unidad)
+                            @Html.HiddenFor(model => model.costoParticularCursosEquiposYHerramientas[i].unidad)
+
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => costoParticular.cantidad)
+                            @Html.HiddenFor(model => model.costoParticularCursosEquiposYHerramientas[i].cantidad)
+
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => costoParticular.costo)
+                            @Html.HiddenFor(model => model.costoParticularCursosEquiposYHerramientas[i].costo)
+
+                        </td>
+
+                        <td>
+                            @Html.DisplayFor(modelItem => costoParticular.subTotal)
+                            @Html.HiddenFor(model => model.costoParticularCursosEquiposYHerramientas[i].subTotal)
+
+                        </td>
+
+                        <td>
+                            <input type="button" onclick="Remove(this)" value="Quitar" class="btn btn-primary" />
+                        </td>
+
+                    </tr>
+                            i++;
+                        }
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td width="45%">
+                            <input type="text" class="form-control detalle" list="detalleEquiposYHerramientas" />
+                            <datalist id="detalleEquiposYHerramientas">
+                                @foreach (var item in Model.listaCostoParticularCursos.Where(x => x.categoria == "Equipos y Herramientas"))
+                                {
+                                    <option value="@item.detalle" />
+                                }
+                            </datalist>
+                            <p style="color:red" class="textDetalle"></p>
+                        </td>
+                        <td width="5%">
+                            <input type="checkbox" class="form-control porPersona" />
+                            <p style="color:red" class="textPorPersona"></p>
+                        </td>
+                        <td width="10%">
+                            <select type="text" class="form-control unidad">
+                                <option value="Un" selected>Un</option>
+                                <option value="Hrs">Hrs</option>
+                                <option value="Si">Si</option>
+                            </select>
+                            <p style="color:red" class="textUnidad"></p>
+                        </td>
+                        <td width="10%">
+                            <input type="number" class="form-control cantidad" />
+                            <p style="color:red" class="textCantidad"></p>
+                        </td>
+                        <td width="10%">
+                            <input type="number" class="form-control costo" />
+                            <p style="color:red" class="textCosto"></p>
+                        </td>
+                        <td width="10%">
+                            <input type="number" class="form-control subTotal" readonly />
+                        </td>
+                        <td width="10%"><input type="button" value="Agregar" class="btn btn-primary idButtonAddRow" /></td>
+
+                    </tr>
+
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+
+
+    <div class="form-group">
+        <div class="col-md-12">
+
+            <table id="costoParticularCursosMateriales" class="table table-striped table-bordered table-hover dt-responsive">
+                <thead>
+                    <tr>
+                        <th>Materiales</th>
+                        <th>P/P</th>
+                        <th>Unidad</th>
+                        <th>Cantidad</th>
+                        <th>Costo Unitario</th>
+                        <th>SubTotal</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.costoParticularCursosMateriales != null)
+                    {
+                        var i = 0;
+                        foreach (var costoParticular in Model.costoParticularCursosMateriales)
+                        {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => costoParticular.detalle)
+                            @Html.HiddenFor(model => model.costoParticularCursosMateriales[i].detalle)
+                        </td>
+                        <td>
+                            @if (costoParticular.porPersona)
+                            {
+                                <i class="fade fa-check"></i>
+                            }
+                            @Html.HiddenFor(model => model.costoParticularCursosMateriales[i].porPersona)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => costoParticular.unidad)
+                            @Html.HiddenFor(model => model.costoParticularCursosMateriales[i].unidad)
+
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => costoParticular.cantidad)
+                            @Html.HiddenFor(model => model.costoParticularCursosMateriales[i].cantidad)
+
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => costoParticular.costo)
+                            @Html.HiddenFor(model => model.costoParticularCursosMateriales[i].costo)
+
+                        </td>
+
+                        <td>
+                            @Html.DisplayFor(modelItem => costoParticular.subTotal)
+                            @Html.HiddenFor(model => model.costoParticularCursosMateriales[i].subTotal)
+
+                        </td>
+
+                        <td>
+                            <input type="button" onclick="Remove(this)" value="Quitar" class="btn btn-primary" />
+                        </td>
+
+                    </tr>
+                            i++;
+                        }
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td width="45%">
+                            <input type="text" class="form-control detalle" list="detalleMateriales" />
+                            <datalist id="detalleMateriales">
+                                @foreach (var item in Model.listaCostoParticularCursos.Where(x => x.categoria == "Materiales"))
+                                {
+                                    <option value="@item.detalle" />
+                                }
+                            </datalist>
+                            <p style="color:red" class="textDetalle"></p>
+                        </td>
+                        <td width="5%">
+                            <input type="checkbox" class="form-control porPersona" />
+                            <p style="color:red" class="textPorPersona"></p>
+                        </td>
+                        <td width="10%">
+                            <select type="text" class="form-control unidad">
+                                <option value="Un" selected>Un</option>
+                                <option value="Hrs">Hrs</option>
+                                <option value="Si">Si</option>
+                            </select>
+                            <p style="color:red" class="textUnidad"></p>
+                        </td>
+                        <td width="10%">
+                            <input type="number" class="form-control cantidad" />
+                            <p style="color:red" class="textCantidad"></p>
+                        </td>
+                        <td width="10%">
+                            <input type="number" class="form-control costo" />
+                            <p style="color:red" class="textCosto"></p>
+                        </td>
+                        <td width="10%">
+                            <input type="number" class="form-control subTotal" readonly />
+                        </td>
+                        <td width="10%"><input type="button" value="Agregar" class="btn btn-primary idButtonAddRow" /></td>
+
+                    </tr>
+
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+
+
+    <div class="form-group">
+        <div class="col-md-12">
+
+            <table id="costoParticularCursosOtrosGastos" class="table table-striped table-bordered table-hover dt-responsive">
+                <thead>
+                    <tr>
+                        <th>Otros Gastos</th>
+                        <th>P/P</th>
+                        <th>Unidad</th>
+                        <th>Cantidad</th>
+                        <th>Costo Unitario</th>
+                        <th>SubTotal</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.costoParticularCursosOtrosGastos != null)
+                    {
+                        var i = 0;
+                        foreach (var costoParticular in Model.costoParticularCursosOtrosGastos)
+                        {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => costoParticular.detalle)
+                            @Html.HiddenFor(model => model.costoParticularCursosOtrosGastos[i].detalle)
+                        </td>
+                        <td>
+                            @if (costoParticular.porPersona)
+                            {
+                                <i class="fade fa-check"></i>
+                            }
+                            @Html.HiddenFor(model => model.costoParticularCursosOtrosGastos[i].porPersona)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => costoParticular.unidad)
+                            @Html.HiddenFor(model => model.costoParticularCursosOtrosGastos[i].unidad)
+
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => costoParticular.cantidad)
+                            @Html.HiddenFor(model => model.costoParticularCursosOtrosGastos[i].cantidad)
+
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => costoParticular.costo)
+                            @Html.HiddenFor(model => model.costoParticularCursosOtrosGastos[i].costo)
+
+                        </td>
+
+                        <td>
+                            @Html.DisplayFor(modelItem => costoParticular.subTotal)
+                            @Html.HiddenFor(model => model.costoParticularCursosOtrosGastos[i].subTotal)
+
+                        </td>
+
+                        <td>
+                            <input type="button" onclick="Remove(this)" value="Quitar" class="btn btn-primary" />
+                        </td>
+
+                    </tr>
+                            i++;
+                        }
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td width="45%">
+                            <input type="text" class="form-control detalle" list="detalleOtrosGastos" />
+                            <datalist id="detalleOtrosGastos">
+                                @foreach (var item in Model.listaCostoParticularCursos.Where(x => x.categoria == "Otros Gastos"))
+                                {
+                                    <option value="@item.detalle" />
+                                }
+                            </datalist>
+                            <p style="color:red" class="textDetalle"></p>
+                        </td>
+                        <td width="5%">
+                            <input type="checkbox" class="form-control porPersona" />
+                            <p style="color:red" class="textPorPersona"></p>
+                        </td>
+                        <td width="10%">
+                            <select type="text" class="form-control unidad">
+                                <option value="Un" selected>Un</option>
+                                <option value="Hrs">Hrs</option>
+                                <option value="Si">Si</option>
+                            </select>
+                            <p style="color:red" class="textUnidad"></p>
+                        </td>
+                        <td width="10%">
+                            <input type="number" class="form-control cantidad" />
+                            <p style="color:red" class="textCantidad"></p>
+                        </td>
+                        <td width="10%">
+                            <input type="number" class="form-control costo" />
+                            <p style="color:red" class="textCosto"></p>
+                        </td>
+                        <td width="10%">
+                            <input type="number" class="form-control subTotal" readonly />
+                        </td>
+                        <td width="10%"><input type="button" value="Agregar" class="btn btn-primary idButtonAddRow" /></td>
+
+                    </tr>
+
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+
+
+
+    <div class="form-group">
+        <div class="col-md-12">
+            <!--<input type="submit" value="Cancelar" class="btn btn-danger" />-->
+            @Html.ActionLink("Volver", "Index", "Curso", new { }, new { @class = "btn btn-default" })
+
+            <button class="btn btn-primary" style="float:right" data-toggle="modal" data-target="#idModalConfirmCostoUnitarioCrear" type="button">Crear</button>
+
+            <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" id="idModalConfirmCostoUnitarioCrear">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="myModalLabel">Confirmar</h4>
+                        </div>
+                        <div class="modal-body">
+                            <p>¿Esta seguro que desea confirmar la creación del R12?</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Aceptar</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+</div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+<script type="text/javascript">
+    var contadorGeneral = 0;
+    $("#idButtonModal").click(function () {
+        console.log(contadorGeneral);
+        /*if (contadorGeneral == 0) {
+            $('#idTextValidContenido').html('Debe ingresar al menos un contenido');
+        } else {
+            $('#idTextValidContenido').html('');
+            $('#idModalConfirmR11Crear').modal('show');
+        }*/
+    });
+
+    $("body").on("click", ".idButtonAddRow", function () {
+        var detalle = $(this).parent().parent().find(".detalle");
+        var porPersona = $(this).parent().parent().find(".porPersona");
+        var unidad = $(this).parent().parent().find(".unidad");
+        var cantidad = $(this).parent().parent().find(".cantidad");
+        var costo = $(this).parent().parent().find(".costo");
+        var subTotal = $(this).parent().parent().find(".subtotal");
+
+        var is_valid = true;
+        if (detalle.val() == null || detalle.val() == '') {
+            is_valid = false;
+            detalle.parent().parent().find(".textDetalle").html('Este campo es requerido');
+        } else {
+            detalle.parent().parent().find(".textDetalle").html('');
+        }
+        if (porPersona.val() == null || cantidad.val() == '') {
+            is_valid = false;
+            detalle.parent().parent().find(".textPorPersona").html('Este campo es requerido');
+        } else {
+            detalle.parent().parent().find(".textPorPersona").html('');
+        }
+        if (unidad.val() == null || unidad.val() == '') {
+            is_valid = false;
+            detalle.parent().parent().find(".textUnidad").html('Este campo es requerido');
+        } else {
+            detalle.parent().parent().find(".textUnidad").html('');
+        }
+        if (cantidad.val() == null || cantidad.val() == '') {
+            is_valid = false;
+            detalle.parent().parent().find(".textCantidad").html('Este campo es requerido');
+        } else {
+            detalle.parent().parent().find(".textCantidad").html('');
+        }
+        if (costo.val() == null || costo.val() == '') {
+            is_valid = false;
+            detalle.parent().parent().find(".textCosto").html('Este campo es requerido');
+        } else {
+            detalle.parent().parent().find(".textCosto").html('');
+        }
+
+        if (!is_valid) {
+            return;
+        }
+        contadorGeneral++;
+        //Get the reference of the Table's TBODY element.
+        var tBody = detalle.closest('td').closest('table').children('tbody')[0];
+        var name = detalle.closest('td').closest('table').attr('id')
+        //Add Row.
+        var row = tBody.insertRow(-1);
+        var numIndexList = row.rowIndex - 1;
+        //Add cell.
+        var cell = $(row.insertCell(-1));
+        cell.html('<input  value="' + detalle.val() + '" name="' + name+'[' + numIndexList + '].detalle" type="hidden"/>' + detalle.val().replace(/(\r\n|\n|\r)/gm, "<br>"));
+        cell = $(row.insertCell(-1));
+        if (porPersona.prop("checked") == true) {
+            cell.html('<input  value="true"  name="' + name + '[' + numIndexList + '].porPersona" type="hidden"/>' + '<i class="fa fa-check"></i>');
+        } else {
+            cell.html('<input  value="false"  name="' + name + '[' + numIndexList + '].porPersona" type="hidden"/>');
+        }
+        cell = $(row.insertCell(-1));
+        cell.html('<input  value="' + unidad.val() + '"  name="'+name+'[' + numIndexList + '].unidad" type="hidden"/>' + unidad.val().replace(/(\r\n|\n|\r)/gm, "<br>"));
+        cell = $(row.insertCell(-1));
+        cell.html('<input  value="' + cantidad.val() + '" name="' + name +'[' + numIndexList + '].cantidad" type="hidden"/>' + cantidad.val());
+        cell = $(row.insertCell(-1));
+        cell.html('<input  value="' + costo.val() + '" name="' + name +'[' + numIndexList + '].costo" type="hidden"/>' + costo.val());
+        cell = $(row.insertCell(-1));
+        cell.html('<input  value="' + costo.val() * cantidad.val() + '" name="' + name + '[' + numIndexList + '].subTotal" type="hidden"/>' + costo.val() * cantidad.val());
+
+        //Add Button cell.
+        cell = $(row.insertCell(-1));
+        var btnRemove = $("<input />");
+        btnRemove.attr("type", "button");
+        btnRemove.attr("onclick", "Remove(this);");
+        btnRemove.val("Quitar");
+        btnRemove.addClass("btn btn-primary")
+        cell.append(btnRemove);
+
+        //Clear the TextBoxes.
+        detalle.val("");
+        unidad.val("");
+        costo.val("");
+        cantidad.val("");
+
+    });
+
+    function Remove(button) {
+        //Determine the reference of the Row using the Button.
+        var row = $(button).closest("TR");
+        var name = $("TD", row).eq(0).html();
+        if (confirm("¿Esta seguro que desea eliminar el item? ")) {
+            //Get the reference of the Table.
+            var table = row.closest('table');
+            var cont = 0;
+            //Delete the Table row using it's Index.
+            table[0].deleteRow(row[0].rowIndex);
+            contadorGeneral--;
+            //Re order name
+            table.each(function (i) {
+                $(this).find(":input").each(function () {
+                    var oldName = $(this).attr('name');
+                    if (oldName == null) {
+                        cont++;
+                    } else {
+                        var newName = oldName.replace(new RegExp("(\\[)\\d*(\\])", "g"), '[' + cont + ']');
+                        $(this).attr('name', newName);
+                    }
+
+                });
+            });
+        }
+    };
+
+</script>

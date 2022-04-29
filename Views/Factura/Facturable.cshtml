@@ -1,0 +1,364 @@
+﻿@using SGC.Models;
+@model IEnumerable<SGC.Models.Comercializacion>
+
+@{
+    ViewBag.Title = "Listado Factura";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+
+
+@section Styles{
+    <style>
+        <style >
+        .sence {
+            background-color: #add8e6;
+            vertical-align: middle;
+        }
+
+        .no_sence {
+            background-color: #9B59B6;
+            vertical-align: middle;
+        }
+
+        .arriendo {
+            background-color: #DAD7D6;
+            vertical-align: middle;
+        }
+
+        .btn-group, .btn-group-vertical {
+            position: unset;
+        }
+
+        .dropdown-menu {
+            left: auto;
+        }
+    </style>
+}
+
+<h3 class="page-title">
+    Administrar Facturas
+</h3>
+<div class="row">
+
+    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <div class="dashboard-stat2 " style="padding-top:31px">
+            <div class="display">
+                <div class="number">
+                    <h3 class="font-green-sharp">
+                        <small class="font-green-sharp"></small>
+                        <span data-counter="counterup" data-value="@String.Format("{0}", ViewBag.noFacturadas)">@String.Format("{0}", ViewBag.noFacturadas)</span>
+                    </h3>
+                    <small> No facturadas</small>
+                </div>
+            </div>
+            <div class="progress-info">
+                <div class="progress">
+                    <span style="width: 100%;" class="progress-bar progress-bar-success green-sharp">
+                        <span class="sr-only"> @ViewBag.noFacturadas cantidad</span>
+                    </span>
+                </div>
+                <div class="status">
+                    <div class="status-title"> Comercializaciones </div>
+                    <div class="status-number">  @ViewBag.noFacturadas </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <div class="dashboard-stat2 " style="padding-top:31px">
+            <div class="display">
+                <div class="number">
+                    <h3 class="font-green-sharp">
+                        <small class="font-green-sharp"></small>
+                        <span data-counter="counterup" data-value="@String.Format("{0}", ViewBag.noFacturadasSence)">@String.Format("{0}", ViewBag.noFacturadasSence)</span>
+                    </h3>
+                    <small> No facturadas SENCE</small>
+                </div>
+            </div>
+            <div class="progress-info">
+                <div class="progress">
+                    <span style="width: 100%;" class="progress-bar progress-bar-success green-sharp">
+                        <span class="sr-only"> @ViewBag.noFacturadasSence cantidad</span>
+                    </span>
+                </div>
+                <div class="status">
+                    <div class="status-title"> Comercializaciones </div>
+                    <div class="status-number">  @ViewBag.noFacturadasSence </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <div class="dashboard-stat2 " style="padding-top:31px">
+            <div class="display">
+                <div class="number">
+                    <h3 class="font-green-sharp">
+                        <small class="font-green-sharp"></small>
+                        <span data-counter="counterup" data-value="@String.Format("{0}", ViewBag.noFacturadasTerminadaSence)">@String.Format("{0}", ViewBag.noFacturadasTerminadaSence)</span>
+
+                    </h3>
+                    <small> Teminadas SENCE</small>
+                </div>
+            </div>
+            <div class="progress-info">
+                <div class="progress">
+                    <span style="width: 100%;" class="progress-bar progress-bar-success green-sharp">
+                        <span class="sr-only"> @ViewBag.noFacturadasTerminadaSence cantidad</span>
+                    </span>
+                </div>
+                <div class="status">
+                    <div class="status-title"> Comercializaciones </div>
+                    <div class="status-number">  @ViewBag.noFacturadasTerminadaSence </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <div class="dashboard-stat2 " style="padding-top:31px">
+            <div class="display">
+                <div class="number">
+                    <h3 class="font-green-sharp">
+                        <small class="font-green-sharp"></small>
+                        <span data-counter="counterup" data-value="@String.Format("{0}", ViewBag.facturadasParcial)">@String.Format("{0}", ViewBag.facturadasParcial)</span>
+
+                    </h3>
+                    <small>Parcialmente terminadas</small>
+                </div>
+            </div>
+            <div class="progress-info">
+                <div class="progress">
+                    <span style="width: 100%;" class="progress-bar progress-bar-success green-sharp">
+                        <span class="sr-only"> @ViewBag.facturadasParcial cantidad</span>
+                    </span>
+                </div>
+                <div class="status">
+                    <div class="status-title"> Comercializaciones </div>
+                    <div class="status-number">  @ViewBag.facturadasParcial </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-dark">
+            <div class="portlet-title">
+                <div class="caption">
+                    Comercializaciones Facturables
+                </div>
+                <div class="tools">
+                    <a href="javascript:;" class="collapse"> </a>
+                    <a href="javascript:;" class="fullscreen"> </a>
+                </div>
+
+            </div>
+
+            <div class="portlet-body">
+                <div class="row">
+                    <div class="col-md-12 text-right" style="margin-bottom:10px">
+                        <div class="col-md-4 pull-right" style="margin-left:25px">
+
+                            <div class="col-md-10">
+                                No Facturadas
+                            </div>
+                            <div class="col-md-2">
+                                <input type="checkbox" class="filter" id="nf" value="" />
+
+                            </div>
+
+                        </div>
+                        <div class=" col-md-4 pull-right" style="margin-left:25px">
+
+
+                            <div class="col-md-10">
+                                No facturadas SENCE
+                            </div>
+                            <div class="col-md-2">
+                                <input type="checkbox" class="filter" id="nfs" value="" />
+
+                            </div>
+                        </div>
+                        <div class="col-md-4 pull-right" style="margin-left:25px">
+
+                            <div class="col-md-10">
+                                Teminadas SENCE
+                            </div>
+                            <div class="col-md-2">
+                                <input type="checkbox" class="filter" id="ts" value="" />
+
+                            </div>
+
+                        </div>
+                        <div class="col-md-4 pull-right">
+                            <div class="col-md-10">
+                                Parcialmente terminadas
+                            </div>
+                            <div class="col-md-2">
+                                <input type="checkbox" class="filter" id="pt" value="" />
+
+                            </div>
+
+
+                        </div>
+                        <div class="col-md-4 pull-right" style="margin-left:25px">
+
+                            <div class="col-md-10">
+                                Teminadas SENCE - Terminadas
+                            </div>
+                            <div class="col-md-2">
+                                <input type="checkbox" class="filter" id="tst" value="" />
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <table class="table table-striped table-bordered table-hover dt-responsive dataTable" id="sys-table-comercializacion" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th style="min-width: 60px">@Html.DisplayName("Código")</th>
+                            <th>@Html.DisplayName("Facturas")</th>
+                            <th>@Html.DisplayName("Curso") </th>
+                            <th>@Html.DisplayName("Tipo de Ejecución")</th>
+                            <th>@Html.DisplayNameFor(model => model.cotizacion.cliente.nombreEmpresa)</th>
+                            <th>@Html.DisplayNameFor(model => model.fechaInicio)</th>
+                            <th>@Html.DisplayNameFor(model => model.fechaTermino)</th>
+                            <th>@Html.DisplayName("Sucursal")</th>
+                            <th>@Html.DisplayName("Estado Facturas")</th>
+                            <th>@Html.DisplayName("Monto Total")</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div hidden>
+    @using (Html.BeginForm("IndexData", "Factura", FormMethod.Post, new { @id = ("form-ModalParticipanteCliente") }))
+    {
+        @Html.AntiForgeryToken()
+    }
+</div>
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            CreateTable();
+            $(".filter").each(function () {
+                $('#uniform-' + this.id).removeClass("checker");
+            });
+
+        });
+        var nf = false;
+        var nfs = false;
+        var ts = false;
+        var pt = false;
+        var tst = false;
+        $(".filter").on("change", function () {
+            var id = this.id;
+            nf = false;
+            nfs = false;
+            ts = false;
+            pt = false;
+            tst = false;
+            var value = $('#' + this.id)[0].checked;
+            $(".filter").each(function () {
+                if (this.id != id) {
+                    $('#' + this.id).prop('checked', false);
+                }
+            });
+            if (id == "nf") {
+                nf = value;
+            }
+            else if (id == "nfs") {
+                nfs = value;
+            }
+            else if (id == "ts") {
+                ts = value;
+            }
+            else if (id == "pt") {
+                pt = value;
+            }
+            else if (id == "tst") {
+                tst = value;
+            }
+            $("#sys-table-comercializacion").DataTable().destroy();
+            CreateTable();
+        });
+        $('.clientDownload').change(function () {
+            var id = this.id.split("_")[0];
+            var form = $('#form-ModalParticipanteCliente');
+            var url = form.attr('action');
+            $.ajax({
+                method: "POST",
+                url: url,
+                dataType: "json",
+                data: { id: id, value: this.checked },
+                success: function (result) {
+                    if (result.error != "") {
+                        alert(result.error);
+                        console.log(result);
+                    }
+                }
+            });
+        });
+        function CreateTable() {
+            var form = $('#form-ModalParticipanteCliente');
+            var url = form.attr('action');
+            var table = $("#sys-table-comercializacion").DataTable({
+                destroy: true,
+                responsive: true,
+                "lengthMenu": [
+                    [10, 15, 20, 25, -1],
+                    [10, 15, 20, 25, "All"]
+                ],
+                processing: true,
+                serverSide: true,
+                order: [0, "asc"],
+                language: { processing: "Cargando...Por favor espere" },
+                ajax: {
+                    method: "POST",
+                    url: url,
+                    dataType: "json",
+                    data: {
+                        nf: nf
+                        , nfs: nfs
+                        , ts: ts
+                        , pt: pt
+                        , tst: tst
+                    },
+                    error: function (request, status, error) {
+                        alert(request.responseText);
+                    },
+                },
+                columns: [
+                    { "data": "codigoCotizacion" },
+                    { "data": "facturas" },
+                    { "data": "curso" },
+                    { "data": "tipoEjecucion" },
+                    { "data": "cliente" },
+                    { "data": "fechaInicio" },
+                    { "data": "fechaInicio" },
+                    { "data": "sucursal" },
+                    { "data": "estadoFacturas" },
+                    { "data": "montoTotal" },
+                    { "data": "menu" },
+                ]
+            });
+            $('#sys-table-comercializacion_filter input').unbind();
+            $('#sys-table-comercializacion_filter input').bind('keyup', function (e) {
+                if (e.keyCode == 13) {
+                    table.search(this.value).draw();
+                }
+            });
+        }
+    </script>
+}

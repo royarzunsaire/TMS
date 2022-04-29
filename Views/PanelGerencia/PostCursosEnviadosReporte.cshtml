@@ -1,0 +1,73 @@
+﻿@model List<SGC.Models.ViewModelPostCurso>
+@using SGC.Models;
+@using System.Collections.Generic;
+@{
+    var data = Model;
+    var comercializaciones = (List<ViewModelPostCurso>)ViewBag.comercializaciones;
+    var sucursales = (List<Sucursal>)ViewBag.sucursales;
+    int totalComercializaciones = 0;
+    int totalConDjo = 0;
+    int totalSinDjo = 0;
+}
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Sucursal
+            </th>
+            <th>
+                Comercializaciones
+            </th>
+            <th>
+                Con DJO
+            </th>
+            <th>
+                Sin DJO
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var sucursal in sucursales)
+        {
+            int contadorComercializaciones = 0;
+            int contadorConDJO = 0;
+            int contadorSinDJO = 0;
+
+            <tr>
+                <td>@Html.Label(sucursal.nombre)</td>
+                @foreach (var comercializacion in comercializaciones)
+                {
+                    if (comercializacion.comercializacion.cotizacion.sucursal.idSucursal == sucursal.idSucursal)
+                    {
+                        contadorComercializaciones++;
+                        totalComercializaciones++;
+                        if (comercializacion.postCurso != null)
+                        {
+                            if (comercializacion.postCurso.djo != false)
+                            {
+                                contadorConDJO++;
+                                totalConDjo++;
+                            }
+                            else
+                            {
+                                contadorSinDJO++;
+                                totalSinDjo++;
+                            }
+                        }
+                    }
+                }
+                <td>@string.Format("{0:#,0}", contadorComercializaciones)</td>
+                <td>@string.Format("{0:#,0}", contadorConDJO)</td>
+                <td>@string.Format("{0:#,0}", contadorSinDJO)</td>
+            </tr>
+        }
+        <tr>
+            <th>Total de Sucursales</th>
+            <th>@string.Format("{0:#,0}", totalComercializaciones)</th>
+            <th>@string.Format("{0:#,0}", totalConDjo)</th>
+            <th>@string.Format("{0:#,0}", totalSinDjo)</th>
+        </tr>
+    </tbody>
+</table>

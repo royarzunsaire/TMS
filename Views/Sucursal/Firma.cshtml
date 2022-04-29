@@ -1,0 +1,114 @@
+﻿@model SGC.Models.Sucursal
+
+@{
+    ViewBag.Title = "Firma Sucursal";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles{
+        <style>
+            .container {
+                position: relative;
+                width: 100%;
+            }
+
+                .container img {
+                    height: auto;
+                }
+
+                .container .btn {
+                    position: absolute;
+                    top: 0%;
+                    left: 0%;
+                    transform: translate(43%, 3%);
+                    background-color: #555;
+                    border: none;
+                }
+
+                    .container .btn:hover {
+                        background-color: black;
+                    }
+        </style>
+}
+
+<div class="page-title" style="margin-bottom: 0">
+    <div class="row">
+        <div class="col-md-12">
+            Administrar Sucursales
+        </div>
+        <div class="col-md-12">
+            <small>Sucursal: @Model.nombre</small>
+        </div>
+    </div>
+</div>
+
+<div class="portlet light bordered">
+    <div class="portlet-title">
+        <div class="caption">
+            Firma Administrador
+        </div>
+    </div>
+    <div class="portlet-body">
+        @using (Html.BeginForm("Firma", "Sucursal", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.idSucursal)
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.nombreAdministrador, htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.nombreAdministrador, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.nombreAdministrador, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.runAdministrador, htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.runAdministrador, new { htmlAttributes = new { @class = "form-control run", @id = "run" } })
+                    @Html.ValidationMessageFor(model => model.runAdministrador, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.direccionAdministrador, htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.direccionAdministrador, new { htmlAttributes = new { @class = "form-control run" } })
+                    @Html.ValidationMessageFor(model => model.direccionAdministrador, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+            if (Model.firmaAdministrador != null)
+            {
+                <div class="row">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="container">
+                                <img src="~/Files/@Model.firmaAdministrador.nombreArchivo" style="max-width:450px; max-height:450px;border:1px solid grey" />
+                                @Html.ActionLink(" ", "Descargar", new { id = Model.firmaAdministrador.idStorage }, new { @class = "btn btn-primary glyphicon glyphicon-save", style = "vertical-align:top" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr />
+            }
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        @Html.Label("firma", "Seleccionar archivo", htmlAttributes: new { @class = "control-label" })
+                        <input type="file" name="myFile" accept="image/png" /> <br>
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="row">
+                <div class="col-md-6">
+                    @Html.ActionLink("Volver", "Index", new { }, new { @class = "btn btn-default" })
+                </div>
+                <div class="col-md-6 text-right">
+                    <input type="submit" value="Guardar" class="btn btn-primary" />
+                </div>
+            </div>
+        }
+    </div>
+</div>
+

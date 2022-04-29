@@ -1,0 +1,177 @@
+﻿
+@{
+    ViewBag.Title = "Pizarra Aeropuerto";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    DateTime date = ViewBag.date;
+}
+
+<h3>
+    Pizarra Aeropuerto
+</h3>
+<div class="portlet box blue-dark">
+    <div class="portlet-title">
+        <div class="caption">
+            Programación
+        </div>
+        <div class="tools">
+            <a href="javascript:;" class="collapse"> </a>
+            <a href="javascript:;" class="fullscreen"> </a>
+        </div>
+        <div class="actions">
+            <div class="col-md-6">
+                <div class="col-md-2">
+                    @Html.Label("idFecha", "Fecha:", htmlAttributes: new { @class = "control-label", @style = "padding-top: 5px" })
+                </div>
+                <div class="col-md-10">
+                    @Html.EditorFor(model => date, new { htmlAttributes = new { @class = "form-control datepicker" } })
+                </div>
+
+            </div>
+            <div class="col-md-6">
+
+                <div class="col-md-4">
+                    @Html.Label("idSucursal", "Sucursal", htmlAttributes: new { @class = "control-label", @style = "padding-top: 5px" })
+                </div>
+                <div class="col-md-8">
+                    @Html.DropDownList("idSucursal", (SelectList)ViewBag.sucursales, "Todas", htmlAttributes: new { @class = "form-control", @id = "idSucursal" })
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="portlet-body">
+        <div class="row col-md-6 col-md-offset-3">
+            <img src="~/Content/img/logoInsecap.png" alt="Logo" width="100%" height="100%" style="align-content: center; margin-bottom: 20px; object-fit: contain;">
+
+        </div>
+        <div class="row">
+            <label id="guardando" class="form-check-label" style="color:red"></label>
+
+        </div>
+        <div id="contenidoTabla">
+
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        function copiarDatos(id) {
+            var $temp = $("<textarea>");
+            $("body").append($temp);
+            $temp.val($("#" + id).html()).select();
+            document.execCommand("copy");
+            $temp.remove();
+        }
+
+        $(".datepicker").on('change', function () {
+            ajax_call_pizarra();
+
+        });
+        function coordinador(idBloque) {
+            idBloque = idBloque.split("-")[1];
+            var form = $('#form_' + idBloque);
+            var url = form.attr('action');
+            var save = $('#guardando');
+
+            save.html("(Guardando...)");
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: form.serialize(), // serializes the form's elements.
+                success: function (data) {
+                    if (data.error != "ok") {
+                        save.html("<label  style='color: green'>" + data.error + "</label>");
+
+                    } else {
+
+                        setTimeout(function () {
+                            save.html("<label  style='color: green'>Guardado Correctamente...</label>");
+                        }, 500);
+
+                    }
+                    setTimeout(function () {
+                        save.html("");
+                    }, 5000);
+
+
+
+                }
+            });
+        }
+
+        function sala(idBloque) {
+            idBloque = idBloque.split("-")[1];
+            var form = $('#formsala_' + idBloque);
+            var url = form.attr('action');
+            var save = $('#guardando');
+
+            save.html("(Guardando...)");
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: form.serialize(), // serializes the form's elements.
+                success: function (data) {
+                    if (data.error != "ok") {
+                        save.html("<label  style='color: green'>" + data.error + "</label>");
+
+                    } else {
+
+                        setTimeout(function () {
+
+                            save.html("<label  style='color: green'>Guardado Correctamente...</label>");
+                        }, 500);
+
+                    }
+                    setTimeout(function () {
+                        save.html("");
+                    }, 5000);
+
+
+
+                }
+            });
+        }
+
+        function update() {
+            setTimeout(function () {
+                $('.portlet-body').each(function (i, obj) {
+                    status.push($(obj).css('display'));
+                });
+                //alert("Update");
+                ajax_call_pizarra();
+
+
+            }, 100000);
+        }
+        let status = [];
+        $(document).ready(function () {
+
+
+            ajax_call_pizarra();
+            setInterval(ajax_call_pizarra, 1000 * 60 * 5);
+            $('#idSucursal').change(function () {
+                ajax_call_pizarra()
+            });
+        });
+        var ajax_call_pizarra = function () {
+            $.ajax({
+                url: "/Bloques/PizarraAeropuertoRecargar/",
+                type: "GET",
+                data: { id: $('#idSucursal').val(), fecha: $(".datepicker").val() },
+                success: function (response) {
+                    //console.log("Success!");
+                    //console.log(response);
+                    $("#contenidoTabla").html(response);
+                    $('.portlet-body').each(function (i, obj) {
+                        $(obj).css('display', status[i]);
+                    });
+                    status = []
+                    update();
+                },
+                fail: function (xhr, textStatus, errorThrown) {
+                    console.log("Error!");
+                }
+            });
+        };
+    </script>
+}

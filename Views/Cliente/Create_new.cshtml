@@ -1,0 +1,251 @@
+﻿@model SGC.Models.Cliente
+
+@{
+                /**/
+
+                ViewBag.Title = "Nuevo";
+                Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Nuevo Cliente</h2>
+@{HtmlHelper.UnobtrusiveJavaScriptEnabled = true;}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="portlet light bordered">
+        <div class="portlet-title">
+            <div class="caption">
+                Datos Empresa
+            </div>
+            <div class="tools">
+                <a href="javascript:;" class="collapse"> </a>
+                <a href="javascript:;" class="fullscreen"> </a>
+            </div>
+        </div>
+        <div class="portlet-body">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <input id="girosSeleccionados" value="@ViewBag.girosSeleccionados" type="hidden" />
+            <input id="encargadoPagosSeleccionados" value="@ViewBag.encargadoPagosSeleccionados" type="hidden" />
+            <input id="tipoDocumentoPagoSeleccionados" value="@ViewBag.tiposDocumentosPagoSeleccionados" type="hidden" />
+            <input id="representanteLegalSeleccionados" value="@ViewBag.representanteLegalSeleccionados" type="hidden" />
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.nombreEmpresa, "Nombre Empresa", htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.nombreEmpresa, new { htmlAttributes = new { @class = "form-control", placeholder = "ej .Constructora Cerro Castillo" } })
+                        @Html.ValidationMessageFor(model => model.nombreEmpresa, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.razonSocial, "Razón social", htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.razonSocial, new { htmlAttributes = new { @class = "form-control", placeholder = "ej .Constructora Cerro Castillo S.A." } })
+                        @Html.ValidationMessageFor(model => model.razonSocial, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.rut, "R.U.T.", htmlAttributes: new { @class = "control-label run" })
+                        @Html.EditorFor(model => model.rut, new { htmlAttributes = new { @class = "form-control", placeholder = "99999999" } })
+                        @Html.ValidationMessageFor(model => model.rut, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.idMandante, "Empresa mandante", htmlAttributes: new { @class = "control-label" })
+                        <div class="row">
+                            <div class="col-md-10">
+                                @Html.DropDownListFor(x => Model.idMandante, (SelectList)ViewBag.Mandante, "Seleccionar", htmlAttributes: new { @class = "form-control select2", id = "idMandante" })
+                            </div>
+                            <div class="col-md-2">
+                                <div class="btn btn-primary btn-sm glyphicon glyphicon-plus"
+                                     onclick="return loadModal('myModal', 'myModalContent', '/Mandante/NewModalCreate', {idDropDownList:'idMandante'});" alt="Crear mandante"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        @Html.Label("Giros", htmlAttributes: new { @class = "control-label" })
+                        @Html.DropDownList("giros", (MultiSelectList)ViewBag.Giros, htmlAttributes: new { @class = "form-control selec2", id = "idGiro", multiple = "multiple" })
+                        @Html.ValidationMessage("giros", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.telefonoCorporativo, "Teléfono corporativo", htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.telefonoCorporativo, new { htmlAttributes = new { @class = "form-control", placeholder = "55-2 551234" } })
+                        @Html.ValidationMessageFor(model => model.telefonoCorporativo, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.direccion, "Dirección", htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.direccion, new { htmlAttributes = new { @class = "form-control", placeholder = "Azapa #123456, Antofagasta" } })
+                        @Html.ValidationMessageFor(model => model.direccion, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <h4>Facturación</h4>
+            <hr />
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        @Html.Label("Encargado de Pagos", htmlAttributes: new { @class = "control-label" })
+                        <div class="row">
+                            <div class="col-md-10">
+                                @Html.DropDownList("encargadosPagos", (MultiSelectList)ViewBag.EncargadoPagos, htmlAttributes: new { @class = "form-control", id = "idEncargadoPago", multiple = "multiple" })
+                                @Html.ValidationMessage("encargadosPagos", new { @class = "text-danger" })
+                            </div>
+                            <div class="col-md-2">
+                                <div class="btn btn-primary btn-sm glyphicon glyphicon-plus"
+                                     onclick="return loadModal('myModal', 'myModalContent', '/Contacto/NewModalCreate', {idDropDownList:'idEncargadoPago'});" alt="Crear Encargado Pago"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        @Html.Label("Documentos de pago", htmlAttributes: new { @class = "control-label" })
+                        @Html.DropDownList("tiposDocumentosPagos", (MultiSelectList)ViewBag.TiposDocumentosPago, htmlAttributes: new { @class = "form-control", id = "idTiposDocumentosPago", multiple = "multiple" })
+                        @Html.ValidationMessage("tiposDocumentosPagos", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <h4>Representantes Legales</h4>
+            <hr />
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        @Html.Label("Representante legal", htmlAttributes: new { @class = "control-label" })
+                        <div class="row">
+                            <div class="col-md-10">
+                                @Html.DropDownList("representantesLegales", (MultiSelectList)ViewBag.RepresentanteLegal, htmlAttributes: new { @class = "form-control", id = "idRepresentanteLegal", multiple = "multiple" })
+                                @Html.ValidationMessage("representantesLegales", new { @class = "text-danger" })
+                            </div>
+                            <div class="col-md-2">
+                                <div class="btn btn-primary btn-sm glyphicon glyphicon-plus"
+                                     onclick="return loadModal('myModal', 'myModalContent', '/Contacto/NewModalCreate', {idDropDownList:'idRepresentanteLegal'});" alt="Crear Encargado Pago"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.portalNotasExterno, "Portal Notas Externo", htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.portalNotasExterno, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.portalNotasExterno, "", new { @class = "text-danger" })
+                        @*<small>Debe ingresar la URL del sitio</small>*@
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.descEspecial, "Descripción especial", htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.descEspecial, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.descEspecial, "", new { @class = "text-danger" })
+                        @*<small>Ingresar una descripción especial</small>*@
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group" hidden>
+                        @Html.LabelFor(model => model.situacionComercial, "Situación comercial", htmlAttributes: new { @class = "control-label" })
+                        @Html.EnumDropDownListFor(x => x.situacionComercial, "Seleccionar", new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.situacionComercial, "", new { @class = "text-danger" })
+                        @*<small>Estado comercial en que se encuentra el cliente</small>*@
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="row">
+                <div class="col-md-6">
+                    @Html.ActionLink("Volver", "Index", new { }, new { @class = "btn btn-default" })
+                </div>
+                <div class="col-md-6 text-right">
+                    <input type="submit" value="Guardar" class="btn btn-default" />
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<div id='myModal' class='modal'>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body" id='myModalContent'>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            // Mostrar las opciones que ya estaban seleccionadas
+            girosOpciones = $("#idGiro option");
+            girosSeleccionados = JSON.parse($('#girosSeleccionados').val());
+            for (i = 0; i < girosOpciones.length; i++) {
+                for (j = 0; j < girosSeleccionados.length; j++) {
+                    if (girosOpciones[i].value === girosSeleccionados[j]) {
+                        girosOpciones[i].selected = "true";
+                    }
+                }
+            }
+            encargadoPagosOpciones = $("#idEncargadoPago option");
+            encargadoPagosSeleccionados = JSON.parse($('#encargadoPagosSeleccionados').val());
+            for (i = 0; i < encargadoPagosOpciones.length; i++) {
+                for (j = 0; j < encargadoPagosSeleccionados.length; j++) {
+                    if (encargadoPagosOpciones[i].value === encargadoPagosSeleccionados[j]) {
+                        encargadoPagosOpciones[i].selected = "true";
+                    }
+                }
+            }
+            tipoDocumentoPagoOpciones = $("#idTiposDocumentosPago option");
+            tipoDocumentoPagoSeleccionados = JSON.parse($('#tipoDocumentoPagoSeleccionados').val());
+            for (i = 0; i < tipoDocumentoPagoOpciones.length; i++) {
+                for (j = 0; j < tipoDocumentoPagoSeleccionados.length; j++) {
+                    if (tipoDocumentoPagoOpciones[i].value === tipoDocumentoPagoSeleccionados[j]) {
+                        tipoDocumentoPagoOpciones[i].selected = "true";
+                    }
+                }
+            }
+            representanteLegalOpciones = $("#idRepresentanteLegal option");
+            representanteLegalSeleccionados = JSON.parse($('#representanteLegalSeleccionados').val());
+            for (i = 0; i < representanteLegalOpciones.length; i++) {
+                for (j = 0; j < representanteLegalSeleccionados.length; j++) {
+                    if (representanteLegalOpciones[i].value === representanteLegalSeleccionados[j]) {
+                        representanteLegalOpciones[i].selected = "true";
+                    }
+                }
+            }
+            $('#idEncargadoPago option').mousedown(function (e) {
+                e.preventDefault();
+                $(this).prop('selected', !$(this).prop('selected'));
+                return false;
+            });
+            $('#idRepresentanteLegal option').mousedown(function (e) {
+                e.preventDefault();
+                $(this).prop('selected', !$(this).prop('selected'));
+                return false;
+            });
+            $('#idGiro option').mousedown(function (e) {
+                e.preventDefault();
+                $(this).prop('selected', !$(this).prop('selected'));
+                return false;
+            });
+            $('#idTiposDocumentosPago option').mousedown(function (e) {
+                e.preventDefault();
+                $(this).prop('selected', !$(this).prop('selected'));
+                return false;
+            });
+        });
+    </script>
+}

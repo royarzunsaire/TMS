@@ -1,0 +1,55 @@
+﻿@model IEnumerable<SGC.Models.EstadoComercial>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Estado comercial</h2>
+
+<p>
+    @Html.ActionLink("Nuevo", "Create")
+</p>
+<table  class="table table-striped table-bordered table-hover dt-responsive dataTable" >
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.nombre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.descripcion)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.usuarioCreador)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.fechaCreacion)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.nombre)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.descripcion)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.usuarioCreador)
+                </td>
+                <td data-sort="@item.fechaCreacion.ToString("MM/dd/yyyy")">
+                    @Html.DisplayFor(modelItem => item.fechaCreacion)
+                </td>
+                <td>
+                    @Html.ActionLink("Editar", "Edit", new { id = item.idEstadoComercial }) |
+                    @Html.ActionLink("Detalle", "Details", new { id = item.idEstadoComercial }) |
+                    @Html.ActionLink("Eliminar", "Delete", new { id = item.idEstadoComercial })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,91 @@
+﻿div.scrollmenu {
+   
+    overflow: auto;
+    white-space: nowrap;
+}
+
+
+.sence:hover {
+    background-color: #add8e6;
+   
+}
+
+.no_sence:hover {
+    background-color: #9B59B6;
+   
+}
+
+.arriendo:hover {
+    background-color: #DAD7D6;
+  
+}
+
+
+.page-content {
+    background-color: #eef1f5;
+}
+
+.col-id {
+    width:100px;
+}
+
+.col-per {
+    width: 150px;
+    text-align: center;
+}
+
+.ver {
+    border: 0;
+}
+
+.separador-ver{
+    margin: 0;
+}
+
+.archivo{
+    padding-top: 10px;
+    padding-bottom: 15px;
+}
+
+.datepicker {
+    padding-top: 6px;
+    padding-right: 12px;
+    padding-bottom: 6px;
+    padding-left: 12px;
+}
+
+.vl {
+    border-left: 1px solid #eee;
+}
+
+#table-wrapper {
+    position: relative;
+}
+
+#table-scroll {
+    overflow: auto;
+}
+
+#table-wrapper table {
+    width: 100%;
+}
+
+#table-wrapper td {
+    white-space: nowrap;
+}
+
+#table-wrapper th {
+    white-space: nowrap;
+}
+
+.nombre-propio {
+    /*text-transform: capitalize;*/
+    /*text-transform: uppercase;*/
+}
+
+.loader {
+    background-image: url('../img/loading.gif');
+    width: 100px;
+    height: 100px;
+    margin: auto;
+}

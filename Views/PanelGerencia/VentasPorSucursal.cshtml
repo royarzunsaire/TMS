@@ -1,0 +1,193 @@
+﻿@model List<SGC.Models.ViewModelComercializacionEstadoCosto>
+@using SGC.Models;
+@using System.Collections.Generic;
+@{
+    var data = Model;
+    var sucursales = (List<Sucursal>)ViewBag.sucursales;
+    var vendedores = (List<AspNetUsers>)ViewBag.vendedores;
+    var fecha = ViewBag.fechaInicio + " - " + ViewBag.fechaTermino;
+}
+   
+    <style>
+        #table-wrapper {
+            position: relative;
+        }
+
+        #table-scroll {
+            overflow: auto;
+        }
+
+        #table-wrapper table {
+            width: 100%;
+        }
+
+        #table-wrapper td {
+            white-space: nowrap;
+        }
+
+        #table-wrapper th {
+            white-space: nowrap;
+        }
+
+        th {
+            background-color: yellow;
+        }
+    </style>
+
+    <div id="table-wrapper">
+        <div id="table-scroll">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th colspan="5">
+                            @Html.DisplayName("Comercialización")
+                        </th>
+
+                    </tr>
+                    <tr>
+                        <th>
+                            @fecha
+                        </th>
+                        <th>
+                            @Html.DisplayName("Terminadas")
+                        </th>
+                        <th>
+                            @Html.DisplayName("Terminadas SENCE")
+                        </th>
+                        <th>
+                            @Html.DisplayName("Proceso")
+                        </th>
+                        <th>
+                            @Html.DisplayName("Canceladas")
+                        </th>
+                        <th>
+                            @Html.DisplayName("Total")
+                        </th>
+                        <th>
+                            @Html.DisplayName("Porcentaje en Proceso")
+                        </th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var sucursal in sucursales)
+                    {
+                        var terminadas = new List<int>();
+                        var terminadasSence = new List<int>();
+                        var proceso = new List<int>();
+                        var canceladas = new List<int>();
+                        var total = new List<int>();
+                        foreach (var vendedor in vendedores)
+                        {
+                            var items = data.Where(x => x.comercializacion.cotizacion.sucursal.idSucursal == sucursal.idSucursal
+                            && x.comercializacion.usuarioCreador.UserName == vendedor.UserName).ToList();
+                            proceso.Add(
+                                  items.Where(x => x.estado.EstadoComercializacion == EstadoComercializacion.En_Proceso && x.comercializacion.cotizacion.isValorUnico).Sum(x => Convert.ToInt32(x.comercializacion.cotizacion.valorUnico) - x.comercializacion.descuento)
+                                  +
+                                  items.Where(x => x.estado.EstadoComercializacion == EstadoComercializacion.En_Proceso && x.comercializacion.cotizacion.isValorUnico == false && x.costo != null && x.costo.Count() != 0).Select(x => x.costo.Sum(y => y.total) - x.comercializacion.descuento).Sum()
+                              );
+                            terminadas.Add(
+                                   items.Where(x => x.estado.EstadoComercializacion == EstadoComercializacion.Terminada && x.comercializacion.cotizacion.isValorUnico).Sum(x => Convert.ToInt32(x.comercializacion.cotizacion.valorUnico) - x.comercializacion.descuento)
+                                   +
+                                   items.Where(x => x.estado.EstadoComercializacion == EstadoComercializacion.Terminada && x.comercializacion.cotizacion.isValorUnico == false && x.costo != null && x.costo.Count() != 0).Select(x => x.costo.Sum(y => y.total) - x.comercializacion.descuento).Sum()
+                               );
+                            terminadasSence.Add(
+                                 items.Where(x => x.estado.EstadoComercializacion == EstadoComercializacion.Terminada_SENCE && x.comercializacion.cotizacion.isValorUnico).Sum(x => Convert.ToInt32(x.comercializacion.cotizacion.valorUnico) - x.comercializacion.descuento)
+                                 +
+                                 items.Where(x => x.estado.EstadoComercializacion == EstadoComercializacion.Terminada_SENCE && x.comercializacion.cotizacion.isValorUnico == false && x.costo != null && x.costo.Count() != 0).Select(x => x.costo.Sum(y => y.total) - x.comercializacion.descuento).Sum()
+                             );
+                            canceladas.Add(
+                                           items.Where(x => x.estado.EstadoComercializacion == EstadoComercializacion.Cancelada && x.comercializacion.cotizacion.isValorUnico).Sum(x => Convert.ToInt32(x.comercializacion.cotizacion.valorUnico) - x.comercializacion.descuento)
+                                           +
+                                           items.Where(x => x.estado.EstadoComercializacion == EstadoComercializacion.Cancelada && x.comercializacion.cotizacion.isValorUnico == false && x.costo != null && x.costo.Count() != 0).Select(x => x.costo.Sum(y => y.total) - x.comercializacion.descuento).Sum()
+                                       );
+                            total.Add(
+                                   items.Where(x => x.estado.EstadoComercializacion != EstadoComercializacion.Cancelada && x.comercializacion.cotizacion.isValorUnico).Sum(x => Convert.ToInt32(x.comercializacion.cotizacion.valorUnico) - x.comercializacion.descuento)
+                                   +
+                                   items.Where(x => x.estado.EstadoComercializacion != EstadoComercializacion.Cancelada && x.comercializacion.cotizacion.isValorUnico == false && x.costo != null && x.costo.Count() != 0).Select(x => x.costo.Sum(y => y.total) - x.comercializacion.descuento).Sum()
+                               );
+                            if (total.LastOrDefault() > 0 || canceladas.LastOrDefault() > 0)
+                            {
+                    <tr>
+                        <td>
+                            @Html.Label(vendedor.nombreCompleto)
+                        </td>
+                        <td>
+                            @string.Format("{0:#,0}", terminadas.LastOrDefault())
+                        </td>
+                        <td>
+                            @string.Format("{0:#,0}", terminadasSence.LastOrDefault())
+                        </td>
+                        <td>
+                            @string.Format("{0:#,0}", proceso.LastOrDefault())
+                        </td>
+                        <td>
+                            @string.Format("{0:#,0}", canceladas.LastOrDefault())
+                        </td>
+                        <td>
+                            @string.Format("{0:#,0}", total.LastOrDefault())
+                        </td>
+                        <td>
+                            @{
+                                double porciento = 0;
+                                if (total.LastOrDefault() > 0)
+                                {
+                                    porciento = Math.Round(((double)proceso.LastOrDefault() + (double)terminadasSence.LastOrDefault()) * 100 / (double)total.LastOrDefault(), 2);
+
+                                }
+                            }
+                            @Html.Label(string.Format("{0} %", porciento))
+                        </td>
+
+                    </tr>
+                            }
+
+
+                        }
+                        if (total.Sum() > 0 || canceladas.Sum() > 0)
+                        {
+                <tr>
+                    <th>
+                        Total de   @sucursal.nombre
+                    </th>
+                    <th>
+                        @string.Format("{0:#,0}", terminadas.Sum())
+
+                    </th>
+                    <th>
+                        @string.Format("{0:#,0}", terminadasSence.Sum())
+                    </th>
+                    <th>
+                        @string.Format("{0:#,0}", proceso.Sum())
+                    </th>
+                    <th>
+                        @string.Format("{0:#,0}", canceladas.Sum())
+                    </th>
+                    <th>
+                        @string.Format("{0:#,0}", total.Sum())
+                    </th>
+                    <th>
+                        @{
+                            double porcientoTotal = 0;
+                            double totalProceoterminadasSence = proceso.Sum() + terminadasSence.Sum();
+
+                            double totalTotal = total.Sum();
+                            if (total.Sum() > 0)
+                            {
+                                porcientoTotal = Math.Round((totalProceoterminadasSence * 100.00) / totalTotal, 2);
+                            }
+                        }
+                        @Html.Label(string.Format("{0} %", porcientoTotal))
+                    </th>
+                </tr>
+                        }
+
+
+
+
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+

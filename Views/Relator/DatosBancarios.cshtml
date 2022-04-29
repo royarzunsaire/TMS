@@ -1,0 +1,57 @@
+﻿@model SGC.Models.Relator
+
+@{
+    ViewBag.Title = "DatosBancarios";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Datos Bancarios </h2>
+
+@using (Html.BeginForm("DatosBancarios", "Relator", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    <div class="portlet light bordered col-md-6">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.idRelator)
+        <div class="portlet-body form">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.datosBancarios.numeroCuenta, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.datosBancarios.numeroCuenta, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.datosBancarios.numeroCuenta, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.datosBancarios.nombreBanco, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.datosBancarios.nombreBanco, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.datosBancarios.nombreBanco, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.datosBancarios.tipoCuenta, htmlAttributes: new { @class = "control-label" })
+                        @Html.EnumDropDownListFor(model => model.datosBancarios.tipoCuenta, htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.datosBancarios.tipoCuenta, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="row">
+                <div class="col-md-6">
+                    @*@Html.ActionLink("Volver", "Perfil", new { id = Model.idRelator }, new { @class = "btn btn-default" })*@
+                    <a href="@ViewBag.urlAnterior" class="btn btn-default" >Volver</a>
+                    <input type="hidden" name="urlAnterior" value="@ViewBag.urlAnterior" />
+                </div>
+                <div class="col-md-6 text-right">
+                    <input type="submit" value="Guardar" class="btn btn-primary" />
+                </div>
+            </div>
+        </div>
+    </div>
+}

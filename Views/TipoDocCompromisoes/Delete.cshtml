@@ -1,0 +1,41 @@
+﻿@model SGC.Models.TipoDocCompromiso
+
+@{
+    ViewBag.Title = "Delete | Eliminar";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Confirmar eliminación</h2>
+
+<h3>Debe confirmar la eliminación de TipoDocCompromiso </h3>
+<div>
+
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.nombre)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.nombre)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.descripción)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.descripción)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Eliminar" class="btn btn-danger" /> |
+            @Html.ActionLink("Volver", "Index",new {@class= "btn btn-default" })
+        </div>
+    }
+</div>

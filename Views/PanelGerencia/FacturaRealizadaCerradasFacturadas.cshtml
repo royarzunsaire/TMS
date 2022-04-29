@@ -1,0 +1,210 @@
+﻿@model IEnumerable<SGC.Models.Comercializacion>
+@using SGC.Models;
+@using System.Collections.Generic;
+@{
+
+    List<Comercializacion> cerradasFacturadas = Model.Where(c => c.cotizacion.sucursal.nombre != "Distancia").Where(c => c.cotizacion.sucursal.nombre != "SPD").ToList();
+    List<AspNetUsers> ejecutivos = cerradasFacturadas.Select(x => x.usuarioCreador).Distinct().ToList();
+}
+   
+    <style>
+        #table-wrapper {
+            position: relative;
+        }
+
+        #table-scroll {
+            overflow: auto;
+        }
+
+        #table-wrapper table {
+            width: 100%;
+        }
+
+        #table-wrapper td {
+            white-space: nowrap;
+        }
+
+        #table-wrapper th {
+            white-space: nowrap;
+        }
+
+        th {
+            background-color: yellow;
+        }
+    </style>
+    <table data-sheet-name="Comercializaciones CyF">
+        <thead>
+            <tr>
+                <th>Ejecutivo</th>
+                <th>Cant. de comer. cerradas</th>
+                <th>N° de Facturas Emitidas</th>
+                <th>Monto Total Facturado</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (AspNetUsers comercial in ejecutivos)
+            {
+                int countCerradas = cerradasFacturadas.Where(x => x.usuarioCreador.Id.Equals(comercial.Id)).Count();
+                int countFacturas = cerradasFacturadas.Where(x => x.usuarioCreador.Id.Equals(comercial.Id)).Where(x => x.cotizacion.documentosCompromiso.Any(dc => dc.softDelete == false && dc.factura != null && dc.factura.softDelete == false)).Count();
+                double montoFacturado = cerradasFacturadas.Where(x => x.usuarioCreador.Id.Equals(comercial.Id)).Where(x => x.cotizacion.documentosCompromiso.Any(dc => dc.softDelete == false && dc.factura != null && dc.factura.softDelete == false)).Sum(x => x.cotizacion.documentosCompromiso.Sum(y => Convert.ToInt32(y.monto)));
+                <tr>
+                    <td>@comercial.nombreCompleto</td>
+                    <td data-cell-type="number">@countCerradas</td>
+                    <td data-cell-type="number">@countFacturas</td>
+                    <td data-cell-type="number">@montoFacturado</td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+    <div id="table-wrapper">
+        <div id="table-scroll">
+            <table class="table" data-sheet-name="Factura Realizada Lista">
+                <thead>
+                    @*<tr>
+                        <th colspan="5">
+                         @fecha
+                        </th>
+
+                    </tr>*@
+                    <tr>
+                        <th>
+                            Cotización
+                        </th>
+                        <th>
+                            Curso
+                        </th>
+                        <th>
+                            Tipo
+                        </th>
+                        <th>
+                            Cliente
+                        </th>
+                        <th>
+                            Comercial
+                        </th>
+                        <th>
+                            Fecha Inicio
+                        </th>
+                        <th>
+                            Fecha Termino
+                        </th>
+                        <th>
+                            Fecha Cierre
+                        </th>
+                        <th>
+                            Fecha Facturación
+                        </th>
+                        <th>
+                            N° Factura
+                        </th>
+                        <th>
+                            N° Documento de compromiso
+                        </th>
+                        <th>
+                            Monto
+                        </th>
+
+
+                        <th>
+                            Observacion
+                        </th>
+
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @foreach (var comercializacion in cerradasFacturadas)
+                    {
+                        var tipo = comercializacion.cotizacion.curso != null ? comercializacion.cotizacion.curso.tipoEjecucion.ToString() : " ";
+                        var curso = "";
+                        if (comercializacion.cotizacion.tipoCurso != "Duplicado Credencial" && comercializacion.cotizacion.tipoCurso != "Arriendo de Sala" && comercializacion.cotizacion.tipoCurso != "Tramitación Licencia")
+                        {
+                            curso = comercializacion.cotizacion.curso.nombreCurso;
+                        }
+                        else
+                        {
+                            curso = comercializacion.cotizacion.tipoCurso;
+
+                        }
+                        foreach (var dc in comercializacion.cotizacion.documentosCompromiso)
+                        {
+                            string style = "";
+                            if (dc.factura == null) {
+                                dc.factura = new Factura {
+                                    numero = "-"
+                                };
+                                style = "style=background-color:EF9EB4;";
+
+                            }
+                            var observacion = dc.factura.observacion == null ? "" : dc.factura.observacion;
+
+                    <tr >
+                        <td @style>
+                            @comercializacion.cotizacion.codigoCotizacion
+                        </td>
+                        <td @style>
+                            @curso
+                        </td>
+                        <td @style>
+                            @tipo
+                        </td>
+                        <td @style>
+                            @comercializacion.cotizacion.cliente.nombreEmpresa
+                        </td>
+                        <td @style>
+                            @comercializacion.usuarioCreador.nombreCompleto
+                        </td>
+                        <td data-cell-type="date" @style>
+                            @comercializacion.fechaInicio.ToString("MM-dd-yy")
+                        </td>
+                        <td data-cell-type="date" @style>
+                            @comercializacion.fechaTermino.ToString("MM-dd-yy")
+                        </td>
+                        <td data-cell-type="date" @style>
+                            @comercializacion.comercializacionEstadoComercializacion.OrderByDescending(y => y.fechaCreacion).FirstOrDefault().fechaCreacion.ToString("MM-dd-yy")
+                        </td>
+
+                        @if (dc.factura.numero == "-")
+                        {
+                            <td @style>
+                                -
+                            </td>
+                        }
+                        else
+                        {
+                            <td data-cell-type="date" @style>
+                                @dc.factura.fechaCreacion.ToString("MM-dd-yy")
+                            </td>
+                        }
+
+
+                        <td @style>
+                            @dc.factura.numero
+                        </td>
+                        <td  @style>
+                            @dc.numeroSerie
+                        </td @style>
+                        <td data-cell-type="number" @style>
+                            @dc.monto
+                        </td>
+
+                        <td @style>
+                            @observacion
+                        </td>
+
+                    </tr>
+                        
+                        }
+
+                
+
+                        }
+
+
+                    </tbody>
+                </table>
+        </div>
+    </div>
+

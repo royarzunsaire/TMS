@@ -1,0 +1,76 @@
+﻿@model IEnumerable<SGC.Models.RelatorCurso>
+
+<style>
+    #table-wrapper {
+        position: relative;
+    }
+
+    #table-scroll {
+        overflow: auto;
+    }
+
+    #table-wrapper table {
+        width: 100%;
+    }
+
+    #table-wrapper td {
+        white-space: nowrap;
+    }
+
+    #table-wrapper th {
+        white-space: nowrap;
+    }
+
+    th {
+        background-color: yellow;
+    }
+</style>
+
+<div id="table-wrapper">
+    <div id="table-scroll">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayName("Relator")
+                    </th>
+                    <th>
+                        @Html.DisplayName("RUT")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Curso")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Tipo de Ejecución")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Fecha")
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.relator.contacto.nombreCompleto)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.relator.contacto.run)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.curso.nombreCurso)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.curso.tipoEjecucion)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.fechaValidoSence)
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+

@@ -1,0 +1,205 @@
+﻿@model IEnumerable<SGC.Models.ViewModelComercializacionEstado>
+@{
+    var sence = "";
+    var nombreContacto = "";
+    var sala = "";
+
+
+}
+<style>
+    #table-wrapper {
+        position: relative;
+    }
+
+    #table-scroll {
+        overflow: auto;
+    }
+
+    #table-wrapper table {
+        width: 100%;
+    }
+
+    #table-wrapper td {
+        white-space: nowrap;
+    }
+
+    #table-wrapper th {
+        white-space: nowrap;
+    }
+
+    th {
+        background-color: yellow;
+    }
+</style>
+
+<div id="table-wrapper">
+    <div id="table-scroll">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayName("Código")
+                    </th>
+                    <th>
+                        @Html.DisplayName("SENCE")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Vendedor")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Precio Final")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Curso")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Tipo de Ejecución")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Cant Alumnos")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Relator")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Cliente")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Fecha Inicio")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Fecha Término")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Tipo")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Ciudad")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Estado")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Lugar (Bloques)")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Lugar (Comercialización)")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Orden de compra")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Contacto Empresa")
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    sence = "-";
+                    if (item.comercializacion.cotizacion.tipoCurso != "Duplicado Credencial" && item.comercializacion.cotizacion.tipoCurso != "Arriendo de Sala" && item.comercializacion.cotizacion.tipoCurso != "Tramitación Licencia")
+                    {
+                        if (item.comercializacion.cotizacion.codigoSence != null && item.comercializacion.cotizacion.codigoSence != "" && item.comercializacion.cotizacion.tieneCodigoSence != "on")
+                        {
+                            sence = "SENCE";
+
+                        }
+                        else
+                        {
+                            sence = "NO SENCE";
+                        }
+                    }
+                    else
+                    {
+                        sence = "-";
+                    }
+
+
+
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.comercializacion.cotizacion.codigoCotizacion)
+                        </td>
+                        <td>
+                            @sence
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.comercializacion.usuarioCreador.UserName)
+                        </td>
+                        <td data-cell-type="number">
+                            @(item.comercializacion.valorFinal - item.comercializacion.descuento)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.comercializacion.cotizacion.curso.nombreCurso)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.comercializacion.cotizacion.curso.tipoEjecucion)
+                        </td>
+                        <td data-cell-type="number">
+                            @Html.DisplayFor(modelItem => item.comercializacion.cotizacion.cantidadParticipante)
+                        </td>
+                        <td>
+                            <label>@String.Join(",", item.comercializacion.relatoresCursos.Select(x => x.relator.contacto.nombreCompleto))</label>
+
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.comercializacion.cotizacion.cliente.nombreEmpresa)
+                        </td>
+                        <td>
+                            <label>@String.Format("{0:dd/MM/yyyy}", item.comercializacion.fechaInicio)</label>
+
+                        </td>
+                        <td>
+                            <label>@String.Format("{0:dd/MM/yyyy}", item.comercializacion.fechaTermino)</label>
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.comercializacion.cotizacion.tipoCurso)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.comercializacion.ciudad.nombreCiudad)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.estado.EstadoComercializacion)
+                        </td>
+                        <td>
+                            @{
+                                if (item.comercializacion.bloques != null && item.comercializacion.bloques.Count() >= 1)
+                                {
+                                    if (item.comercializacion.bloques.Where(x => x.sala == null).Select(x => x.sala).Any())
+                                    {
+                                        sala = "No Asignado";
+                                    }
+                                    else
+                                    {
+                                        sala = String.Join(",", item.comercializacion.bloques.Select(x => x.sala.nombre).Distinct());
+                                    }
+                                }
+                            }
+                            @sala
+                        </td>
+                        <td>
+                            @String.Join(" ; ", item.comercializacion.cotizacion.lugarRealizacion)
+                        </td>
+                        <td>
+                            @String.Join(" ; ", item.comercializacion.cotizacion.documentosCompromiso.Select(x => x.numeroSerie).ToArray())
+                        </td>
+                        <td>
+                            @{
+                                if (item.comercializacion.cotizacion.cliente.clienteContactos.FirstOrDefault(x => x.contacto.idContacto == item.comercializacion.cotizacion.contacto) == null)
+                                {
+                                    nombreContacto = "vacio";
+                                }
+                                else
+                                {
+                                    nombreContacto = item.comercializacion.cotizacion.cliente.clienteContactos.FirstOrDefault(x => x.contacto.idContacto == item.comercializacion.cotizacion.contacto).contacto.nombreCompleto;
+                                }
+                            }
+                            @nombreContacto
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+

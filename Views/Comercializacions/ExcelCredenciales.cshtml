@@ -1,0 +1,235 @@
+﻿@model SGC.Models.Comercializacion
+@{
+    String fechaInicio = Model.fechaInicio.ToString("dd'-'MM'-'yyyy");
+
+    string qr = "";
+}
+
+<style>
+    #table-wrapper {
+        position: relative;
+    }
+
+    #table-scroll {
+        overflow: auto;
+    }
+
+    #table-wrapper table {
+        width: 100%;
+    }
+
+    #table-wrapper td {
+        white-space: nowrap;
+    }
+
+    #table-wrapper th {
+        white-space: nowrap;
+    }
+
+    th {
+        background-color: none;
+    }
+</style>
+
+<div id="table-wrapper">
+    <div id="table-scroll">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayName("RUT")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Nombre Completo")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Curso")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Nota Teorica")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Nota Practica")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Nota Final")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Asistencia")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Empresa")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Código Comercializacion")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Código SENCE")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Faena")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Fecha Inicio")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Fecha Término")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Instructor")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Horas")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Fecha Vencimiento")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Foto")
+                    </th>
+                    <th>
+                        @Html.DisplayName("QR")
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.participantes)
+                {
+                    var codigoComercializacion = item.comercializacion.cotizacion.codigoCotizacion;
+                    var rut = item.contacto.run;
+                    qr = "http://tms.insecap.cl/ValidarCredenciales/Validar/" + codigoComercializacion + "?id2=" + rut;
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.contacto.run)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.contacto.nombreCompleto)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.comercializacion.cotizacion.nombreDiploma)
+                        </td>
+                        @{
+                            var notaTeorica = 0.0;
+                            var contTeorica = 0;
+                            foreach (var evaluacion in item.comercializacion.evaluaciones)
+                            {
+                                if (evaluacion.categoria == SGC.Models.CategoriaEvaluacion.Teorico)
+                                {
+                                    if (item.notas.Where(n => n.evaluacion.idEvaluacion == evaluacion.idEvaluacion).FirstOrDefault() != null)
+                                    {
+                                        if (item.notas.Where(n => n.evaluacion.idEvaluacion == evaluacion.idEvaluacion).FirstOrDefault().nota != ""
+                                            && item.notas.Where(n => n.evaluacion.idEvaluacion == evaluacion.idEvaluacion).FirstOrDefault().nota != "-")
+                                        {
+                                            notaTeorica += double.Parse(item.notas.Where(n => n.evaluacion.idEvaluacion == evaluacion.idEvaluacion).FirstOrDefault().nota);
+                                        }
+                                    }
+                                    contTeorica++;
+                                }
+                            }
+                            if (contTeorica > 0)
+                            {
+                                notaTeorica = notaTeorica / contTeorica;
+                            }
+                        }
+                        <td data-cell-type="number" data-cell-format-str="0.0">
+                            @notaTeorica.ToString().Replace(",", ".")
+                        </td>
+                        @{
+                            var notaPractica = 0.0;
+                            var contPractica = 0;
+                            foreach (var evaluacion in item.comercializacion.evaluaciones)
+                            {
+                                if (evaluacion.categoria == SGC.Models.CategoriaEvaluacion.Practico)
+                                {
+                                    if (item.notas.Where(n => n.evaluacion.idEvaluacion == evaluacion.idEvaluacion).FirstOrDefault() != null)
+                                    {
+                                        if (item.notas.Where(n => n.evaluacion.idEvaluacion == evaluacion.idEvaluacion).FirstOrDefault().nota != ""
+                                            && item.notas.Where(n => n.evaluacion.idEvaluacion == evaluacion.idEvaluacion).FirstOrDefault().nota != "-")
+                                        {
+                                            notaPractica += double.Parse(item.notas.Where(n => n.evaluacion.idEvaluacion == evaluacion.idEvaluacion).FirstOrDefault().nota);
+                                        }
+                                    }
+                                    contPractica++;
+                                }
+                            }
+                            if (contPractica > 0)
+                            {
+                                notaPractica = notaPractica / contPractica;
+                            }
+                        }
+                        <td data-cell-type="number" data-cell-format-str="0.0">
+                            @notaPractica.ToString().Replace(",", ".")
+                        </td>
+                        @{
+                            var notaFinal = 0.0;
+                            var hayNotasT = false;
+                            var hayNotasP = false;
+                            if (item.comercializacion.evaluaciones.Where(x => x.categoria == SGC.Models.CategoriaEvaluacion.Teorico).Count() > 0)
+                            {
+                                notaFinal = notaTeorica;
+                                hayNotasT = true;
+                            }
+                            if (item.comercializacion.evaluaciones.Where(x => x.categoria == SGC.Models.CategoriaEvaluacion.Practico).Count() > 0)
+                            {
+                                notaFinal = notaPractica;
+                                hayNotasP = true;
+                            }
+                            if (hayNotasT && hayNotasP)
+                            {
+                                notaFinal = (notaPractica + notaTeorica) / 2;
+                            }
+                        }
+                        <td data-cell-type="number" data-cell-format-str="0.0">
+                            @notaFinal.ToString().Replace(",", ".")
+                        </td>
+                        @{
+                            var asistencia = 0.0;
+                            var cantBloques = item.comercializacion.bloques.Count();
+                            var cantAsistencias = item.asistencia.Where(x => x.asistio).Count();
+                            if (cantBloques > 0)
+                            {
+                                asistencia = cantAsistencias / cantBloques;
+                            }
+                        }
+                        <td data-cell-type="number" data-cell-format-enum="9">
+                            @asistencia
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.comercializacion.cotizacion.cliente.nombreEmpresa)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.comercializacion.cotizacion.codigoCotizacion)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.comercializacion.cotizacion.codigoSence)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.comercializacion.cotizacion.cliente.nombreEmpresa)
+                        </td>
+                        <td>
+                            @fechaInicio
+                        <td>
+                            @Html.DisplayFor(modelItem => item.comercializacion.fechaTermino)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.comercializacion.relatoresCursos.FirstOrDefault().relator.contacto.nombreCompleto)
+                        </td>
+                        <td data-cell-type="number" data-cell-format-str="0.0">
+                            @ViewBag.horas.ToString().Replace(",", ".")
+                        </td>
+                        <td>
+                            @Model.fechaTermino.AddMonths(Model.vigenciaCredenciales).ToString("dd'-'MM'-'yyyy")
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.credenciales.urlArchivo)
+                        </td>
+                        <td>
+                            @qr
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+

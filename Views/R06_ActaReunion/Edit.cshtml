@@ -1,0 +1,343 @@
+﻿@model SGC.Models.R06_ActaReunion
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    div[disabled] {
+        pointer-events: none;
+        opacity: 0.6;
+        filter: alpha(opacity=50);
+        zoom: 1;
+        -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
+        -moz-opacity: 0.5;
+        -khtml-opacity: 0.5;
+    }
+
+    textarea {
+        resize: none;
+    }
+
+    .modal {
+        text-align: center;
+        padding: 0 !important;
+    }
+
+        .modal:before {
+            content: '';
+            display: inline-block;
+            height: 100%;
+            vertical-align: middle;
+            margin-right: -4px;
+        }
+
+    .modal-dialog {
+        display: inline-block;
+        text-align: left;
+        vertical-align: middle;
+    }
+
+    div.scroll {
+        height: 297px;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+</style>
+
+<h2>Editar Acta de Reuniones</h2>
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Edit</title>
+</head>
+<body>
+
+
+    @using (Html.BeginForm("Edit", "R06_ActaReunion", FormMethod.Post, new { @id = "form" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-horizontal">
+            <h4>R06_ActaReunion</h4>
+            <hr />
+
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.idR06)
+            <div class="col-md-7">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="control-label">Fecha</label>
+                        @Html.EditorFor(model => model.fecha, new { htmlAttributes = new { @class = "form-control datepicker" } })
+                        @Html.ValidationMessageFor(model => model.fecha, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-4">
+                        <label class="control-label">Hora Inicio</label>
+                        @Html.EditorFor(model => model.horarioInicio, new { htmlAttributes = new { @class = "form-control timepicker" } })
+                        @Html.ValidationMessageFor(model => model.horarioInicio, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-4">
+                        <label class="control-label">Hora Término</label>
+                        @Html.EditorFor(model => model.horarioTermino, new { htmlAttributes = new { @class = "form-control timepicker" } })
+                        @Html.ValidationMessageFor(model => model.horarioTermino, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-7">
+                @Html.LabelFor(model => model.temasTratados, "Temas tratados en la sesión", htmlAttributes: new { @class = "control-label" })
+                @Html.TextAreaFor(model => model.temasTratados, 4, 125, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.temasTratados, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-7">
+                @Html.LabelFor(model => model.acuerdos, "Acuerdos", htmlAttributes: new { @class = "control-label" })
+                @Html.TextAreaFor(model => model.acuerdos, 4, 125, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.acuerdos, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="col-md-7">
+                <h4>Participantes de la sesión</h4>
+                <div class="row">
+                    <div class="col-md-8">
+                        @Html.DropDownList("idParticipante", (SelectList)ViewBag.participantes, "Seleccione un participante", htmlAttributes: new { @class = "form-control select2" })
+                    </div>
+                    <div class="col-md-4">
+                        <button type="button" class="btn btn-primary updateButton" id="updateButton" data-dismiss="modal">Agregar</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-8">
+                <table class="table table-striped table-bordered table-hover dt-responsive" id="dataTable" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>
+                                Nombre
+                            </th>
+                            <th>
+                                Telefono
+                            </th>
+                            <th>
+                                Empresa / Área
+                            </th>
+                            <th>
+                                Eliminar
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody">
+
+                        @foreach (var item in Model.ParticipantesReunion)
+                        {
+                            <tr>
+                                <td>
+                                    @item.nombre
+                                </td>
+                                <td>
+                                    @item.telefono
+                                </td>
+                                <td>
+                                    @item.empArea
+                                </td>
+                                <td>
+                                    <a class='btn btn-danger btn-sm glyphicon glyphicon-trash'></a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td><input type="text" id="nombre" placeholder="Nombre"></td>
+                            <td><input type="text" id="telefono" placeholder="Telefono"></td>
+                            <td><input type="text" id="EmpArea" placeholder="Empresa/Area"></td>
+                            <td><button type="button" class="btn btn-primary addbutton" data-dismiss="modal" id="addButton">Agregar</button></td>
+                        </tr>
+                    </tfoot>
+
+                </table>
+
+            </div>
+            @Html.AntiForgeryToken()
+            <div class="row">
+                <div class="col-md-7">
+                    @Html.ActionLink("Volver", "Index", new { }, new { @class = "btn btn-default" })
+                    <button class="btn btn-primary" style="float:right" data-toggle="modal" data-target="#idModalConfirmCotizacionCrear" type="button">Guardar</button>
+                    <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" id="idModalConfirmCotizacionCrear">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    <h4 class="modal-title" id="myModalLabel">Confirmar</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <p>¿Esta seguro que desea guardar este Acta de Reuniones?</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary submitButton">Aceptar</button>
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+
+</body>
+</html>
+<div hidden>
+    @using (Html.BeginForm("agregarParticipanteSistema", "R06_ActaReunion", FormMethod.Post, new { @id = ("form-PreviewParticipante") }))
+    {
+        @Html.AntiForgeryToken()
+    }
+</div>
+
+<div hidden>
+    @using (Html.BeginForm("agregarParticipanteExterno", "R06_ActaReunion", FormMethod.Post, new { @id = ("form-PreviewParticipanteExterno") }))
+    {
+        @Html.AntiForgeryToken()
+    }
+</div>
+
+<div hidden>
+    @using (Html.BeginForm("eliminarParticipante", "R06_ActaReunion", FormMethod.Post, new { @id = ("form-eliminarParticipante") }))
+    {
+        @Html.AntiForgeryToken()
+    }
+</div>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+
+        $('#updateButton').on('click', function () {
+            var form = $('#form-PreviewParticipante');
+            var url = form.attr('action');
+            var participante = $("#idParticipante option:selected").val();
+
+            var row = "";
+            var data = {};
+            data.idR06 = $('#idR06').val();
+            data.participanteID = participante;
+
+            $.ajax({
+                url: url,
+                dataType: "json",
+                data: JSON.stringify(data),
+                method: "POST",
+                contentType: 'application/json; charset=utf-8',
+                success: function (result) {
+                    //obtener ultimo participante agregado
+                    var value = result.data[0];
+                    row = "<tr><td>" + value.nombre + "</td><td>" + value.telefono + "</td><td>" + value.empArea + "</td><td>" + value.boton + "</td></tr>";
+                    $('#dataTable').append(row);
+
+
+                },
+                failure: function (errMsg) {
+                    alert(errMsg);
+                }
+            });
+        });
+
+        $('#addButton').on('click', function () {
+
+            var form = $('#form-PreviewParticipanteExterno');
+            var url = form.attr('action');
+
+            var nombre = $("#nombre").val();
+            var telefono = $("#telefono").val();
+            var emparea = $("#EmpArea").val();
+
+            var data = {};
+            data.idR06 = $('#idR06').val();
+            data.nombre = nombre;
+            data.telefono = telefono;
+            data.empArea = emparea;
+
+            $.ajax({
+                url: url,
+                dataType: "json",
+                data: JSON.stringify(data),
+                method: "POST",
+                contentType: 'application/json; charset=utf-8',
+                success: function (result) {
+                    //obtener ultimo participante agregado
+                    var value = result.data[0];
+                    row = "<tr><td>" + value.nombre + "</td><td>" + value.telefono + "</td><td>" + value.empArea + "</td><td>" + value.boton + "</td></tr>";
+                    $('#dataTable').append(row);
+
+
+                },
+                failure: function (errMsg) {
+                    alert(errMsg);
+                }
+            });
+        });
+
+
+        $(document).ready(function () {
+
+
+            $("#tbody").delegate('tr td:last-child', 'click', function () {
+                var tr = $(this).parent();
+                var texto = "¿ Esta seguro que quiere eliminar a " + tr.find('td:first-child').html() + " ?"
+                deleteConfirm(texto, tr);
+
+            });
+
+            function deleteConfirm(message, tr) {
+                $('<div></div>').appendTo('body')
+                    .html('<div><h6>' + message + '</h6></div>')
+                    .dialog({
+                        modal: true,
+                        title: 'Eliminar participante',
+                        zIndex: 10000,
+                        autoOpen: true,
+                        width: 'auto',
+                        resizable: false,
+                        buttons: {
+                            Si: function () {
+                                $('body').append('<h1>Confirm Dialog Result: <i>Yes</i></h1>');
+                                var form = $('#form-eliminarParticipante');
+                                var url = form.attr('action');
+                                var participante = tr.find('td:first-child').html();
+
+                                var data = {};
+                                data.idR06 = $('#idR06').val();
+                                data.nombre = participante.replaceAll("[\n\r]", "");
+
+                                $.ajax({
+                                    url: url,
+                                    dataType: "json",
+                                    data: JSON.stringify(data),
+                                    method: "POST",
+                                    contentType: 'application/json; charset=utf-8',
+                                    success: function (result) {
+                                        tr.remove();
+                                    },
+                                    failure: function (errMsg) {
+                                        alert(errMsg);
+                                    }
+                                });
+                                tr.remove();
+                                $(this).dialog("close");
+                            },
+                            No: function () {
+                                $('body').append('<h1>Confirm Dialog Result: <i>No</i></h1>');
+
+                                $(this).dialog("close");
+                            }
+                        },
+                    });
+            };
+
+
+        });
+    </script>
+
+}

@@ -1,0 +1,222 @@
+﻿@{
+    ViewBag.Title = "Coordinadores";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div hidden>
+    @using (Html.BeginForm("IndexCoordinadorData", "Comercializacions", FormMethod.Post, new { @id = ("form-ModalParticipanteCliente") }))
+    {
+        @Html.AntiForgeryToken()
+    }
+</div>
+
+
+
+@section Styles{
+    <style>
+        <style >
+        .sence {
+            background-color: #add8e6;
+            vertical-align: middle;
+        }
+
+        .no_sence {
+            background-color: #9B59B6;
+            vertical-align: middle;
+        }
+
+        .arriendo {
+            background-color: #DAD7D6;
+            vertical-align: middle;
+        }
+
+        .btn-group, .btn-group-vertical {
+            position: unset;
+        }
+
+        .dropdown-menu {
+            left: auto;
+        }
+    </style>
+}
+
+<h3 class="page-title">
+    Administración  Coordinadores
+</h3>
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-dark">
+            <div class="portlet-title">
+                <div class="caption">
+                    Comercializaciones
+                </div>
+                <div class="tools">
+                    <a href="javascript:;" class="collapse"> </a>
+                    <a href="javascript:;" class="fullscreen"> </a>
+                </div>
+                <!--
+                <div class="actions">
+                    <button type="button" class="btn btn-default" id="btnCerrarNode" style="margin-right:15px">Arreglar Generador de Documentos</button>
+                </div> -->
+            </div>
+            <div class="portlet-body">
+                <label id="guardando" class="form-check-label" style="color:red"></label>
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <table class="table table-striped table-bordered table-hover dt-responsive dataTable" id="sys-table-comercializacion" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>
+                                Código
+                            </th>
+                            <th>
+                                Curso
+                            </th>
+                            <th>
+                                Cliente
+                            </th>
+
+                            <th>
+                                Bloque
+                            </th>
+                            <th>
+                                Sala
+                            </th>
+                            <th>
+                                Tipo Ejecución
+                            </th>
+
+                            <th>
+                                Comercial
+                            </th>
+                            <th>
+                                Alumnos
+                            </th>
+                            <th>
+                                Relatores
+                            </th>
+                            <th>
+                                Coordinador
+                            </th>
+                            <th>
+
+                            </th>
+
+                        </tr>
+                    </thead>
+
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@section Scripts{
+
+    <script>
+        var table = null;
+        function coordinador(idBloque) {
+            idBloque = idBloque.split("-")[1];
+            var form = $('#form_' + idBloque);
+            var url = form.attr('action');
+            var save = $('#guardando');
+
+            save.html("(Guardando...)");
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: form.serialize(), // serializes the form's elements.
+                success: function (data) {
+                    if (data.error != "ok") {
+                        save.html("<label  style='color: green'>" + data.error + "</label>");
+
+                    } else {
+
+                        setTimeout(function () {
+                            table.draw(false);
+                            save.html("<label  style='color: green'>Guardado Correctamente...</label>");
+                        }, 500);
+                        if (data.id == 0) {
+                            location.reload();
+                        }
+                    }
+                    setTimeout(function () {
+                        save.html("");
+                    }, 5000);
+
+
+
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            var form = $('#form-ModalParticipanteCliente');
+            var url = form.attr('action');
+            var action = 'index';
+            table = $("#sys-table-comercializacion").DataTable({
+                destroy: true,
+                responsive: true,
+                "lengthMenu": [
+                    [10, 15, 20, 25, -1],
+                    [10, 15, 20, 25, "All"]
+                ],
+                processing: true,
+                serverSide: true,
+                order: [0, "asc"],
+                language: { processing: "Cargando...Por favor espere" },
+                ajax: {
+                    method: "POST",
+                    url: url,
+                    dataType: "json",
+                    data: { view: action },
+                    error: function (request, status, error) {
+                        alert(request.responseText);
+                    },
+                },
+                columns: [
+                    { "data": "codigoCotizacion" },
+                    { "data": "curso" },
+                    { "data": "cliente" },
+
+                    { "data": "bloque" },
+                    { "data": "sala" },
+                    { "data": "tipoEjecucion" },
+
+
+
+                    { "data": "comercial" },
+                    { "data": "alumnos" },
+                    { "data": "relator" },
+                    { "data": "coordinador" },
+                    { "data": "menu" },
+
+                ]
+            });
+
+
+  
+
+         
+      
+
+            });
+
+    </script>
+}

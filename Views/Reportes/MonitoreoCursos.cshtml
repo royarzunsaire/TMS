@@ -1,0 +1,114 @@
+﻿@model IEnumerable<SGC.Models.R52>
+
+@{
+    ViewBag.Title = "Monitoreo Cursos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles{
+    <style>
+        div.scroll {
+            /*height: 500px;*/
+            max-height: 450px;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+    </style>
+}
+
+<div class="page-title"> Reportes </div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-dark">
+            <div class="portlet-title">
+                <div class="caption">
+                    Monitoreo de Cursos
+                </div>
+                <div class="tools">
+                    <a href="javascript:;" class="collapse"> </a>
+                    <a href="javascript:;" class="fullscreen"> </a>
+                </div>
+                <div class="actions">
+                    <a href="@Url.Action("MonitoreoCursosExcel", "Reportes")" class="btn btn-circle btn-sm btn-default btn-group-lg" style="margin-right:10px;">
+                        Descargar
+                    </a>
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="scroll">
+                            <div id="table-wrapper">
+                                <div id="table-scroll">
+                                    <table class="table table-striped table-bordered table-hover dt-responsive dataTable" id="table" cellspacing="0">
+                                        <thead>
+                                            <tr>
+                                                <th>
+                                                    @Html.DisplayName("Nombre Relator")
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayName("RUT Relator")
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayName("Curso")
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayName("Tipo de Ejecución")
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayName("Código Comercializacion")
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayName("Fecha")
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var item in Model)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.relator.contacto.nombreCompleto)
+                                                    </td>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.relator.contacto.run)
+                                                    </td>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.comercializacion.cotizacion.curso.nombreCurso)
+                                                    </td>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.comercializacion.cotizacion.curso.tipoEjecucion)
+                                                    </td>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.comercializacion.cotizacion.codigoCotizacion)
+                                                    </td>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.comercializacion.fechaCreacion)
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr />
+                <button type="button" class="btn btn-default" onclick="javascript:history.back()">Volver</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        var table = $('#table').DataTable({
+            "paging": false,
+            "ordering": false,
+            "info": false,
+            //"searching": false
+        });
+    </script>
+}

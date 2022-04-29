@@ -1,0 +1,270 @@
+﻿@using SGC.Models
+@model IEnumerable<SGC.Models.Permission>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h3 class="page-title">
+    Administracion de Permisos
+</h3>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="portlet box blue">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-user"></i>Gestion de Permisos
+                </div>
+                <div class="tools">
+                    <a href="javascript:;" class="collapse"> </a>
+                    <a href="javascript:;" class="fullscreen"> </a>
+                </div>
+            </div>
+            <div class="portlet-body form">
+                <div class="row">
+
+                    <div class="form-body">
+                        @using (Html.BeginForm("Index", "Permissions", FormMethod.Post, new { @id = "frmIndex", @class = "form-horizontal" }))
+                        {
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    @Html.Label("Seleccione un Rol", new { @class = "control-label col-md-4" })
+                                    <div class="col-md-6">
+                                        @Html.DropDownList("RoleID", null, "", new { @onChange = "submitForm(1)", @class = "form-control select2-allow-clear" })
+                                        <div class="form-control-focus"> </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    @Html.Label("Seleccione un Usuario", new { @class = "control-label col-md-4" })
+                                    <div class="col-md-6">
+                                        @Html.DropDownList("UserID", null, "", new { @onChange = "submitForm(2)", @class = "form-control select2-allow-clear" })
+                                        <div class="form-control-focus"> </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        <div class="col-md-12">
+                            <div class="portlet light">
+                                <div class="portlet-title">
+                                    <div class="caption">
+                                        <i class="icon-speech"></i>
+                                        <span class="caption-subject bold"> Gestion de Permisos</span>
+                                        <span class="caption-helper">...</span>
+                                    </div>
+                                     <div class="actions">                                         
+                                             <a href="/Permissions/MenuIndex" class="btn btn-primary btn-group-lg">
+                                                 <i class="fa fa-plus-circle"></i> Administrar Menu
+                                             </a>
+                                             <button type="button" id="btnSave" class="btn btn-primary btn-group-lg" onclick="saveRecords()"><i class="fa fa-save"></i> Guardar</button>
+                                         
+                                    </div>
+                                </div>
+                                <div class="portlet-body">
+                                    <div id="result">
+                                        @using (Html.BeginForm("SavePermission", "Permissions", FormMethod.Post, new { @id = "frmSave", @class = "form-horizontal", @role = "form" }))
+                                        {
+
+                                            <table class="table table-striped table-bordered table-hover dt-responsive" id="sys-table-special" cellspacing="0">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="col-id">Menu ID</th>
+                                                        <th class="col-name">Display Name</th>
+                                                        <th class="col-per">Permiso Usuario</th>
+                                                        <th class="col-per">Permiso Rol</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @{int counter = 0; int total = 0; var x = 0;}
+                                                    @foreach (var item in ViewBag.Menus)
+                                                    {
+                                                        total++;
+                                                        x++;
+                                                        counter = item.MenuID;
+                                                        if (item.ParentMenuID == 0)
+                                                        {
+                                                    <tr class="info">
+                                                        <td><b>@item.MenuID</b></td>
+                                                        <td><b>@item.DisplayName</b></td>
+                                                        @if (item.Permission == true && item.PermissionType == 1)
+                                                        {
+
+                                                            <td> @Html.CheckBox("chkUser_" + counter, true, new { @class = "icheck xuser" })</td>
+                                                            @Html.Hidden("menuId_" + counter, counter)
+                                                        }
+                                                        else
+                                                        {
+                                                            <td>@Html.CheckBox("chkUser_" + counter, false, new { @class = "icheck xuser" })  </td>
+                                                            @Html.Hidden("menuId_" + counter, counter)
+                                                        }
+
+                                                        @if (item.Permission == true && item.PermissionType == 0)
+                                                        {
+                                                            <td>
+                                                                @if (item.PermissionType == 0 & ViewBag.mode == "user")
+                                                                {
+                                                                    @Html.CheckBox("chkRole_" + counter, true, new { @class = "icheck xrole a", @disabled = "true" })
+                                                               
+                                                                }
+                                                                else
+                                                                {
+                                                                    @Html.CheckBox("chkRole_" + counter, true, new { @class = "icheck xrole a" })
+                                                                }
+                                                                </td>
+                                                                @Html.Hidden("menuId_" + counter, counter)
+                                                            }
+                                                            else
+                                                            {
+                                                                <td>@Html.CheckBox("chkRole_" + counter, false, new { @class = "icheck xrole b" })  </td>
+                                                                @Html.Hidden("menuId_" + counter, counter)
+                                                            }
+                                                    </tr>
+                                                            foreach (var child in ViewBag.Menus)
+                                                            {
+                                                                counter = child.MenuID;
+
+                                                                if (child.ParentMenuID == item.MenuID)
+                                                                {
+
+                                                                    <tr>
+                                                                        <td>@child.MenuID</td>
+                                                                        <td>@child.DisplayName</td>
+                                                                        @if (child.Permission == true && child.PermissionType == 1)
+                                                                        {
+
+                                                                            <td> @Html.CheckBox("chkUser_" + counter, true, new { @class = "icheck xuser a" })</td>
+                                                                            @Html.Hidden("menuId_" + counter, counter)
+                                                                        }
+                                                                        else
+                                                                        {
+
+                                                                            <td>@Html.CheckBox("chkUser_" + counter, false, new { @class = "icheck xuser b" })  </td>
+                                                                            @Html.Hidden("menuId_" + counter, counter)
+                                                                        }
+
+                                                                        @if (child.Permission == true && child.PermissionType == 0)
+                                                                        {
+                                                                            <td>
+                                                                                @if (child.PermissionType == 0 & ViewBag.mode == "user")
+                                                                                {
+                                                                                    @Html.CheckBox("chkRole_" + counter, true, new { @class = "icheck xrole ", @disabled = "true"  })
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    @Html.CheckBox("chkRole_" + counter, true, new { @class = "icheck xrole " })
+                                                                                }
+                                                                            </td>
+                                                                        
+                                                                        @Html.Hidden("menuId_" + counter, counter)
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <td>@Html.CheckBox("chkRole_" + counter, false, new { @class = "icheck xrole "})  </td>
+                                                                            @Html.Hidden("menuId_" + counter, counter)
+                                                                        }
+                                                                    </tr>
+                                                                }
+                                                            }
+
+                                                        }
+                                                    }
+                                                </tbody>
+                                            </table>
+                                            @Html.Hidden("TotalRecords", total)
+                                            @Html.Hidden("query")
+                                            @Html.Hidden("qtype")
+                                            }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+@section scripts
+{
+    <script src="/Content/plugins/datatables/datatables.js" type="text/javascript"></script>
+    <script src="/Content/plugins/datatables/datatables.min.js" type="text/javascript"></script>
+    <script src="/Content/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js" type="text/javascript"></script>
+    @Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript">
+        function submitForm(formId) {
+            var total = $("#TotalRecords").val();
+            if (formId == 1) {                
+                document.getElementById('UserID').options.selectedIndex = 0;
+                $('#chkUser_1').attr('disabled', false);
+                $('#chkRole_1').attr('disabled', true);
+            }
+            else {
+                document.getElementById('RoleID').options.selectedIndex = 0;             
+
+            }
+            document.getElementById('frmIndex').submit();
+        }
+
+        function saveRecords() {
+            var totalRecords = $("#TotalRecords").val();
+            var roleId = $("#RoleID").val();
+            var userId = $("#UserID").val();
+            var check;
+            var menuId = 0;
+            var permissionUser = [];
+            var permissionRole = [];
+            if (userId.length > 1) {
+                $(".xuser").each(function () {
+                    var identificador = $(this).attr("id").replace("chkUser_","");
+                    menuId = identificador;
+                    if ($(this).is(":checked")) {
+                        permissionUser.push(
+                            {
+                                UserID: userId,
+                                MenuID: menuId
+                            });
+                    }
+                });
+            }
+            
+            else if (roleId.length > 1) {   
+                $(".xrole").each(function () {
+                    var identificador = $(this).attr("id").replace("chkRole_","");
+                    menuId = identificador;
+                    if ($(this).is(":checked")) {
+                        permissionRole.push(
+                            {
+                                RoleID: roleId,
+                                MenuID: menuId
+                            });
+                    }
+                });
+
+            }
+            if (permissionRole.length > 0) {
+                var data = JSON.stringify(permissionRole);
+                document.getElementById("query").value = data;
+                document.getElementById("qtype").value = "r";
+            }
+            else if (permissionUser.length > 0) {
+                var data = JSON.stringify(permissionUser);
+                document.getElementById("query").value = data;
+                document.getElementById("qtype").value = "u";
+            }
+            else {
+                document.getElementById("query").value = null;
+                document.getElementById("qtype").value = "n";
+            }
+            document.getElementById('frmSave').submit();
+
+        }
+
+    </script>
+
+
+}
+
+

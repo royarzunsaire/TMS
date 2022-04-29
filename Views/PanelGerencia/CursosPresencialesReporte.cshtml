@@ -1,0 +1,133 @@
+﻿@model List<SGC.Models.ViewModelPostCurso>
+@using SGC.Models;
+@using System.Collections.Generic;
+@{
+    var data = Model;
+    var sucursales = (List<Sucursal>)ViewBag.sucursales;
+    var totalComercializaciones = 0;
+    var totalComercializacionesSinTerminar = 0;
+    var totalConSense = 0;
+    var totalSinSense = 0;
+    var totalAlumnosSense = 0;
+    var totalAlumnosSinSense = 0;
+}
+
+<table class="table">
+    <tbody>
+        @foreach (var sucursal in sucursales)
+        {
+            var presencialesAlumnosSense = 0;
+            var recertificacionesAlumnosSense = 0;
+            var presencialesAlumnosSinSense = 0;
+            var recertificacionesAlumnosSinSense = 0;
+            var contComerPresenciales = data.Where(x => x.comercializacion.cotizacion.sucursal.idSucursal == sucursal.idSucursal)
+                .Where(x => x.comercializacion.cotizacion.curso.tipoEjecucion == TipoEjecucion.Presencial).Count();
+            var contComerPresencialesSinTerminar = data.Where(x => x.comercializacion.cotizacion.sucursal.idSucursal == sucursal.idSucursal)
+    .Where(x => x.comercializacion.cotizacion.curso.tipoEjecucion == TipoEjecucion.Presencial).Where(x => x.comercializacion.fechaTermino >= DateTime.Today).Count();
+            var contPresencialesConSense = data.Where(x => x.comercializacion.cotizacion.sucursal.idSucursal == sucursal.idSucursal)
+            .Where(x => x.comercializacion.cotizacion.curso.tipoEjecucion == TipoEjecucion.Presencial)
+            .Where(x => x.comercializacion.cotizacion.codigoSence != null && x.comercializacion.cotizacion.codigoSence != "" && x.comercializacion.cotizacion.tieneCodigoSence != "on").Count();
+            var contPresencialesSinSense = contComerPresenciales - contPresencialesConSense;
+
+            var contComerRecertificaciones = data.Where(x => x.comercializacion.cotizacion.sucursal.idSucursal == sucursal.idSucursal)
+                .Where(x => x.comercializacion.cotizacion.curso.tipoEjecucion == TipoEjecucion.Recertificacion).Count();
+            var contComerRecertificacionesSinTerminar = data.Where(x => x.comercializacion.cotizacion.sucursal.idSucursal == sucursal.idSucursal)
+                .Where(x => x.comercializacion.cotizacion.curso.tipoEjecucion == TipoEjecucion.Recertificacion).Where(x => x.comercializacion.fechaTermino >= DateTime.Today).Count();
+            var contRecertificacionesConSense = data.Where(x => x.comercializacion.cotizacion.sucursal.idSucursal == sucursal.idSucursal)
+        .Where(x => x.comercializacion.cotizacion.curso.tipoEjecucion == TipoEjecucion.Recertificacion)
+        .Where(x => x.comercializacion.cotizacion.codigoSence != null && x.comercializacion.cotizacion.codigoSence != "" && x.comercializacion.cotizacion.tieneCodigoSence != "on").Count();
+            var contRecertificacionesSinSense = contComerRecertificaciones - contRecertificacionesConSense;
+
+            var contComerSucursalTotal = contComerPresenciales + contComerRecertificaciones;
+            var contComerSinTerminarSucursalTotal = contComerPresencialesSinTerminar + contComerRecertificacionesSinTerminar;
+            var contSucursalConSenseTotal = contPresencialesConSense + contRecertificacionesConSense;
+            var contSucursalSinSenseTotal = contPresencialesSinSense + contRecertificacionesSinSense;
+
+            totalComercializaciones = totalComercializaciones + contComerSucursalTotal;
+            totalComercializacionesSinTerminar = totalComercializacionesSinTerminar + contComerSinTerminarSucursalTotal;
+            totalConSense = totalConSense + contSucursalConSenseTotal;
+            totalSinSense = totalSinSense + contSucursalSinSenseTotal;
+
+            if (contComerSucursalTotal == 0)
+            {
+                continue;
+            }
+
+            foreach (ViewModelPostCurso comercializacion in data.Where(x => x.comercializacion.cotizacion.sucursal.idSucursal == sucursal.idSucursal))
+            {
+                foreach (Participante participante in comercializacion.comercializacion.participantes.Where(x => x.comercializacion.cotizacion.codigoSence != null && x.comercializacion.cotizacion.codigoSence != "" && x.comercializacion.cotizacion.tieneCodigoSence != "on")
+                    .Where(x => x.comercializacion.cotizacion.curso.tipoEjecucion == TipoEjecucion.Presencial).ToList())
+                {
+                    presencialesAlumnosSense++;
+                }
+                foreach (Participante participante in comercializacion.comercializacion.participantes.Where(x => x.comercializacion.cotizacion.codigoSence == null || x.comercializacion.cotizacion.codigoSence == "" || x.comercializacion.cotizacion.tieneCodigoSence == "on")
+                    .Where(x => x.comercializacion.cotizacion.curso.tipoEjecucion == TipoEjecucion.Presencial).ToList())
+                {
+                    presencialesAlumnosSinSense++;
+                }
+                foreach (Participante participante in comercializacion.comercializacion.participantes.Where(x => x.comercializacion.cotizacion.codigoSence != null && x.comercializacion.cotizacion.codigoSence != "" && x.comercializacion.cotizacion.tieneCodigoSence != "on")
+                    .Where(x => x.comercializacion.cotizacion.curso.tipoEjecucion == TipoEjecucion.Recertificacion).ToList())
+                {
+                    recertificacionesAlumnosSense++;
+                }
+                foreach (Participante participante in comercializacion.comercializacion.participantes.Where(x => x.comercializacion.cotizacion.codigoSence == null || x.comercializacion.cotizacion.codigoSence == "" || x.comercializacion.cotizacion.tieneCodigoSence == "on")
+                    .Where(x => x.comercializacion.cotizacion.curso.tipoEjecucion == TipoEjecucion.Recertificacion).ToList())
+                {
+                    recertificacionesAlumnosSinSense++;
+                }
+            }
+            var sucursalAlumnosSense = presencialesAlumnosSense + recertificacionesAlumnosSense;
+            var sucursalAlumnosSinSense = presencialesAlumnosSinSense + recertificacionesAlumnosSinSense;
+            totalAlumnosSense = totalAlumnosSense + sucursalAlumnosSense;
+            totalAlumnosSinSense = totalAlumnosSinSense + sucursalAlumnosSinSense;
+            <tr>
+                <th colspan="6" style="text-align:center;">@sucursal.nombre</th>
+            </tr>
+            <tr>
+                <th>Tipo Ejecución</th>
+                <th>Comercializaciones</th>
+                <th>Sin Terminar</th>
+                <th>Con Sense</th>
+                <th>Sin Sense</th>
+                <th>Alumnos en Cursos Con Sense</th>
+                <th>Alumnos en Cursos Sin Sense</th>
+            </tr>
+            <tr>
+                <td>Presencial</td>
+                <td>@string.Format("{0:#,0}", contComerPresenciales)</td>
+                <td>@string.Format("{0:#,0}", contComerPresencialesSinTerminar)</td>
+                <td>@string.Format("{0:#,0}", contPresencialesConSense)</td>
+                <td>@string.Format("{0:#,0}", contPresencialesSinSense)</td>
+                <td>@string.Format("{0:#,0}", presencialesAlumnosSense)</td>
+                <td>@string.Format("{0:#,0}", presencialesAlumnosSinSense)</td>
+            </tr>
+            <tr>
+                <td>Recertificación</td>
+                <td>@string.Format("{0:#,0}", contComerRecertificaciones)</td>
+                <td>@string.Format("{0:#,0}", contComerRecertificacionesSinTerminar)</td>
+                <td>@string.Format("{0:#,0}", contRecertificacionesConSense)</td>
+                <td>@string.Format("{0:#,0}", contRecertificacionesSinSense)</td>
+                <td>@string.Format("{0:#,0}", recertificacionesAlumnosSense)</td>
+                <td>@string.Format("{0:#,0}", recertificacionesAlumnosSinSense)</td>
+            </tr>
+            <tr>
+                <th>Total @sucursal.nombre</th>
+                <td>@string.Format("{0:#,0}", contComerSucursalTotal)</td>
+                <td>@string.Format("{0:#,0}", contComerSinTerminarSucursalTotal)</td>
+                <td>@string.Format("{0:#,0}", contSucursalConSenseTotal)</td>
+                <td>@string.Format("{0:#,0}", contSucursalSinSenseTotal)</td>
+                <td>@string.Format("{0:#,0}", sucursalAlumnosSense)</td>
+                <td>@string.Format("{0:#,0}", sucursalAlumnosSinSense)</td>
+            </tr>
+        }
+    <tr>
+        <th> Total Sucursales</th>
+        <th>@string.Format("{0:#,0}", totalComercializaciones)</th>
+        <th>@string.Format("{0:#,0}", totalComercializacionesSinTerminar)</th>
+        <th>@string.Format("{0:#,0}", totalConSense)</th>
+        <th>@string.Format("{0:#,0}", totalSinSense)</th>
+        <th>@string.Format("{0:#,0}", totalAlumnosSense)</th>
+        <th>@string.Format("{0:#,0}", totalAlumnosSinSense)</th>
+    </tr>
+    </tbody>
+</table>

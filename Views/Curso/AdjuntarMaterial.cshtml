@@ -1,0 +1,306 @@
+﻿@model SGC.Models.Curso
+
+@{
+    ViewBag.Title = "AdjuntarMaterial";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="page-title" style="margin-bottom: 0">
+    <div class="row">
+        <div class="col-md-12">
+            Administrar Cursos
+        </div>
+        <div class="col-md-12">
+            <small>Curso: @Model.nombreCurso</small>
+        </div>
+    </div>
+</div>
+
+@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+<div class="portlet box blue-dark">
+    <div class="portlet-title">
+        <div class="caption">
+            Material Adjunto
+        </div>
+        <div class="tools">
+            <a href="javascript:;" class="collapse"> </a>
+            <a href="javascript:;" class="fullscreen"> </a>
+        </div>
+        <div class="actions">
+            <div class="inputs pull-right">
+                @if (ViewBag.r11 != null && ViewBag.r12 != null)
+                {
+                    if (Model.materialCompleto)
+                    {
+                        <button class="btn btn-circle btn-sm btn-default btn-group-lg" disabled>
+                            Material Completo
+                        </button>
+                    }
+                    else
+                    {
+                        <button type="submit" class="btn btn-circle btn-sm btn-default btn-group-lg" id="btnMostrarValidarMaterial">
+                            Validar Material Completo
+                        </button>
+                    }
+                }
+                else
+                {
+                    <button class="btn btn-circle btn-sm btn-default btn-group-lg" disabled title="Debe existir el R11 y R12 para validar que el material esta completo">
+                        Validar Material Completo
+                    </button>
+                }
+                <button class="btn btn-circle btn-sm btn-default btn-group-lg" onclick="ShowModalAgregar()">
+                    <i class="fa fa-plus"></i>
+                    Agregar Archivo
+                </button>
+                <button class="btn btn-circle btn-sm btn-default btn-group-lg" style="margin-right:10px;" onclick="ShowModalAgregarUrl()">
+                    <i class="fa fa-plus"></i>
+                    Agregar URL
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="portlet-body">
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table table-striped table-bordered table-hover dt-responsive" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayName("Archivos")
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.materialCurso != null)
+                        {
+                            foreach (var item in Model.materialCurso)
+                            {
+                                <tr>
+                                    <td style="vertical-align: middle;">
+                                        <div class="col-md-12">
+                                            <i class="fa fa-download"></i>
+                                            @Html.ActionLink(item.archivo.nombreArchivo, "Descargar", new { id = item.archivo.idStorage }, new { })
+                                        </div>
+                                    </td>
+                                    <td class="text-center" style="vertical-align: middle;">
+                                        @using (Html.BeginForm("EliminarMaterial", "Curso", FormMethod.Post, new { @id = "notificationForm_" + @item.idMaterialCurso }))
+                                        {
+                                        <div class="input-group-btn">
+                                            @Html.AntiForgeryToken()
+                                            @Html.HiddenFor(model => model.idCurso)
+                                            @Html.HiddenFor(modelItem => item.idMaterialCurso)
+                                            <a class="btn btn-danger btn-sm glyphicon glyphicon-trash" href="javascript:confirmDelete('EliminarMaterial','@(item.idMaterialCurso)','Curso')" title="Eliminar"></a>
+                                        </div>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table table-striped table-bordered table-hover dt-responsive" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayName("URL")
+                            </th>
+                            <th>
+                                @Html.DisplayName("Descripcion")
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.materialCurso != null)
+                        {
+                            foreach (var item in Model.urlMaterialCurso)
+                            {
+                                <tr>
+                                    <td style="vertical-align: middle;">
+                                        <a href="@item.url">@item.url</a>
+                                    </td>
+                                    <td style="vertical-align: middle;">
+                                        @Html.DisplayFor(modelItem => item.descripcion)
+                                    </td>
+                                    <td class="text-center" style="vertical-align: middle;">
+                                        @using (Html.BeginForm("EliminarUrlMaterial", "Curso", FormMethod.Post, new { @id = "notificationForm_" + @item.idUrlMaterialCurso }))
+                                        {
+                                        <div class="input-group-btn">
+                                            @Html.AntiForgeryToken()
+                                            @Html.HiddenFor(model => model.idCurso)
+                                            <input type="hidden" value="@item.idUrlMaterialCurso" name="idUrlMaterialCurso" />
+                                            <a class="btn btn-danger btn-sm glyphicon glyphicon-trash" href="javascript:confirmDelete('EliminarUrlMaterial','@(item.idUrlMaterialCurso)','Curso')" title="Eliminar"></a>
+                                        </div>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div>
+    @*@Html.ActionLink("Volver", "Index", new { }, new { @class = "btn btn-default" })*@
+</div>
+
+@section topLevel{
+    @{Html.RenderPartial("_RenderConfirm.Modal"); }
+}
+
+<div id="modal-agregar" class="modal fade draggable-modal modalx" tabindex="-1" data-backdrop="static" data-keyboard="false" role="alertdialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div id="modal-content" class="modal-content">
+            @using (Html.BeginForm("AdjuntarMaterial", "Curso", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(model => model.idCurso)
+                <div class="modal-header">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4 class="modal-title">Adjuntar Material</h4>
+                        </div>
+                        <div class="col-md-6">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <input type="file" name="file" accept="application/pdf" style="padding-top:10px" />
+                            @Html.ValidationMessage("archivo", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Cancelar</button>
+                    <input type="submit" value="Guardar" class="btn btn-primary" />
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div id="modal-agregar-url" class="modal fade draggable-modal modalx" tabindex="-1" data-backdrop="static" data-keyboard="false" role="alertdialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div id="modal-content" class="modal-content">
+            @using (Html.BeginForm("AgregarUrlMaterial", "Curso", FormMethod.Post, new { }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(model => model.idCurso)
+                <div class="modal-header">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4 class="modal-title">Agregar URL Material</h4>
+                        </div>
+                        <div class="col-md-6">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label class="control-label">URL</label>
+                            <input type="text" name="url" class="form-control" />
+                            @Html.ValidationMessage("url", new { @class = "text-danger" })
+                        </div>
+                        @*<div class="col-md-12">
+                            <label class="control-label">Descripción</label>
+                            <input type="text" name="descripcion" class="form-control" />
+                            @Html.ValidationMessage("url", new { @class = "text-danger" })
+                        </div>*@
+                        <div class="col-md-12">
+                            <label class="control-label">Descripción</label>
+                            <textarea name="descripcion" class="form-control"></textarea>
+                            @Html.ValidationMessage("descripcion", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Cancelar</button>
+                    <input type="submit" value="Guardar" class="btn btn-primary" />
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="modal fade draggable-modal modalx"
+     id="modalValidarMaterial"
+     tabindex="-1"
+     data-backdrop="static"
+     data-keyboard="false"
+     role="dialog"
+     aria-labelledby="deleteLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            @using (Html.BeginForm("MaterialCompleto", "Curso", FormMethod.Post, new { }))
+            {
+                <div class="modal-header">
+                    <div class="row">
+                        <div class="col-md-10">
+                            <h4 class="modal-title">Confirmar Validación de Material</h4>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="input-group-btn">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="idCurso" value="@Model.idCurso" />
+                        <h4 class="text-center">¿Está seguro que desea continuar?</h4>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="row">
+                        <div class="col-md-6 text-left">
+                            <button type="button" id="btnCancelar" class="btn btn-default" data-dissmiss="modal">Cancelar</button>
+                        </div>
+                        <div class="col-md-6">
+                            <button type="submit" class="btn btn-primary">Confirmar</button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#btnMostrarValidarMaterial').click(function () {
+                $('#modalValidarMaterial').modal({ keyboard: true }, 'show');
+            });
+            $('#btnCancelar').click(function () {
+                $('#modalValidarMaterial').modal('hide');
+            });
+        });
+        function ShowModalAgregar() {
+            $('#modal-agregar').modal({ keyboard: true }, 'show');
+        }
+        function ShowModalAgregarUrl() {
+            $('#modal-agregar-url').modal({ keyboard: true }, 'show');
+        }
+    </script>
+}

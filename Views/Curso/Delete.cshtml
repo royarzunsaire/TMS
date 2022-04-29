@@ -1,0 +1,43 @@
+﻿@model SGC.Models.Curso
+
+@{
+    ViewBag.Title = "Eliminar";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Confirmar Eliminación</h2>
+<div class="portlet light bordered">
+    <div class="portlet-body" id="datos-cliente">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    @Html.Label("codigoCurso", "Código", htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.codigoCurso, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", @style = "border: 0px" } })
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    @Html.Label("nombreCurso", "Nombre", htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.nombreCurso, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", @style = "border: 0px" } })
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-actions no-color">
+        <div class="row">
+            <div class="col-md-6">
+                @Html.ActionLink("Volver", "Index", new { }, new { @class = "btn btn-default" })
+            </div>
+            <div class="col-md-6 text-right">
+                <input type="submit" value="Eliminar" class="btn btn-danger" />
+            </div>
+        </div>
+    </div>
+}

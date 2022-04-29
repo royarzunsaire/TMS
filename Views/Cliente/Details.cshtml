@@ -1,0 +1,236 @@
+﻿@model SGC.Models.Cliente
+
+@{
+    ViewBag.Title = "Detalle";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Ver Cliente</h2>
+@{HtmlHelper.UnobtrusiveJavaScriptEnabled = true;}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+
+    <div class="form-horizontal">
+        <h4>Datos empresa</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.nombreEmpresa, "Nombre Empresa", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-8">
+                @Html.EditorFor(model => model.nombreEmpresa, new { htmlAttributes = new { @class = "form-control", placeholder = "", @readonly = "readonly" } })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.razonSocial, "Razón social", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-8">
+                @Html.EditorFor(model => model.razonSocial, new { htmlAttributes = new { @class = "form-control", placeholder = "", @readonly = "readonly" } })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.mandante, "Empresa mandante", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-8">
+                @Html.EditorFor(model => model.mandante.nombreMandante, new { htmlAttributes = new { @class = "form-control ", @readonly = "readonly" } })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.rut, "R.U.T.", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-8">
+                @Html.EditorFor(model => model.rut, new { htmlAttributes = new { @class = "form-control", placeholder = "", @readonly = "readonly" } })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Giros", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-8">
+                <table class="table">
+                    @foreach (var item in Model.clienteGiros)
+                    {
+                        <tr>
+                            <td>@item.giro.descripcion</td>
+                        </tr>
+                    }
+                </table>
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("Faenas", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-8">
+                <table class="table">
+                    @foreach (var item in ViewBag.faenas)
+                    {
+                        <tr>
+                            <td>@item</td>
+                        </tr>
+                    }
+                </table>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.telefonoCorporativo, "Teléfono corporativo", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-8">
+                @Html.EditorFor(model => model.telefonoCorporativo, new { htmlAttributes = new { @class = "form-control", placeholder = "", @readonly = "readonly" } })
+            </div>
+        </div>
+    </div>
+    <div class="form-horizontal">
+        <h4>Facturación</h4>
+        <hr />
+        <div class="form-group">
+            @Html.Label("Encargado Pagos", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-8">
+                <table class="table">
+                    @foreach (var item in Model.encargadoPagos)
+                    {
+                        <tr>
+                            <td>@item.contacto.nombreCompleto</td>
+                            <td>@item.contacto.run</td>
+                        </tr>
+                    }
+                </table>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Tipo documento de pago", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-8">
+                <table class="table">
+                    @foreach (var item in Model.clienteTipoDocumentosPagos)
+                    {
+                        <tr>
+                            <td>@item.tipoDocumentosPago.nombre</td>
+                        </tr>
+                    }
+                </table>
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.direccion, "Dirección", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-8">
+                @Html.EditorFor(model => model.direccion, new { htmlAttributes = new { @class = "form-control", placeholder = "", @readonly = "readonly" } })
+            </div>
+        </div>
+
+        <h4>Representantes Legales</h4>
+        <hr />
+
+        <div class="form-group">
+            @Html.Label("Representante legal", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-8">
+                <table class="table">
+                    @foreach (var item in Model.representanteLegals)
+                    {
+                        <tr>
+                            <td>@item.contacto.nombreCompleto</td>
+                            <td>@item.contacto.run</td>
+                        </tr>
+                    }
+                </table>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.portalNotasExterno, "Portal Notas Externo", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-8">
+                @Html.EditorFor(model => model.portalNotasExterno, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.descEspecial, "Descripción especial", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-8">
+                @Html.EditorFor(model => model.descEspecial, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.situacionComercial, "Situación comercial", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-8">
+                @Html.EditorFor(model => model.situacionComercial, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                <small>Estado comercial en que se encuentra el cliente</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-horizontal">
+        <h4>Líderes Comerciales</h4>
+        <hr />
+
+        <div class="form-group">
+            @Html.Label("Líderes Comerciales Asignados", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-8">
+                <table class="table">
+                    @foreach (var item in Model.usuariosAsignados)
+                    {
+                        <tr>
+                            <td>@item.usuario.nombreCompleto</td>
+                        </tr>
+                    }
+                </table>
+            </div>
+        </div>
+    </div>
+    <h4>Envío de correo</h4>
+    <hr />
+    <div class="form-group col-md-12">
+        <div class="col-md-12">
+            <div class="form-group">
+                @Html.LabelFor(model => model.cantDiasEnvioCorreo, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-2">
+                    @Html.DisplayFor(model => model.cantDiasEnvioCorreo, new { htmlAttributes = new { @class = "form-control", @id = "cantDiasEnvioCorreo", @min = 1, @max = 30 } })
+
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.enviarResumenEnvioCorreo, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-2">
+                    @Html.DisplayFor(model => model.enviarResumenEnvioCorreo, new { htmlAttributes = new { @class = "form-control", @id = "enviarResumen" } })
+
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.enviarCapacitacionRealizadaEnvioCorreo, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-2">
+                    @Html.DisplayFor(model => model.enviarCapacitacionRealizadaEnvioCorreo, new { htmlAttributes = new { @class = "form-control" } })
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ultimaFechaEnvioCorreo, htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-4">
+                        @Html.DisplayFor(model => model.ultimaFechaEnvioCorreo, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Volver", "Index", new { }, new { @class = "btn btn-default" })
+</div>
+
+<div id='myModal' class='modal'>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div id='myModalContent'>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+

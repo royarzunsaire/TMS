@@ -1,0 +1,323 @@
+﻿@model IEnumerable<SGC.Models.ViewModelPostCurso>
+@{
+    var sence = "";
+    var nombreContacto = "";
+    var sala = "";
+
+
+}
+<style>
+    #table-wrapper {
+        position: relative;
+    }
+
+    #table-scroll {
+        overflow: auto;
+    }
+
+    #table-wrapper table {
+        width: 100%;
+    }
+
+    #table-wrapper td {
+        white-space: nowrap;
+    }
+
+    #table-wrapper th {
+        white-space: nowrap;
+    }
+
+    th {
+        background-color: yellow;
+    }
+</style>
+
+<div id="table-wrapper">
+    <div id="table-scroll">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayName("Código")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Curso")
+                    </th>
+
+                    <th>
+                        @Html.DisplayName("SENCE")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Ciudad")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Cliente")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Fecha Inicio")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Fecha Termino")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Tipo de Ejecución")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Estado")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Comercial")
+                    </th>
+                    <th>
+                        @Html.DisplayName("DJO")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Fecha DJO")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Creador DJO")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Credenciales LIsta")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Fecha Credenciales LIsta")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Creador Credenciales LIsta")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Informacion revisada")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Fecha Informacion revisada")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Creador Informacion revisada")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Correo enviado")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Fecha Correo enviado")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Creador Correo enviado")
+                    </th>
+
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    sence = "-";
+                    if (item.comercializacion.cotizacion.tipoCurso != "Duplicado Credencial" && item.comercializacion.cotizacion.tipoCurso != "Arriendo de Sala" && item.comercializacion.cotizacion.tipoCurso != "Tramitación Licencia")
+                    {
+                        if (item.comercializacion.cotizacion.codigoSence != null && item.comercializacion.cotizacion.codigoSence != "" && item.comercializacion.cotizacion.tieneCodigoSence != "on")
+                        {
+                            sence = "SENCE";
+
+                        }
+                        else
+                        {
+                            sence = "NO SENCE";
+                        }
+                    }
+                    else
+                    {
+                        sence = "-";
+                    }
+
+                    var tipoEjecucion = item.comercializacion.cotizacion.curso != null ? item.comercializacion.cotizacion.curso.tipoEjecucion.ToString() : " ";
+                    var curso = "";
+                    if (item.comercializacion.cotizacion.tipoCurso != "Duplicado Credencial" && item.comercializacion.cotizacion.tipoCurso != "Arriendo de Sala" && item.comercializacion.cotizacion.tipoCurso != "Tramitación Licencia")
+                    {
+                        curso = item.comercializacion.cotizacion.curso.nombreCurso;
+                    }
+                    else
+                    {
+                        curso = item.comercializacion.cotizacion.tipoCurso;
+
+                    }
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.comercializacion.cotizacion.codigoCotizacion)
+                    </td>
+                    <td>
+                        @curso
+                    </td>
+                    <td>
+                        @sence
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.comercializacion.ciudad.nombreCiudad)
+                    </td>
+                    @*data-cell-type="number"*@
+                    <td>
+                        @Html.DisplayFor(modelItem => item.comercializacion.cotizacion.cliente.nombreEmpresa)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.comercializacion.fechaInicio)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.comercializacion.fechaTermino)
+                    </td>
+                    <td>
+                        @tipoEjecucion
+                    </td>
+                    <td>
+                        @item.comercializacion.comercializacionEstadoComercializacion.FirstOrDefault().EstadoComercializacion.ToString()
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.comercializacion.usuarioCreador.nombreCompleto)
+                    </td>
+                    @if (item.postCurso == null)
+                    {
+                        <td>
+                            NO
+                        </td>
+
+                        <td>
+                            -
+                        </td>
+                        <td>
+                            -
+                        </td>
+                        <td>
+                            NO
+                        </td>
+                        <td>
+                            -
+                        </td>
+                        <td>
+                            -
+                        </td>
+                        <td>
+                            NO
+                        </td>
+                        <td>
+                            -
+                        </td>
+                        <td>
+                            -
+                        </td>
+                        <td>
+                            NO
+                        </td>
+                        <td>
+                            -
+                        </td>
+                        <td>
+                            -
+                        </td>
+                    }
+                    else
+                    {
+                        var djo = item.postCurso.djo ? "SI" : "NO";
+                        var cred = item.postCurso.credReady ? "SI" : "NO";
+                        var info = item.postCurso.infoCheck ? "SI" : "NO";
+                        var mail = item.postCurso.mailClient ? "SI" : "NO";
+                        <td>
+                            @djo
+                        </td>
+                        <td>
+                            @if (item.postCurso.djo)
+                            {
+                                @Html.DisplayFor(modelItem => item.postCurso.fechaDjo)
+                            }
+                            else
+                            {
+                                <p>-</p>
+                            }
+
+                        </td>
+                        <td>
+                            @if (item.postCurso.djo)
+                            {
+                                @Html.DisplayFor(modelItem => item.postCurso.creadorDjo.nombreCompleto)
+                            }
+                            else
+                            {
+                                <p>-</p>
+                            }
+
+                        </td>
+                        <td>
+                            @cred
+                        </td>
+                        <td>
+                            @if (item.postCurso.credReady)
+                            {
+                                @Html.DisplayFor(modelItem => item.postCurso.fechaCredReady)
+                            }
+                            else
+                            {
+                                <p>-</p>
+                            }
+                        </td>
+                        <td>
+                            @if (item.postCurso.credReady)
+                            {
+                                @Html.DisplayFor(modelItem => item.postCurso.creadorCredReady.nombreCompleto)
+                            }
+                            else
+                            {
+                                <p>-</p>
+                            }
+                        </td>
+                        <td>
+                            @info
+                        </td>
+                        <td>
+                            @if (item.postCurso.infoCheck)
+                            {
+                                @Html.DisplayFor(modelItem => item.postCurso.fechaInfoCheck)
+                            }
+                            else
+                            {
+                                <p>-</p>
+                            }
+                        </td>
+                        <td>
+                            @if (item.postCurso.infoCheck)
+                            {
+                                @Html.DisplayFor(modelItem => item.postCurso.creadorInfoCheck.nombreCompleto)
+                            }
+                            else
+                            {
+                                <p>-</p>
+                            }
+                        </td>
+                        <td>
+                            @mail
+                        </td>
+                        <td>
+                            @if (item.postCurso.mailClient)
+                            {
+                                @Html.DisplayFor(modelItem => item.postCurso.fechaMailClient)
+                            }
+                            else
+                            {
+                                <p>-</p>
+                            }
+                        </td>
+                        <td>
+                            @if (item.postCurso.mailClient)
+                            {
+                                @Html.DisplayFor(modelItem => item.postCurso.creadorMailClient.nombreCompleto)
+                            }
+                            else
+                            {
+                                <p>-</p>
+                            }
+                        </td>
+                    }
+
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+

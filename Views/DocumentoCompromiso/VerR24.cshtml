@@ -1,0 +1,91 @@
+﻿@model SGC.Models.Comercializacion
+@using SGC.Models
+    @{
+        List<R24> r24s = ViewBag.r24s;
+        ViewBag.Title = "Ingresar R24";
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+
+    <div class="page-title" style="margin-bottom: 0">
+        <div class="row">
+            <div class="col-md-12">
+                Administrar Comercialización
+            </div>
+            <div class="col-md-12">
+                <small>Comercialización: @Model.cotizacion.codigoCotizacion</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="portlet light bordered">
+                <div class="portlet-title">
+                    <div class="caption">
+                        R24
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <div class="row col-md-12">
+                        <div class="col-md-2 text-center">
+                            <label> Elementos </label>
+                        </div>
+
+                        <div class="col-md-5 text-center">
+                            <label> Fichero</label>
+                        </div>
+                        <div class="col-md-5 text-center">
+                            <label> Descripción </label>
+                        </div>
+                      
+                    </div>
+
+                    @if (r24s != null && r24s.Count() > 0)
+                    {
+                        int i = 1;
+                        foreach (R24 r24 in r24s)
+                        {
+                            <div class="row col-md-12">
+                                <div class="col-md-2 text-left">
+                                    @Html.Label("Documentos", "Documento " + i, htmlAttributes: new { @class = "control-label" })
+                                </div>
+                                <div class="col-md-5 text-left">
+                                    <span class="glyphicon glyphicon-save"></span>
+                                    @Html.ActionLink(r24.file.nombreArchivo, "Descargar", new { id = r24.file.idStorage }, new { })
+                                </div>
+                                <div class="col-md-5 text-center">
+                                    <label> @r24.description</label>
+                                </div>
+                           
+                            </div>
+                            <hr />
+                            i++;
+                        }
+
+                    }
+                    else
+                    {
+                        <div class="row col-md-12">
+                          
+                            <div class=" text-center">
+                                <label> No hay R24 cargados</label>
+                            </div>
+                        
+                        </div>
+                        <hr />
+
+                    }
+
+                    <hr />
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            @Html.ActionLink("Volver", "DocumentosCompromisoComercializacion", new { id = Model.idComercializacion }, new { @class = "btn btn-default" })
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>

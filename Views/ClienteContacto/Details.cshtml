@@ -1,0 +1,59 @@
+﻿@model SGC.Models.ClienteContacto
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>ClienteContacto</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.cliente.nombreEmpresa)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.cliente.nombreEmpresa)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.contacto.nombres)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.contacto.nombres)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.vigencia)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.vigencia)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.fechaCreacion)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.fechaCreacion)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.usuarioCreador)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.usuarioCreador)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Editar", "Edit", new { /* id = Model.PrimaryKey */ }) |
+     @Html.ActionLink("Volver", "Index",new { },new {@class= "btn btn-default" })
+</p>

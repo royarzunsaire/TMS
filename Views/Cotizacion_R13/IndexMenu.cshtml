@@ -1,0 +1,54 @@
+﻿@model SGC.Models.Cotizacion_R13
+@using SGC.Helpers
+@using SGC.Models
+
+@{
+    InsecapContext db = new InsecapContext();
+    bool tieneComercializacion = db.Comercializacion
+            .Where(c => c.softDelete == false)
+            .Where(c => c.cotizacion.idCotizacion_R13 == @Model.idCotizacion_R13)
+            .Any();
+
+}
+
+
+
+@using (Html.BeginForm("Delete", "Cotizacion_R13", FormMethod.Post, new { @id = "notificationForm_" + @Model.idCotizacion_R13 }))
+{
+    <div class="input-group-btn">
+        @Html.AntiForgeryToken()
+        @if (tieneComercializacion)
+        {
+            @Html.NoEncodeActionLink("<span class='glyphicon glyphicon-check'></span>", "Comercialización", "Create", "Comercializacions", new { id = @Model.idCotizacion_R13 }, htmlAttributes: new { @class = "btn btn-default btn-sm" })
+        }
+        else
+        {
+            @Html.NoEncodeActionLink("<span class='glyphicon glyphicon-unchecked'></span>", "Comercialización", "Create", "Comercializacions", new { id = @Model.idCotizacion_R13 }, htmlAttributes: new { @class = "btn btn-default btn-sm" })
+        }
+        @*@Html.NoEncodeActionLink("<span class='glyphicon glyphicon-file'></span>", "Descargar", "GenerarPdfR13", "Cotizacion_R13", routeValues: new { id = item.idCotizacion_R13 }, htmlAttributes: new { @class = "btn btn-default btn-sm" })*@
+        @Html.NoEncodeActionLink("<span class='glyphicon glyphicon-file'></span>", "Descargar", "DescargarR13", "Cotizacion_R13", routeValues: new { id = @Model.idCotizacion_R13 }, htmlAttributes: new { @class = "btn btn-default btn-sm" })
+        @Html.NoEncodeActionLink("<span class='glyphicon glyphicon-retweet'></span>", "Recotizar", "Recotizar", "Cotizacion_R13", routeValues: new { id = @Model.idCotizacion_R13 }, htmlAttributes: new { @class = "btn btn-warning btn-sm" })
+
+        @{
+
+            EstadoComercializacion estado = EstadoComercializacion.En_Proceso;
+            if (tieneComercializacion)
+            {
+                Comercializacion comercializacion = db.Comercializacion.Where(x => x.cotizacion.idCotizacion_R13 == @Model.idCotizacion_R13).FirstOrDefault();
+                estado = comercializacion.comercializacionEstadoComercializacion.OrderBy(x => x.fechaCreacion).LastOrDefault().EstadoComercializacion;
+            }
+
+
+        }
+        @if (estado == EstadoComercializacion.En_Proceso || estado == EstadoComercializacion.Borrador)
+        {
+            @Html.NoEncodeActionLink("<span class='glyphicon glyphicon-edit'></span>", "Editar", "Edit", "Cotizacion_R13", routeValues: new { id = @Model.idCotizacion_R13 }, htmlAttributes: new { @class = "btn btn-warning btn-sm " })
+        }
+
+        @if (@Model.isAutoCotizacion == 0)
+        {
+            @Html.NoEncodeActionLink("<span class='glyphicon glyphicon-list-alt'></span>", "Detalles", "Details", "Cotizacion_R13", new { id = @Model.idCotizacion_R13 }, htmlAttributes: new { @class = "btn btn-info btn-sm" })
+        }
+        <a class="btn btn-danger btn-sm" href="javascript:confirmDelete('Delete','@Model.idCotizacion_R13','Cotizacion_R13')"><span class='glyphicon glyphicon-trash' title="Eliminar"></span></a>
+    </div>
+}

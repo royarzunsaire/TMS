@@ -1,0 +1,56 @@
+﻿@model SGC.Models.ApplicationRole
+
+@{
+    ViewBag.Title = "Borrar Rol";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Borrar</h2>
+<hr />
+@if (ViewBag.usersCount > 0)
+{
+    <div>
+    <h3 class="alert alert-danger">El Rol seleccionado tiene usuarios asignados, el Rol no puede tener usuarios asociados</h3>
+    </div>
+    <div class="form-actions no-color">
+
+        @Html.ActionLink("Volver", "Index",null, htmlAttributes: new { @class = "btn btn-default" })
+    </div>
+}
+else
+{
+
+    <h3 class="bold" style="color:red">¿Esta seguro que desea borrar este perfil? </h3>
+    
+    <div>
+        <h4>Rol a Eliminar:</h4>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                Nombre Rol : 
+                @*@Html.DisplayNameFor(model => model.Name)*@
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Name)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Description)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Description)
+            </dd>
+        </dl>
+        <hr />
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-actions no-color">
+                <input type="submit" value="Borrar" class="btn btn-default" /> |
+                @Html.ActionLink("Regresar ", "Index")
+            </div>
+        }
+    </div>
+}

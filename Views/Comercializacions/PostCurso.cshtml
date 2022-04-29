@@ -1,0 +1,130 @@
+﻿@model SGC.Models.PostCurso
+
+@{
+    ViewBag.Title = "Pos Curso";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+
+
+<h2 class="page-title">Post Curso de la comercialización @Model.comercializacion.cotizacion.codigoCotizacion</h2>
+
+<div id="seleccionar">
+    @using (Html.BeginForm("PostCurso", "Comercializacions", FormMethod.Post, new { }))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="portlet light bordered">
+            <div class="portlet-title">
+                <div class="caption">
+                    Post Curso
+                </div>
+                <div class="actions">
+                    @Html.ActionLink("Participantes","List", "Participante", new { id = Model.comercializacion.idComercializacion }, htmlAttributes : new { @type = "button", @class = "btn btn-sm btn-default" } )
+                </div>
+            </div>
+            <div class="portlet-body">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <input type="hidden" name="idComercializacion" value="@ViewBag.idComercializacion" />
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            @Html.Label("dd", "Check-List", htmlAttributes: new { @class = "control-label" })
+                            @Html.HiddenFor(model => model.idPostCurso)
+                            @Html.HiddenFor(model => model.comercializacion.idComercializacion)
+
+
+
+                            @Html.LabelFor(model => model.mailClient, htmlAttributes: new { @class = "control-label" })
+                            @Html.CheckBoxFor(model => model.mailClient, new { htmlAttributes = new { @id = "mailClient" } })
+                            <div class="form-group" id="mailClient-fecha">
+                                @Html.LabelFor(model => model.fechaMailClient, htmlAttributes: new { @class = "control-label" })
+                                <div class="input-group">
+                                    @Html.EditorFor(model => model.fechaMailClient, new { htmlAttributes = new { @class = "form-control datepicker" } })
+                                    <span class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </span>
+                                </div>
+                                @Html.ValidationMessageFor(model => model.fechaMailClient, "", new { @class = "text-danger" })
+                            </div>
+
+                            <br><hr>
+                            @Html.LabelFor(model => model.infoCheck, htmlAttributes: new { @class = "control-label" })
+                            @Html.CheckBoxFor(model => model.infoCheck, new { htmlAttributes = new { @id = "infoCheck" } })
+                            <div class="form-group" id="infoCheck-fecha">
+                                @Html.LabelFor(model => model.fechaInfoCheck, htmlAttributes: new { @class = "control-label" })
+                                <div class="input-group">
+                                    @Html.EditorFor(model => model.fechaInfoCheck, new { htmlAttributes = new { @class = "form-control datepicker" } })
+                                    <span class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </span>
+                                </div>
+                                @Html.ValidationMessageFor(model => model.fechaInfoCheck, "", new { @class = "text-danger" })
+                            </div>
+
+                            <br><hr>
+                            @Html.LabelFor(model => model.credReady, htmlAttributes: new { @class = "control-label" })
+                            @Html.CheckBoxFor(model => model.credReady, new { htmlAttributes = new { @id = "infoCheck" } })
+                            <div class="form-group" id="credReady-fecha">
+                                @Html.LabelFor(model => model.fechaCredReady, htmlAttributes: new { @class = "control-label" })
+                                <div class="input-group">
+                                    @Html.EditorFor(model => model.fechaCredReady, new { htmlAttributes = new { @class = "form-control datepicker" } })
+                                    <span class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </span>
+                                </div>
+                                @Html.ValidationMessageFor(model => model.fechaCredReady, "", new { @class = "text-danger" })
+                            </div>
+
+                            <br><hr>
+                            @Html.LabelFor(model => model.djo, htmlAttributes: new { @class = "control-label" })
+                            @Html.CheckBoxFor(model => model.djo, new { htmlAttributes = new { @id = "djo" } })
+                            <div class="form-group" id="djo-fecha">
+                                @Html.LabelFor(model => model.fechaDjo, htmlAttributes: new { @class = "control-label" })
+                                <div class="input-group">
+                                    @Html.EditorFor(model => model.fechaDjo, new { htmlAttributes = new { @class = "form-control datepicker" } })
+                                    <span class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </span>
+                                </div>
+                                @Html.ValidationMessageFor(model => model.fechaDjo, "", new { @class = "text-danger" })
+                            </div>
+
+                            <br><hr>
+                        </div>
+                    </div>
+                </div>
+                <hr />
+                <div class="row">
+                    <div class="col-md-6">
+                        @Html.ActionLink("Volver", "List", new { id = ViewBag.idComercializacion }, new { @class = "btn btn-default" })
+                    </div>
+                    <div class="col-md-6 text-right">
+                        <input type="submit" value="Guardar" class="btn btn-primary" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+@section Scripts{
+    <script>
+        $('input[type=checkbox]').change(function () {
+            if (this.checked) {
+                $("#" + this.id + "-fecha").show();
+            } else {
+                $("#" + this.id + "-fecha").hide();
+            }
+
+        });
+        $(document).ready(function () {
+            $('input[type=checkbox]').each(function () {
+                $("#" + this.id).trigger("change");
+
+            });
+        });
+    
+        </script>
+    }
+

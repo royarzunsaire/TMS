@@ -1,0 +1,237 @@
+﻿@using SGC.Models;
+
+@{
+    ViewBag.Title = "Listado Factura";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+
+<h3 class="page-title">
+    Administrar Facturas
+</h3>
+<div class="portlet box blue-dark">
+    <div class="portlet-title">
+        <div class="caption">
+            Comercializaciones Facturables
+        </div>
+        <div class="tools">
+            <a href="javascript:;" class="collapse"> </a>
+            <a href="javascript:;" class="fullscreen"> </a>
+        </div>
+        @*<div class="actions">
+                <div class="inputs pull-right">
+                    <a href="@Url.Action("Create", new {  }) " class="btn btn-circle btn-sm btn-default btn-group-lg" style="margin-right:10px; margin-left:10px;">
+                        <i class="fa fa-plus-circle"></i> Nuevo
+                    </a>
+                </div>
+            </div>*@
+    </div>
+    <div class="portlet-body">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <table class="table table-striped table-bordered table-hover dt-responsive dataTable" id="sys-table" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayName("Código")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Curso")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Tipo de Ejecución")
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.cotizacion.cliente.nombreEmpresa)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.fechaInicio)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.fechaTermino)
+                    </th>
+                    <th>
+                        @Html.DisplayName("Sucursal")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Estado Facturas")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Monto Total")
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.OrderByDescending(x => x.fechaInicio))
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.cotizacion.codigoCotizacion)
+                        </td>
+                        <td>
+                            @if (item.cotizacion.tipoCurso != "Duplicado Credencial" && item.cotizacion.tipoCurso != "Arriendo de Sala" && item.cotizacion.tipoCurso != "Tramitación Licencia")
+                            {
+                                @Html.DisplayFor(modelItem => item.cotizacion.curso.nombreCurso)
+                            }
+                            else
+                            {
+                                @Html.DisplayFor(modelItem => item.cotizacion.tipoCurso)
+                            }
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.cotizacion.curso.tipoEjecucion)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.cotizacion.cliente.nombreEmpresa)
+                        </td>
+                        <td data-sort="@item.fechaInicio.ToString("MM/dd/yyyy")">
+                            @Html.DisplayFor(modelItem => item.fechaInicio)
+                        </td>
+                        <td data-sort="@item.fechaTermino.ToString("MM/dd/yyyy")">
+                            @Html.DisplayFor(modelItem => item.fechaTermino)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.cotizacion.sucursal.nombre)
+                        </td>
+                        <td>
+                            @{
+                                var menorEstado = 999;
+                                var parcialmenteFacturado = false;
+                                var nombreMenorEstado = EstadoFactura.No_Facturado.ToString();
+                                foreach (var itemDoc in item.cotizacion.documentosCompromiso.Where(dc => dc.softDelete == false))
+                                {
+                                    if (itemDoc.factura != null)
+                                    {
+                                        if (itemDoc.factura.softDelete == false)
+                                        {
+                                            if ((int)itemDoc.factura.estados.LastOrDefault().estado < menorEstado)
+                                            {
+                                                menorEstado = (int)itemDoc.factura.estados.LastOrDefault().estado;
+                                                nombreMenorEstado = itemDoc.factura.estados.LastOrDefault().estado.ToString();
+                                            }
+                                            else
+                                            {
+                                                parcialmenteFacturado = true;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (menorEstado > 0 && menorEstado < 6)
+                                            {
+                                                parcialmenteFacturado = true;
+                                            }
+                                            menorEstado = (int)EstadoFactura.No_Facturado;
+                                            nombreMenorEstado = EstadoFactura.No_Facturado.ToString();
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (menorEstado > 0 && menorEstado < 6)
+                                        {
+                                            parcialmenteFacturado = true;
+                                        }
+                                        menorEstado = (int)EstadoFactura.No_Facturado;
+                                        nombreMenorEstado = EstadoFactura.No_Facturado.ToString();
+                                    }
+                                }
+                                if (parcialmenteFacturado && menorEstado == (int)EstadoFactura.No_Facturado)
+                                {
+                                    nombreMenorEstado = "Parcialmente_Facturado";
+                                }
+                            }
+                            @nombreMenorEstado
+                            @*@Html.DisplayFor(modelItem => item.comercializacionEstadoComercializacion.LastOrDefault().EstadoComercializacion)*@
+                        </td>
+                        <td class="text-center">
+                            <div class="">
+                                <label>@String.Format("{0:C}", item.valorFinal - item.descuento)</label>
+                            </div>
+                        </td>
+                        <td class="text-center">
+                            <div class="input-group-btn">
+                                @Html.CheckBox(" ", item.clientFactura, new { @id = item.idComercializacion + "_download", @class = "clientDownload btn btn-info btn-sm glyphicon glyphicon-ok-circle sence" })
+
+                                @if (item.cotizacion.tipoCurso != "Duplicado Credencial" && item.cotizacion.tipoCurso != "Arriendo de Sala" && item.cotizacion.tipoCurso != "Tramitación Licencia")
+                                {
+                                    if (item.cotizacion.codigoSence != null && item.cotizacion.codigoSence != "" && item.cotizacion.tieneCodigoSence != "on")
+                                    {
+                                        @Html.Label(" ", htmlAttributes: new { @class = "btn btn-info btn-sm glyphicon glyphicon-ok-circle sence", @datatoggle = "tooltip", @title = "SENCE" })
+
+                                    }
+                                    else
+                                    {
+                                        @Html.Label(" ", htmlAttributes: new { @class = "btn btn-info btn-sm glyphicon glyphicon-ok-circle no_sence", @datatoggle = "tooltip", @title = "NO SENCE" })
+
+                                    }
+                                }
+                                else
+                                {
+                                    @Html.Label(" ", htmlAttributes: new { @class = "btn btn-info btn-sm glyphicon glyphicon-home arriendo", @datatoggle = "tooltip", @title = "Arriendo" })
+
+                                }
+
+
+
+
+                                @Html.ActionLink(" ", "VerR24", "Factura", new { id = item.idComercializacion }, htmlAttributes: new { @class = "btn btn-default btn-sm glyphicon glyphicon glyphicon-book", @datatoggle = "tooltip", @title = "Ver R24" })
+
+                                @Html.ActionLink(" ", "Facturas", new { id = item.idComercializacion }, htmlAttributes: new { @class = "btn btn-default btn-sm glyphicon glyphicon-usd", @datatoggle = "tooltip", @title = "Facturas" })
+                                @Html.ActionLink(" ", "DocumentosCompromisoComercializacion", "DocumentoCompromiso", new { id = item.idComercializacion }, htmlAttributes: new { @class = "btn btn-default btn-sm glyphicon glyphicon-file", @datatoggle = "tooltip", @title = "Documentos de Compromiso" })
+                                @Html.ActionLink(" ", "ReiniciarEstadoComercializacion", "Factura", new { id = item.idComercializacion }, new { @class = "btn btn-default btn-sm glyphicon glyphicon-ban-circle", @datatoggle = "tooltip", @title = "Reiniciar Estados Comercialización", @onclick = "return confirm('Está seguro que desea cambiar el estado a En Proceso de la comercialización: " + item.cotizacion.codigoCotizacion + "?');" })
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div hidden>
+    @using (Html.BeginForm("SaveClientFactura", "Comercializacions", FormMethod.Post, new { @id = ("form-ModalParticipanteCliente") }))
+    {
+        @Html.AntiForgeryToken()
+
+
+    }
+</div>
+
+@section Scripts {
+
+    <script>
+        $(document).ready(function () {
+
+            $('.clientDownload').change(function () {
+                var id = this.id.split("_")[0];
+
+
+                var form = $('#form-ModalParticipanteCliente');
+                var url = form.attr('action');
+                $.ajax({
+                    method: "POST",
+                    url: url,
+                    dataType: "json",
+                    data: { id: id, value: this.checked },
+                    success: function (result) {
+                        if (result.error != "") {
+                            alert(result.error);
+                           
+                        console.log(result);
+                    }
+                });
+
+
+            });
+
+            //$('.clientDownload').trigger('change');
+
+        });
+
+
+
+
+     
+    </script>
+}

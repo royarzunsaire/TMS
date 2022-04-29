@@ -1,0 +1,154 @@
+﻿@model SGC.Models.EditUserViewModel
+@{
+    ViewBag.Title = "Editar Usuario";
+    Layout = "~/Views/Shared/_Layout.cshtml";   
+}
+<h3 class="page-title">
+    Administracion de Usuarios
+    <small> Security</small>
+</h3>
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet light bordered">
+            <div class="portlet-title">
+                <div class="caption font-green">
+                    <i class="icon-pin font-green"></i>
+                    <span class="caption-subject bold uppercase">Editando usuario</span>
+                </div>
+                <div class="actions">
+                    <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""> </a>
+                </div>
+            </div>
+
+            <div class="portlet-body form">
+                @using (Html.BeginForm("Edit", "AdminUsers", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                {
+                <div class="form-body">
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(false,"", new { @class = "text-danger" })
+
+
+                    <div class="form-group form-md-line-input has-info">
+                        @Html.LabelFor(m => m.Email, null, new { @class = "col-md-2 control-label", @placeholder = "myemail@mywebsite.com" })
+                        <div class="col-md-4">
+                            @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                            <div class="form-control-focus"> </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group form-md-line-input has-info">
+                        @Html.LabelFor(m => m.nombres, new { @class = "col-md-2 control-label" })
+                        <div class="col-md-4">
+                            @Html.TextBoxFor(m => m.nombres, new { @class = "form-control nombre-propio" })
+                         
+                            @Html.ValidationMessageFor(m => m.nombres, "", new { @class = "text-danger" })
+                            <div class="form-control-focus"> </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group form-md-line-input has-info">
+                        @Html.LabelFor(m => m.apellidoPaterno, new { @class = "col-md-2 control-label" })
+                        <div class="col-md-4">
+                            @Html.TextBoxFor(m => m.apellidoPaterno, new { @class = "form-control nombre-propio" })
+                            @Html.ValidationMessageFor(m => m.apellidoPaterno, "", new { @class = "text-danger" })
+                            <div class="form-control-focus"> </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group form-md-line-input has-info">
+                        @Html.LabelFor(m => m.apellidoMaterno, new { @class = "col-md-2 control-label" })
+                        <div class="col-md-4">
+                            @Html.TextBoxFor(m => m.apellidoMaterno, new { @class = "form-control nombre-propio" })
+                            @Html.ValidationMessageFor(m => m.apellidoMaterno, "", new { @class = "text-danger" })
+                            <div class="form-control-focus"> </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group form-md-line-input has-info">
+                        @Html.LabelFor(m => m.run, new { @class = "col-md-2 control-label" })
+                        <div class="col-md-4">
+                            @Html.TextBoxFor(m => m.run, new { @class = "form-control run" })
+                            @Html.ValidationMessageFor(m => m.run, "", new { @class = "text-danger" })
+                            <div class="form-control-focus"> </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group form-md-line-input has-info">
+                        @Html.LabelFor(m => m.telefono, new { @class = "col-md-2 control-label" })
+                        <div class="col-md-4">
+                            @Html.TextBoxFor(m => m.telefono, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.telefono, "", new { @class = "text-danger" })
+                            <div class="form-control-focus"> </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group form-md-line-input has-info">
+                        @Html.LabelFor(m => m.fechaNacimiento, new { @class = "col-md-2 control-label" })
+                        <div class="col-md-4">
+                            @Html.EditorFor(m => m.fechaNacimiento, new { htmlAttributes = new { @class = "form-control datepicker" } })
+                            @Html.ValidationMessageFor(m => m.fechaNacimiento, "", new { @class = "text-danger" })
+                            <div class="form-control-focus"> </div>
+                        </div>
+                    </div>
+
+                    @*<div class="form-group form-md-line-input has-info">
+            @Html.LabelFor(model => model.Address, null, new { @class = "control-label col-md-2", @placeholder = "password" })
+            <div class="col-md-4">
+                @Html.TextBoxFor(m => m.Address, new { @class = "form-control" })
+                <div class="form-control-focus"> </div>
+            </div>
+        </div>
+        <div class="form-group  form-md-line-input has-info">
+            @Html.LabelFor(model => model.State, new { @class = "control-label col-md-2" })
+            <div class="col-md-4">
+                @Html.TextBoxFor(m => m.State, new { @class = "form-control" })
+                <div class="form-control-focus"> </div>
+            </div>
+        </div>
+        <div class="form-group form-md-line-input has-info">
+            @Html.LabelFor(model => model.PostalCode, new { @class = "control-label col-md-2" })
+            <div class="col-md-4">
+                @Html.TextBoxFor(m => m.PostalCode, new { @class = "form-control" })
+                <div class="form-control-focus"> </div>
+            </div>
+        </div>*@
+
+                    <div class="form-group form-md-line-input has-info">
+                        <label class="col-md-2 control-label">
+                            @*Seleccione los Roles*@
+                            Seleccione el Rol
+                        </label>
+                        <div class="col-md-10">
+                            @foreach (var item in Model.RolesList)
+                            {
+                                <input type="radio" name="selectedRole" value="@item.Value" checked="@item.Selected" class="icheck"
+                                       data-checkbox="icheckbox_square-blue" />
+                                @Html.Label(item.Value, new { @class = "control-label" });
+                            }
+                        </div>
+                    </div>
+                </div>
+                    <div class="form-actions">
+                        <div class="row">
+                            <div class="col-md-offset-2 col-md-10">
+                                @Html.ActionLink("Regresar", "Index", null, new { @class = "btn btn-default" })
+                                <input type="submit" class="btn btn-primary" value="Guardar" />
+                            </div>
+                        </div>
+
+
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+

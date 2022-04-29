@@ -1,0 +1,111 @@
+﻿@model IEnumerable<SGC.Models.Participante>
+   @using System.Collections.Generic;
+@{
+    List<double> notas = ViewBag.notas;
+    int pos = 0;
+}
+<style>
+    #table-wrapper {
+        position: relative;
+    }
+
+    #table-scroll {
+        overflow: auto;
+    }
+
+    #table-wrapper table {
+        width: 100%;
+    }
+
+    #table-wrapper td {
+        white-space: nowrap;
+    }
+
+    #table-wrapper th {
+        white-space: nowrap;
+    }
+
+    th {
+        background-color: yellow;
+    }
+</style>
+
+<div id="table-wrapper">
+    <div id="table-scroll">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayName("Código")
+                    </th>
+                    <th>
+                        @Html.DisplayName("RUN")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Nombre")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Fecha de Curso")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Nombre de Curso")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Fecha de Vencimiento Credencial")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Nota")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Estado")
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.comercializacion.cotizacion.codigoCotizacion)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.contacto.run)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.contacto.nombreCompleto)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.comercializacion.fechaInicio)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.comercializacion.cotizacion.nombreDiploma)
+                    </td>
+                    <td>
+                        @item.comercializacion.fechaTermino.AddMonths(item.comercializacion.vigenciaCredenciales).ToString("dd'/'MM'/'yyyy")
+                    </td>
+                    <td>
+                        @notas[pos]
+
+                    </td>
+                    <td>
+                        @if (notas[pos] >= 5.0)
+                        {
+                            @Html.Label("Aprobado")
+                        }
+                        else
+                        {
+                            @Html.Label("Reprobado")
+                            
+                                        }
+
+                    </td>
+                </tr>
+                    
+                        pos++;
+                    
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+

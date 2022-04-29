@@ -1,0 +1,85 @@
+﻿@model IEnumerable<SGC.Models.ViewModelComercializacionEficiencia>
+@using SGC.Models;
+@using System.Collections.Generic;
+@{
+    var data = Model.ToList();
+    var vendedores = (List<AspNetUsers>)ViewBag.vendedores;
+    var comercializaciones = (List<Comercializacion>)ViewBag.comercializaciones;
+    var comercializados = (List<Comercializacion>)ViewBag.comercializados;
+    var vigente = DateTime.Now.AddDays(-90);
+    var nombreEmpresa = "";
+}
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>@Html.DisplayName("Lider Comercial")</th>
+            <th>@Html.DisplayName("Empresa")</th>
+            <th>@Html.DisplayName("Cotizaciones")</th>
+            <th>@Html.DisplayName("Cliente Activo")</th>
+            <th>@Html.DisplayName("Antigüedad")</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var vendedor in vendedores)
+        {
+            int contEmpresas = 0;
+            int contCotizaciones = 0;
+            int contVigentes = 0;
+            int contNoVigentes = 0;
+            int contNuevos = 0;
+            int contAntiguos = 0;
+
+            if (data.Where(x => x.cotizacion.usuarioCreador.Id == vendedor.Id).Count() > 0)
+            {
+                <tr>
+                    <td colspan="3">@vendedor.nombreCompleto</td>
+                </tr>
+                foreach (var cotizacion in data.Where(x => x.cotizacion.usuarioCreador.Id == vendedor.Id).OrderBy(y => y.cotizacion.nombreEmpresa))
+                {
+                    if (cotizacion.cotizacion.nombreEmpresa != nombreEmpresa)
+                    {
+                        <tr>
+                            <td></td>
+                            <td>@cotizacion.cotizacion.nombreEmpresa</td>
+                            <td>@data.Where(x => x.cotizacion.nombreEmpresa == cotizacion.cotizacion.nombreEmpresa && x.cotizacion.usuarioCreador.Id == vendedor.Id).Count()</td>
+                            @if (comercializados.Where(x => x.cotizacion.nombreEmpresa == cotizacion.cotizacion.nombreEmpresa).Any())
+                            {
+                                <td><i class="fas fa-check" style="color: green;"></i></td>
+                                contVigentes++;
+                            }
+                            else
+                            {
+                                <td><i class="fas fa-times" style="color: red;"></i></td>
+                                contNoVigentes++;
+                            }
+                            @if (cotizacion.cotizacion.cliente.fechaCreacion <= DateTime.Today.AddDays(-30) 
+                                || comercializaciones.Where(x => x.cotizacion.cliente.rut == cotizacion.cotizacion.cliente.rut).Count() > 0)
+                            {
+                                <td>Antiguo</td>
+                                contAntiguos++;
+                            }
+                            else
+                            {
+                                <td>Nuevo</td>
+                                contNuevos++;
+                            }
+                        </tr>
+                        contCotizaciones += data.Where(x => x.cotizacion.nombreEmpresa == cotizacion.cotizacion.nombreEmpresa && x.cotizacion.usuarioCreador.Id == vendedor.Id).Count();
+                        contEmpresas++;
+                        nombreEmpresa = cotizacion.cotizacion.nombreEmpresa;
+                    }
+                }
+                <tr>
+                    <th>Totales</th>
+                    <th>@contEmpresas</th>
+                    <th>@contCotizaciones</th>
+                    <th>@contVigentes Vigentes / @contNoVigentes No Vigentes</th>
+                    <th>@contAntiguos Antiguos / @contNuevos Nuevos</th>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

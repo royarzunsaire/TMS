@@ -1,0 +1,108 @@
+﻿@model SGC.Models.Contacto
+
+@{ 
+    SGC.Models.Cliente cliente = ViewBag.Cliente;
+}
+
+@{ 
+//Html.BeginForm("ModalCreate","Contacto", cliente,"POST", new { })
+}
+@using (Ajax.BeginForm("ModalCreate","Contacto", new { }
+    ,
+    new AjaxOptions { HttpMethod = "POST" }, new {id="formModalCreate" }))
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="row">
+        <div class="col-md-12">
+            <div class="modal-title">
+                <h4>Contacto</h4>
+            </div>
+            <hr style="margin-bottom:0" />
+            <div class="modal-body">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="form-group">
+                    @Html.LabelFor(model => model.nombres, htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.nombres, new { htmlAttributes = new { @class = "form-control nombre-propio", placeholder = "Nombres" } })
+                    @Html.ValidationMessageFor(model => model.nombres, "", new { @class = "text-danger" })
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.apellidoPaterno, htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.apellidoPaterno, new { htmlAttributes = new { @class = "form-control nombre-propio", placeholder = "Apellido Paterno" } })
+                    @Html.ValidationMessageFor(model => model.apellidoPaterno, "", new { @class = "text-danger" })
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.apellidoMaterno, htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.apellidoMaterno, new { htmlAttributes = new { @class = "form-control nombre-propio", placeholder = "Apellido Materno" } })
+                    @Html.ValidationMessageFor(model => model.apellidoMaterno, "", new { @class = "text-danger" })
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.run, htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.run, new { htmlAttributes = new { @class = "form-control run", placeholder = "RUN", id = "runContacto" } })
+                    @*@Html.EditorFor(model => model.run, new { htmlAttributes = new { @class = "form-control run", placeholder = "RUN", onfocusout = "validar(this.value)", id = "run" } })*@
+                    @Html.ValidationMessageFor(model => model.run, "", new { @class = "text-danger" })
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.fechaNacimiento, htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.fechaNacimiento, new { htmlAttributes = new { @class = "form-control datepicker", placeholder = "Fecha de Nacimiento" } })
+                    @Html.ValidationMessageFor(model => model.fechaNacimiento, "", new { @class = "text-danger" })
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.correo, htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.correo, new { htmlAttributes = new { @class = "form-control", placeholder = "Correo Electrónico" } })
+                    @Html.ValidationMessageFor(model => model.correo, "", new { @class = "text-danger" })
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.telefono, htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.telefono, new { htmlAttributes = new { @class = "form-control", placeholder = "Teléfono/Celular" } })
+                    @Html.ValidationMessageFor(model => model.telefono, "", new { @class = "text-danger" })
+                </div>
+                <div class="form-group">
+                    @if (@ViewBag.idDropDownList != "idSelectContacto")
+                    {
+                        @*@Html.LabelFor(model => model.urlFirma, htmlAttributes: new { @class = "control-label col-md-2" })*@
+                        <div class="col-md-10">
+                            <input type="hidden" name="idCliente" value="@ViewBag.idCliente" />
+                            <input type="hidden" name="tipo" value="@ViewBag.idDropDownList" />
+                            @*@Html.EditorFor(model => model.urlFirma, new { htmlAttributes = new { @class = "form-control" } })*@
+                            @*@Html.ValidationMessageFor(model => model.urlFirma, "", new { @class = "text-danger" })*@
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-md-10">
+                            <input type="hidden" name="idCliente" value="@ViewBag.idCliente" />
+                            <input type="hidden" name="tipo" value="@ViewBag.idDropDownList" />
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="modal-footer">
+                <input id="modalCreateSubmit" type="submit" onclick="saveModalCreateContacto('@ViewBag.idDropDownList')" value="Guardar" class="btn btn-primary" />
+            </div>
+        </div>
+    </div>
+}
+<script>
+    $(document).ready(function () {
+        $(".datepicker").datepicker({
+            format: 'dd/mm/yy',
+            autoclose: true
+        });
+
+        $(".nombre-propio").focusout(function () {
+            $(this).val(capitalizeEachFirstLetter($(this).val()));
+        });
+
+        $("#rutContacto,#runContacto").focusout(function () {
+            //if (Fn.validaRut($("#rut,#run").val())) {
+            if (rutValido($("#rutContacto,#runContacto").val())) {
+                $("#msgerror").html("");
+                $("#rutContacto,#runContacto").val(rutFormato($("#rutContacto,#runContacto").val()));
+            } else {
+                toastr.error("ingrese un RUT valido", "RUT no valido");
+                $("#rutContacto,#runContacto").val("");
+            }
+        });
+    });
+</script>

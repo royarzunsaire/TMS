@@ -1,0 +1,93 @@
+﻿@model IEnumerable<SGC.Models.ViewModelPostCurso>
+@using SGC.Models;
+@using System.Collections.Generic;
+@{
+    var data = Model;
+    var sucursales = (List<Sucursal>)ViewBag.sucursales;
+    var totalComercializaciones = 0;
+    var totalComercializacionesSinTerminar = 0;
+    var totalConDJO = 0;
+    var totalSinDJO = 0;
+    var totalAlumnosDJO = 0;
+    var totalAlumnosSinDJO = 0;
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Sucursal</th>
+            <th>Comercializaciones</th>
+            <th>Sin Terminar</th>
+            <th>Con R24</th>
+            <th>Sin R24</th>
+            <th>Alumnos Sense</th>
+            <th>Alumnos Sin Sense</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var sucursal in sucursales)
+        {
+            var AlumnosSense = 0;
+            var AlumnosSinSense = 0;
+            var contConDJO = data.Where(x => x.comercializacion.cotizacion.sucursal.idSucursal == sucursal.idSucursal)
+            .Where(x => x.postCurso != null)
+            .Where(x => x.postCurso.djo != false).Count();
+            var contConDJOSinTerminar = data.Where(x => x.comercializacion.cotizacion.sucursal.idSucursal == sucursal.idSucursal)
+            .Where(x => x.postCurso != null).Where(x => x.postCurso.djo != false).Where(x => x.comercializacion.fechaTermino >= DateTime.Today).Count();
+            var contSinDJO = data.Where(x => x.comercializacion.cotizacion.sucursal.idSucursal == sucursal.idSucursal)
+            .Where(x => x.postCurso != null)
+            .Where(x => x.postCurso.djo != true).Count();
+            var contSinDJOSinTerminar = data.Where(x => x.comercializacion.cotizacion.sucursal.idSucursal == sucursal.idSucursal)
+            .Where(x => x.postCurso != null)
+            .Where(x => x.postCurso.djo != true).Where(x => x.comercializacion.fechaTermino >= DateTime.Today).Count();
+            contSinDJO = contSinDJO + data.Where(x => x.comercializacion.cotizacion.sucursal.idSucursal == sucursal.idSucursal)
+            .Where(x => x.postCurso == null).Count();
+            contSinDJOSinTerminar = contSinDJO + data.Where(x => x.comercializacion.cotizacion.sucursal.idSucursal == sucursal.idSucursal)
+            .Where(x => x.postCurso == null).Where(x => x.comercializacion.fechaTermino >= DateTime.Today).Count();
+            var contComerSucursalTotal = contConDJO + contSinDJO;
+            var contComerSucursalTotalSinTerminar = contConDJOSinTerminar + contSinDJOSinTerminar;
+
+            totalComercializaciones = totalComercializaciones + contComerSucursalTotal;
+            totalComercializacionesSinTerminar = totalComercializacionesSinTerminar + contComerSucursalTotalSinTerminar;
+            totalConDJO = totalConDJO + contConDJO;
+            totalSinDJO = totalSinDJO + contSinDJO;
+
+            if (contComerSucursalTotal == 0)
+            {
+                continue;
+            }
+
+            foreach (ViewModelPostCurso comercializacion in data.Where(x => x.comercializacion.cotizacion.sucursal.idSucursal == sucursal.idSucursal))
+            {
+                foreach (Participante participante in comercializacion.comercializacion.participantes.Where(x => x.comercializacion.cotizacion.codigoSence != null && x.comercializacion.cotizacion.codigoSence != "" && x.comercializacion.cotizacion.tieneCodigoSence != "on").ToList())
+                {
+                    AlumnosSense++;
+                }
+                foreach (Participante participante in comercializacion.comercializacion.participantes.Where(x => x.comercializacion.cotizacion.codigoSence == null || x.comercializacion.cotizacion.codigoSence == "" || x.comercializacion.cotizacion.tieneCodigoSence == "on").ToList())
+                {
+                    AlumnosSinSense++;
+                }
+            }
+            totalAlumnosDJO = totalAlumnosDJO + AlumnosSense;
+            totalAlumnosSinDJO = totalAlumnosSinDJO + AlumnosSinSense;
+            <tr>
+                <th>@sucursal.nombre</th>
+                <td>@string.Format("{0:#,0}", contComerSucursalTotal)</td>
+                <td>@string.Format("{0:#,0}", contComerSucursalTotalSinTerminar)</td>
+                <td>@string.Format("{0:#,0}", contConDJO)</td>
+                <td>@string.Format("{0:#,0}", contSinDJO)</td>
+                <td>@string.Format("{0:#,0}", AlumnosSense)</td>
+                <td>@string.Format("{0:#,0}", AlumnosSinSense)</td>
+            </tr>
+        }
+        <tr>
+            <th>Total Sucursales</th>
+            <th>@string.Format("{0:#,0}", totalComercializaciones)</th>
+            <th>@string.Format("{0:#,0}", totalComercializacionesSinTerminar)</th>
+            <th>@string.Format("{0:#,0}", totalConDJO)</th>
+            <th>@string.Format("{0:#,0}", totalSinDJO)</th>
+            <th>@string.Format("{0:#,0}", totalAlumnosDJO)</th>
+            <th>@string.Format("{0:#,0}", totalAlumnosSinDJO)</th>
+        </tr>
+    </tbody>
+</table>

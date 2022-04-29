@@ -1,0 +1,41 @@
+﻿<div class="modal fade draggable-modal modalx" 
+     id="deleteConfirmModal" 
+     tabindex="-1" 
+     data-backdrop="static" 
+     data-keyboard="false"
+     role="dialog" 
+     aria-labelledby="deleteLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="row">
+                    <div class="col-md-10">
+                        <h4 class="modal-title" id="deleteLabel">Confirmar Eliminación</h4>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </div>
+                @*<i class="glyphicon glyphicon-remove-circle fa-3x pull-right text-danger" style="margin-top:-22px;"></i>*@
+            </div>
+            <div class="modal-body">    
+                <div>
+                    <h4 class="text-danger text-center">¿Está seguro que desea continuar?</h4>
+                </div>            
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-md-6 text-left">
+                        <button type="button" class="btn btn-primary" id="deleteCancel" data-dissmiss="modal">Cancelar</button>
+                    </div>
+                    <div class="col-md-6">
+                        <button type="button" class="btn btn-danger" id="deleteConfirm">Eliminar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

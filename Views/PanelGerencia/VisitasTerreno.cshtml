@@ -1,0 +1,83 @@
+﻿@model IEnumerable<SGC.Models.SalidaTerreno>
+
+<style>
+    #table-wrapper {
+        position: relative;
+    }
+
+    #table-scroll {
+        overflow: auto;
+    }
+
+    #table-wrapper table {
+        width: 100%;
+    }
+
+    #table-wrapper td {
+        white-space: nowrap;
+    }
+
+    #table-wrapper th {
+        white-space: nowrap;
+    }
+
+    th {
+        background-color: yellow;
+    }
+</style>
+
+<div id="table-wrapper">
+    <div id="table-scroll">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayName("Vendedor")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Sucursal")
+                    </th>
+                    <th>
+                        @Html.DisplayName("RUT")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Cliente")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Fecha")
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.vendedor.UserName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.sucursal.nombre)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.cliente.rut)
+                    </td>
+                    <td>
+                        @if (item.cliente != null)
+                        {
+                            @Html.DisplayFor(modelItem => item.cliente.nombreEmpresa)
+                        }
+                        @if (item.posibleCliente != null)
+                        {
+                            @Html.DisplayFor(modelItem => item.posibleCliente)
+                        }
+                    </td>
+                    <td data-sort="@item.fecha.ToString("MM/dd/yyyy")">
+                        @Html.DisplayFor(modelItem => item.fecha)
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+

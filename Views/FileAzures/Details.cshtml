@@ -1,0 +1,51 @@
+﻿@model SGC.Models.FileAzure
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>FileAzure</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.nombreArchivo)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.nombreArchivo)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.fechaSubida)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.fechaSubida)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.tamañoArchivo)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.tamañoArchivo)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Vigencia)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Vigencia)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Editar", "Edit", new { id = Model.idStorage }) |
+     @Html.ActionLink("Volver", "Index",new { },new {@class= "btn btn-default" })
+</p>

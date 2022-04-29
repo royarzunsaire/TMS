@@ -1,0 +1,91 @@
+﻿@model SGC.Models.Inventario
+
+@{
+    ViewBag.Title = "Detalles Inventario";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2 class="page-title">Detalles</h2>
+
+<div class="portlet light bordered col-md-6">
+    <div class="portlet-title">
+        <div class="caption">
+            Inventario
+        </div>
+    </div>
+    <div class="portlet-body">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Codigo, htmlAttributes: new { @class = "control-label" })
+                    <hr class="separador-ver" />
+                    @Html.EditorFor(model => model.Codigo, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", style = "border: 0" } })
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.categoria.Nombre, htmlAttributes: new { @class = "control-label" })
+                    <hr class="separador-ver" />
+                    @Html.EditorFor(model => model.categoria.Nombre, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", style = "border: 0" } })
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.FechaCreacion, htmlAttributes: new { @class = "control-label" })
+                    <hr class="separador-ver" />
+                    @Html.EditorFor(model => model.FechaCreacion, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", style = "border: 0" } })
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.FechaCompra, htmlAttributes: new { @class = "control-label" })
+                    <hr class="separador-ver" />
+                    @Html.EditorFor(model => model.FechaCompra, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", style = "border: 0" } })
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Stock, htmlAttributes: new { @class = "control-label" })
+                    <hr class="separador-ver" />
+                    @Html.EditorFor(model => model.Stock, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", style = "border: 0" } })
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.PeriodoMantencion, htmlAttributes: new { @class = "control-label" })
+                    <hr class="separador-ver" />
+                    @Html.EditorFor(model => model.PeriodoMantencion, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", style = "border: 0" } })
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    Usuario Creador
+                    <hr class="separador-ver" />
+                    @Html.EditorFor(model => model.usuarioCreador, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", style = "border: 0" } })
+                </div>
+            </div>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="form-group">
+                <div class="col-md-12">
+                    @Html.ActionLink("Volver", "Index", new { }, new { @class = "btn btn-default" })
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

@@ -1,0 +1,207 @@
+﻿@model SGC.Models.ViewModelClienteContacto
+@using SGC.Models
+@{
+    ViewBag.Title = "Nuevo";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Acceso representantes</h2>
+
+
+
+    @Html.AntiForgeryToken()
+
+<div class="form-horizontal">
+
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+    @Html.HiddenFor(model => model.cliente.idCliente)
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="form-group">
+        @Html.LabelFor(model => model.cliente.nombreEmpresa, "Nombre Empresa", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.cliente.nombreEmpresa, new { htmlAttributes = new { @class = "form-control ", @readonly = "readonly", placeholder = "ej .Constructora Cerro Castillo" } })
+            @Html.ValidationMessageFor(model => model.cliente.nombreEmpresa, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.cliente.razonSocial, "Razón social", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.cliente.razonSocial, new { htmlAttributes = new { @class = "form-control ", @readonly = "readonly", placeholder = "ej .Constructora Cerro Castillo S.A." } })
+            @Html.ValidationMessageFor(model => model.cliente.razonSocial, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.cliente.rut, "R.U.T.", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-9">
+            @Html.EditorFor(model => model.cliente.rut, new { htmlAttributes = new { @class = "form-control rut", @readonly = "readonly", placeholder = "99999999" } })
+            @Html.ValidationMessageFor(model => model.cliente.rut, "", new { @class = "text-danger" })
+        </div>
+
+    </div>
+   
+
+    <div class="form-horizontal">
+        <div class="form-group ">
+            <h4 class="col-md-2">Listado Acceso </h4>
+            <div class="col-md-2">
+                <div class="btn btn-primary btn-large glyphicon glyphicon-plus"
+                     onclick="return loadModal('myModal', 'myModalContent', '/Contacto/ModalCreateConUsuario', {idCliente:'@Model.cliente.idCliente'}) ;" alt="Acceso representante"></div>
+
+           </div>
+        </div>
+        
+
+        <table class="table table-striped table-bordered table-hover dt-responsive" id="sys-table-special" cellspacing="0">
+            <thead>
+                <tr>
+                    <th class="col-id">Nombre</th>
+                    <th class="col-name">Usuario</th>
+                    <th class="col-per">Usuario Creador</th>
+                    <th class="col-per">Fecha Creación</th>
+                    <th class="col-per">Estado</th>
+                    <th class="col-per">Acciones</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @{ var count = 0; }
+                @foreach (clienteContactos_result cc in Model.clienteContactos)
+                {
+                    count++;
+                <tr>
+                    @using(Html.BeginForm("Delete","ClienteContacto",FormMethod.Get,new { }) )
+                    {
+                        <td>@Html.DisplayFor(modelItem => cc._Contacto.nombreCompleto)</td>
+                    <td>@Html.DisplayFor(modelItem => cc._Contacto.correo)</td>
+                    <td>@Html.DisplayFor(modelItem => cc._ClienteContacto.usuarioCreador)</td>
+                    <td>@Html.DisplayFor(modelItem => cc._ClienteContacto.fechaCreacion)</td>
+                    <td>
+                        @Html.CheckBoxFor(modelItem => cc._ClienteContacto.vigencia, new { @class = "check", @id = "icheck_" + count, @name = "icheck_" + count })
+                        @Html.HiddenFor(modelItem => cc._ClienteContacto.idCliente, new { @id = "cliente_" + count })
+                        @Html.HiddenFor(modelItem => cc._ClienteContacto.idContacto, new { @id = "contacto_" + count })
+                       
+                    </td>
+                    <td><div class="btn bt-large btn-danger glyphicon glyphicon-trash" id="delete_@count"></div></td>
+                    }
+                </tr>
+               
+                }
+
+
+
+            </tbody>
+        </table>
+
+    </div>
+
+
+</div>
+
+
+<div>
+    @Html.ActionLink("Volver", "","Cliente")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+<script>
+    $(".check").on("change", function (e) {
+        e.preventDefault;
+            var state =$(this).val();
+            var num = $(this).attr("id").split("_")[1];
+            var idCliente = $("#cliente_" + num).val();
+            var idContacto = $("#contacto_" + num).val();
+            debugger;
+            console.log("idCliente:" + idCliente + ",idcontacto:" + idContacto+".check:"+state)
+            Swal.fire({
+                title: 'Permisos',
+                text: !$('#icheck_' + num).val ? "¿Desea quitar permiso a este usuario para que pueda acceder a su información?" : "¿Desea otorgar permiso a este usuario para que pueda acceder a su información?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: !$('#icheck_' + num).val ? 'Si, quitar permiso' : 'Si, otorgar permiso'
+            }).then((result) => {
+                if (result.value) {
+
+                    $.ajax({
+                        url: "/ClienteContacto/updateAcceso",
+                        method: "POST",  // post
+                        headers: { "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val() },
+                        data: { "idCliente": idCliente, "idContacto": idContacto, vigencia: $(this).val() },
+                        success: function (data, textStatus, jqXHR) {
+                            toastr.success("Se otorgo el permiso de forma correcta")
+                        }
+                        ,
+                        error: function (error) {
+                            $('#myModal').modal('hide');
+                            playAudio('fail');
+                            toastr.error("Hubo un error al crear el usuario error:" + error.responseText, "Error!")
+                        },
+                    });
+
+                } 
+            })
+
+    });
+    $(".glyphicon-trash").on("click", function (e) {
+        e.preventDefault;
+        var state = $(this).val();
+        var num = $(this).attr("id").split("_")[1];
+        var idCliente = $("#cliente_" + num).val();
+        var idContacto = $("#contacto_" + num).val();
+        debugger;
+        console.log("idCliente:" + idCliente + ",idcontacto:" + idContacto )
+        Swal.fire({
+            title: 'Permisos',
+            text: '¿Esta seguro que desea eliminar a este contacto?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si, eliminar contacto'
+        }).then((result) => {
+            if (result.value) {
+
+                $.ajax({
+                    url: "/ClienteContacto/Delete",
+                    method: "GET",  // post
+                    headers: { "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val() },
+                    data: { "idCliente": idCliente, "idContacto": idContacto },
+                    success: function (data, textStatus, jqXHR) {
+                        toastr.success("Se elimino de forma correcta el contacto")
+                    }
+                    ,
+                    error: function (error) {
+                        $('#myModal').modal('hide');
+                        playAudio('fail');
+                        toastr.error("Hubo un error al crear el usuario error:" + error.responseText, "Error!")
+                    },
+                });
+
+            }
+        })
+
+    });
+</script>
+
+
+<div id='myModal' class='modal'>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body" id='myModalContent'>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+           
+      
+   

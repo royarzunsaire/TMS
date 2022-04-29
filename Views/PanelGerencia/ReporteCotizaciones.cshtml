@@ -1,0 +1,159 @@
+﻿@using SGC.Models
+@model IEnumerable<SGC.Models.Cotizacion_R13>
+@{
+    InsecapContext db = new InsecapContext();
+    List<Comercializacion> comercializacions = db.Comercializacion.Where(x => x.softDelete == false).ToList();
+
+}
+<style>
+    #table-wrapper {
+        position: relative;
+    }
+
+    #table-scroll {
+        overflow: auto;
+    }
+
+    #table-wrapper table {
+        width: 100%;
+    }
+
+    #table-wrapper td {
+        white-space: nowrap;
+    }
+
+    #table-wrapper th {
+        white-space: nowrap;
+    }
+
+    th {
+        background-color: yellow;
+    }
+</style>
+
+<div id="table-wrapper">
+    <div id="table-scroll">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayName("Código Comercialización")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Curso")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Nombre de la Empresa")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Fecha de Inicio")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Fecha de Fin")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Fecha de Creación")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Valor Total")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Comercializada")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Tipo")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Tipo Ejecución")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Ejecutivo")
+                    </th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Cotizacion_R13 cotizacion in Model)
+                {
+                    var curso = "";
+                    var comercializada = comercializacions
+                            .Where(c => c.cotizacion.idCotizacion_R13 == cotizacion.idCotizacion_R13)
+                            .Any() ? "Si" : "No";
+
+                    var tipoEjecucion = cotizacion.curso != null ? cotizacion.curso.tipoEjecucion.ToString() : " ";
+                    if (cotizacion.tipoCurso != "Duplicado Credencial" && cotizacion.tipoCurso != "Arriendo de Sala" && cotizacion.tipoCurso != "Tramitación Licencia")
+                    {
+                        curso = cotizacion.curso.nombreCurso;
+                    }
+                    else
+                    {
+                        curso = cotizacion.tipoCurso;
+
+                    }
+
+                    string costo = "0";
+
+                    if (cotizacion.isValorUnico)
+                    {
+                        costo = string.Format("{0:C}", cotizacion.valorUnico);
+                    }
+                    else
+                    {
+                        if (cotizacion.costo != null && cotizacion.costo.Count() != 0)
+                        {
+                            costo = string.Format("{0:C}", cotizacion.costo.Where(x => x.idCotizacion == cotizacion.idCotizacion_R13).Select(y => y.total).Sum());
+                        }
+
+
+                    }
+
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => cotizacion.codigoCotizacion)
+                        </td>
+                        <td>
+                            <label>@curso</label>
+                         
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => cotizacion.nombreEmpresa)
+                        </td>
+                        <td>
+                            <label>@String.Format("{0:dd/MM/yyyy}", cotizacion.fechaInicio)</label>
+                           
+                        </td>
+                        <td>
+                            <label>@String.Format("{0:dd/MM/yyyy}", cotizacion.fechaTermino)</label>
+                           
+                        </td>
+                        <td>
+                            <label>@String.Format("{0:dd/MM/yyyy}", cotizacion.fechaCreacion)</label>
+                         
+                        </td>
+                        <td>
+                            <label>@costo</label>
+                        </td>
+                        <td>
+                            <label>@comercializada</label>
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => cotizacion.tipoCurso)
+                        </td>
+                        <td>
+                            <label>@tipoEjecucion</label>
+                          
+                        </td>
+                        <td>
+                            <label>@cotizacion.usuarioCreador.nombreCompleto</label>
+                          
+                        </td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+

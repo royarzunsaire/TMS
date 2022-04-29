@@ -1,0 +1,84 @@
+﻿@model IEnumerable<SGC.Models.ParametrosMoodle>
+
+@{
+    ViewBag.Title = "Administrar Parametros Moodle";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2 class="page-title">Administrar Parametros Moodle</h2>
+
+<div class="row">
+	<div class="col-md-12">
+		<div class="portlet box blue-dark">
+			<div class="portlet-title">
+                <div class="caption">
+                    Parametros Moodle
+                </div>
+				<div class="tools">
+					<a href="javascript:;" class="collapse"> </a>
+					<a href="javascript:;" class="fullscreen"> </a>
+				</div>
+				<div class="actions">
+					<a href="@Url.Action("Create", "ParametrosMoodles") " class="btn btn-circle btn-sm btn-default btn-group-lg" style="margin-right:10px; margin-left:10px;">
+						<i class="fa fa-plus-circle"></i> Nuevo
+					</a>
+				</div>
+			</div>
+			<div class="portlet-body">
+				<div class="row">
+					<div class="col-md-12">
+						<table class="table table-striped table-bordered table-hover dt-responsive dataTable" id="sys-table" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.username)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.urlMoodle)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.service)
+                                    </th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+							<tbody>
+								@foreach (var item in Model)
+								{
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.username)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.urlMoodle)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.service)
+                                    </td>
+                                    <td class="text-center">
+                                        @using (Html.BeginForm("Delete", "ParametrosMoodles", FormMethod.Post, new { @id = "notificationForm_" + @item.ID }))
+                                        {
+                                        <div class="input-group-btn">
+                                            @Html.ActionLink(" ", "Test", new { id = item.ID }, htmlAttributes: new { @class = "btn btn-default btn-sm glyphicon glyphicon-file", @datatoggle = "tooltip", @title = "test" })
+                                            @Html.ActionLink(" ", "Test2", new { id = item.ID }, htmlAttributes: new { @class = "btn btn-default btn-sm glyphicon glyphicon-file", @datatoggle = "tooltip", @title = "test2" })
+                                            @Html.ActionLink(" ", "Edit", new { id = item.ID }, htmlAttributes: new { @class = "btn btn-warning btn-sm glyphicon glyphicon-edit", @datatoggle = "tooltip", @title = "Editar" })
+                                            @Html.ActionLink(" ", "Details", new { id = item.ID }, htmlAttributes: new { @class = "btn btn-info btn-sm glyphicon glyphicon-list", @datatoggle = "tooltip", @title = "Detalles" })
+                                            @Html.AntiForgeryToken()
+                                            <a class="btn btn-danger btn-sm glyphicon glyphicon-trash" href="javascript:confirmDelete('Delete','@(item.ID)','ParametrosMoodles')" title="Eliminar"></a>
+                                        </div>
+                                        }
+                                    </td>
+                                </tr>
+								}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+@section topLevel{
+	@{Html.RenderPartial("_RenderConfirm.Modal"); }
+}

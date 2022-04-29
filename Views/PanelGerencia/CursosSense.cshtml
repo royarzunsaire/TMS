@@ -1,0 +1,79 @@
+﻿@model List<SGC.Models.ViewModelPostCurso>
+@using SGC.Models;
+@{
+    var data = Model;
+    var sucursales = (List<Sucursal>)ViewBag.sucursales;
+    var totalComercializaciones = data.Count();
+    var totalConSense = data.Where(x => x.comercializacion.cotizacion.codigoSence != null && x.comercializacion.cotizacion.codigoSence != "" && x.comercializacion.cotizacion.tieneCodigoSence != "on").Count();
+    var totalSinSense = totalComercializaciones - totalConSense;
+    var totalAlumnosSense = 0;
+    var totalAlumnosSinSense = 0;
+}
+
+<style>
+    #table-wrapper {position: relative;}
+    #table-scroll {overflow: auto;}
+    #table-wrapper table {width: 100%;}
+    #table-wrapper td {white-space: nowrap;}
+    #table-wrapper th {white-space: nowrap;}
+    th {background-color: yellow;}
+</style>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Sucursal</th>
+            <th>Comercializaciones</th>
+            <th>Con Sense</th>
+            <th>Sin Sense</th>
+            <th>Alumnos en Cursos Con Sense</th>
+            <th>Alumnos en Cursos Sin Sense</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var sucursal in sucursales)
+        {
+            var AlumnosSense = 0;
+            var AlumnosSinSense = 0;
+            int contadorComercializaciones = data.Where(x => x.comercializacion.cotizacion.sucursal.idSucursal == sucursal.idSucursal).Count();
+            int contadorConSense = data.Where(x => x.comercializacion.cotizacion.sucursal.idSucursal == sucursal.idSucursal)
+                .Where(x => x.comercializacion.cotizacion.codigoSence != null && x.comercializacion.cotizacion.codigoSence != "" && x.comercializacion.cotizacion.tieneCodigoSence != "on").Count();
+            int contadorSinSense = contadorComercializaciones - contadorConSense;
+            if (contadorComercializaciones == 0)
+            {
+                continue;
+            }
+
+            foreach (ViewModelPostCurso comercializacion in data.Where(x => x.comercializacion.cotizacion.sucursal.idSucursal == sucursal.idSucursal))
+            {
+                foreach (Participante participante in comercializacion.comercializacion.participantes.Where(x => x.comercializacion.cotizacion.codigoSence != null && x.comercializacion.cotizacion.codigoSence != "" && x.comercializacion.cotizacion.tieneCodigoSence != "on").ToList())
+                {
+                    AlumnosSense++;
+                }
+                foreach (Participante participante in comercializacion.comercializacion.participantes.Where(x => x.comercializacion.cotizacion.codigoSence == null || x.comercializacion.cotizacion.codigoSence == "" || x.comercializacion.cotizacion.tieneCodigoSence == "on").ToList())
+                {
+                    AlumnosSinSense++;
+                }
+            }
+            totalAlumnosSense = totalAlumnosSense + AlumnosSense;
+            totalAlumnosSinSense = totalAlumnosSinSense + AlumnosSinSense;
+
+            <tr>
+                <td>@sucursal.nombre</td>
+                <td>@string.Format("{0:#,0}", contadorComercializaciones)</td>
+                <td>@string.Format("{0:#,0}", contadorConSense)</td>
+                <td>@string.Format("{0:#,0}", contadorSinSense)</td>
+                <td>@string.Format("{0:#,0}", AlumnosSense)</td>
+                <td>@string.Format("{0:#,0}", AlumnosSinSense)</td>
+            </tr>
+        }
+        <tr>
+            <th>Total</th>
+            <th>@string.Format("{0:#,0}", totalComercializaciones)</th>
+            <th>@string.Format("{0:#,0}", totalConSense)</th>
+            <th>@string.Format("{0:#,0}", totalSinSense)</th>
+            <th>@string.Format("{0:#,0}", totalAlumnosSense)</th>
+            <th>@string.Format("{0:#,0}", totalAlumnosSinSense)</th>
+        </tr>
+    </tbody>
+</table>

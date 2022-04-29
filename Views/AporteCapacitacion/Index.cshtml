@@ -1,0 +1,103 @@
+﻿@model IEnumerable<SGC.Models.AporteCapacitacion>
+
+@{
+    ViewBag.Title = "Aportes de Capacitación";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="page-title">
+    <div class="row">
+        <div class="col-md-12">
+            Administrar Aportes de Capacitación
+        </div>
+    </div>
+</div>
+
+@*<div class="row" style="margin-bottom:15px; margin-top:15px">
+    <div class="col-md-3">
+        <button type="button" id="btnPresencial" class="btn btn-info btn-circle" style="width:100%">Presencial</button>
+    </div>
+    <div class="col-md-3">
+        <button type="button" id="btnSincrono" class="btn btn-info btn-circle" style="width:100%">Elerning Síncrono</button>
+    </div>
+    <div class="col-md-3">
+        <button type="button" id="btnAsincrono" class="btn btn-info btn-circle" style="width:100%">Elerning Asíncrono</button>
+    </div>
+    <div class="col-md-3">
+        <button type="button" id="btnRecertificacion" class="btn btn-info btn-circle" style="width:100%">Recertificación</button>
+    </div>
+</div>*@
+
+<div class="row" id="divPresencial">
+    <div class="col-md-12">
+        <div class="portlet box blue-dark">
+            <div class="portlet-title">
+                <div class="caption">
+                    Aportes de Capacitación
+                </div>
+                <div class="tools">
+                    <a href="javascript:;" class="collapse"> </a>
+                    <a href="javascript:;" class="fullscreen"> </a>
+                </div>
+                <div class="actions">
+                    <a href="@Url.Action("Create", "AporteCapacitacion")" class="btn btn-circle btn-sm btn-default btn-group-lg" style="margin-right:10px; margin-left:10px;">
+                        <i class="fa fa-plus-circle"></i> Nuevo
+                    </a>
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <table class="table table-striped table-bordered table-hover dt-responsive dataTable" id="sys-table" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.nombre)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.tipo)
+                                    </th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.nombre)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.tipo)
+                                        </td>
+                                        <td class="text-center">
+                                            @using (Html.BeginForm("Delete", "AporteCapacitacion", FormMethod.Post, new { @id = "notificationForm_" + @item.idAporteCapacitacion }))
+                                            {
+                                                <div class="input-group-btn">
+                                                    @Html.AntiForgeryToken()
+                                                    <a class="btn btn-danger btn-sm glyphicon glyphicon-trash" href="javascript:confirmDelete('Delete','@(item.idAporteCapacitacion)','AporteCapacitacion')" title="Eliminar"></a>
+                                                </div>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section topLevel{
+    @{Html.RenderPartial("_RenderConfirm.Modal"); }
+}
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+        });
+    </script>    
+}

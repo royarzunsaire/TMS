@@ -1,0 +1,123 @@
+﻿@model List<SGC.Models.R43>
+@using System.Collections.Generic
+@using SGC.Models
+@{
+
+    List<PreguntasFormulario> preguntas = ViewBag.preguntas;
+    List<double> puntos = new List<double>(new double[Model.Count()]);
+    List<double> puntajeMax = new List<double>(new double[Model.Count()]);
+    int i = 0;
+    int p = 0;
+}
+
+
+
+                        <table   cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>N°</th>
+                                    <th>R43</th>
+                                    @foreach (var itemCliente in Model)
+                                    {
+                                        <th>@itemCliente.cliente.nombreEmpresa</th>
+                                    }
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var pregunta in preguntas)
+                                {
+                                    i = 0;
+                                    p++;
+                                <tr>
+                                    <td>
+                                        @p
+                                    </td>
+                                    <td>
+                                        @pregunta.pregunta
+                                    </td>
+
+                                    @foreach (var r43 in Model)
+                                    {
+                                        <td>
+                                            @if (pregunta.tipo == SGC.Models.TipoPregunta.Abierta)
+                                            {
+                                                if (r43.encuesta.respuestas.Where(r => r.pregunta.idPreguntasFormulario == pregunta.idPreguntasFormulario).FirstOrDefault() != null)
+                                                {
+                                                    @r43.encuesta.respuestas.Where(r => r.pregunta.idPreguntasFormulario == pregunta.idPreguntasFormulario).FirstOrDefault().respuesta
+                                                }
+
+                                            }
+                                            @if (pregunta.tipo == SGC.Models.TipoPregunta.Corta)
+                                            {
+                                                if (r43.encuesta.respuestas.Where(r => r.pregunta.idPreguntasFormulario == pregunta.idPreguntasFormulario).FirstOrDefault() != null)
+                                                {
+                                                    @r43.encuesta.respuestas.Where(r => r.pregunta.idPreguntasFormulario == pregunta.idPreguntasFormulario).FirstOrDefault().respuesta
+                                                }
+
+                                            }
+                                            @if (pregunta.tipo == SGC.Models.TipoPregunta.Alternativa)
+                                            {
+
+
+
+                                                foreach (var respuesta in pregunta.respuestaFormulario)
+                                                {
+
+                                                    if (respuesta != null)
+                                                    {
+                                                        if (r43.encuesta.respuestas.Where(r => r.pregunta.idPreguntasFormulario == pregunta.idPreguntasFormulario).FirstOrDefault().respuestaFormulario != null)
+                                                        {
+                                                            if (r43.encuesta.respuestas.Where(r => r.pregunta.idPreguntasFormulario == pregunta.idPreguntasFormulario).Where(r => r.respuestaFormulario.idRespuestasFormulario == respuesta.idRespuestasFormulario).FirstOrDefault() != null)
+                                                            {
+
+
+                                                                puntos[i] = puntos.ElementAt(i) + respuesta.puntaje;
+                                                                puntajeMax[i] = puntajeMax.ElementAt(i) + respuesta.preguntasFormulario.respuestaFormulario.Max(x => x.puntaje);
+
+                                                                @respuesta.respuesta
+
+
+                                                            }
+                                                            else
+                                                            {
+
+                                                            }
+
+                                                        }
+
+
+
+
+
+                                                    }
+
+                                                }
+
+
+
+                                            }
+                                        </td>
+                                        i++;
+                                    }
+
+
+
+
+                                </tr>
+                                }
+                                <tr>
+                                    <th colspan="2">Calificacion</th>
+                                    @for (int j = 0; j < Model.Count(); j++)
+                                    {
+                                        var porcentaje = (puntos[j] * 100) /  puntajeMax[j];
+                                <th>
+                                    @puntos[j] (@porcentaje % )
+                                </th>
+                                        
+                                    }
+                                </tr>
+                            </tbody>
+                        </table>
+                
+              

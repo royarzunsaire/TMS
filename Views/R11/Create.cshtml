@@ -1,0 +1,549 @@
+﻿@model SGC.Models.ViewModelR11
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    ViewBag.Title = "Nuevo";
+}
+<style>
+
+
+    .modal {
+        text-align: center;
+        padding: 0 !important;
+    }
+
+        .modal:before {
+            content: '';
+            display: inline-block;
+            height: 100%;
+            vertical-align: middle;
+            margin-right: -4px;
+        }
+
+    .modal-dialog {
+        display: inline-block;
+        text-align: left;
+        vertical-align: middle;
+    }
+</style>
+
+@{ 
+    List<SelectListItem> listItemCategoria = new List<SelectListItem>();
+    if(Model.categoriaR11 != null)
+    {
+        foreach (var item in Model.categoriaR11)
+        {
+            listItemCategoria.Add(new SelectListItem
+            {
+                Text = item.categoria,
+                Value = item.idCategoria.ToString()
+            });
+        }
+    }
+
+
+}
+    <h2>Crear R11</h2>
+
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>R11</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="form-group">
+            <div class="col-md-6">
+                @Html.HiddenFor(model => model.curso[0].idCurso)
+                @Html.LabelFor(model => model.curso[0].nombreCurso)
+
+                @Html.EditorFor(model => model.curso[0].nombreCurso, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+                @Html.ValidationMessageFor(model => model.curso[0].nombreCurso, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-6">
+                @Html.LabelFor(model => Model.categoriaR11.First().categoria)
+
+                @Html.DropDownListFor(x => Model.categoriaR11[0].categoria, listItemCategoria, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.categoriaR11[0].categoria, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="col-md-12">
+            <h2>Descripción de Contenido</h2>
+            <hr />
+        </div>
+        <div class="form-group">
+            <div class="col-md-12">
+                @Html.LabelFor(model => model.r11Entity.fundamentacionTecnica)
+                @Html.TextAreaFor(model => model.r11Entity.fundamentacionTecnica, new { @class = "form-control", rows = "3" })
+                @Html.ValidationMessageFor(model => model.r11Entity.fundamentacionTecnica, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-12">
+                @Html.LabelFor(model => model.r11Entity.objetivoGeneral)
+                @Html.TextAreaFor(model => model.r11Entity.objetivoGeneral, new { @class = "form-control", rows = "3" })
+
+                @Html.ValidationMessageFor(model => model.r11Entity.objetivoGeneral, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-12">
+                @Html.LabelFor(model => model.r11Entity.poblacionObjetivo)
+                @Html.TextAreaFor(model => model.r11Entity.poblacionObjetivo, new { @class = "form-control", rows = "3" })
+
+                @Html.ValidationMessageFor(model => model.r11Entity.poblacionObjetivo, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-12">
+                @Html.LabelFor(model => model.r11Entity.requisitosIngreso)
+
+                @Html.TextAreaFor(model => model.r11Entity.requisitosIngreso, new { @class = "form-control", rows = "3" })
+
+                @Html.ValidationMessageFor(model => model.r11Entity.requisitosIngreso, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-12">
+                @Html.LabelFor(model => model.r11Entity.tecnicaMetodologica)
+                @Html.TextAreaFor(model => model.r11Entity.tecnicaMetodologica, new { @class = "form-control", rows = "3" })
+
+                @Html.ValidationMessageFor(model => model.r11Entity.tecnicaMetodologica, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-12">
+                @Html.LabelFor(model => model.r11Entity.materialDidactico)
+                @Html.TextAreaFor(model => model.r11Entity.materialDidactico, new { @class = "form-control", rows = "3" })
+
+                @Html.ValidationMessageFor(model => model.r11Entity.materialDidactico, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-12">
+                @Html.LabelFor(model => model.r11Entity.materialEntregable)
+
+                @Html.TextAreaFor(model => model.r11Entity.materialEntregable, new { @class = "form-control", rows = "3" })
+
+                @Html.ValidationMessageFor(model => model.r11Entity.materialEntregable, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-12">
+                @Html.LabelFor(model => model.r11Entity.requisitosReglamentarios)
+
+                @Html.TextAreaFor(model => model.r11Entity.requisitosReglamentarios, new { @class = "form-control", rows = "3" })
+
+                @Html.ValidationMessageFor(model => model.r11Entity.requisitosReglamentarios, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-12">
+                @Html.ValidationMessage("contenidoEspecifico", "", new { @class = "text-danger" })
+                <table id="idTableContenidoEspecifico" class="table table-striped table-bordered table-hover dt-responsive">
+                    <thead>
+                        <tr>
+                            <th> Contenido Especifico</th>
+                            <th>Desarrollo</th>
+                            <th>Horas T</th>
+                            <th>Horas P</th>
+                            <th>Accion</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.contenidoEspecifico != null)
+                        {
+                            var i = 0;
+                            foreach (var itemContenidoEspecifico in Model.contenidoEspecifico)
+                            {
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => itemContenidoEspecifico.nombre)
+                                        @Html.HiddenFor(model => model.contenidoEspecifico[i].nombre)
+                                    </td>
+                                    <td>
+                                        @{string[] listItemBreakLine = Model.itemContenidoEspecificoR11.ToList()[i].contenidoEspecifico.Split(
+                                                      new[] { "\r\n", "\r", "\n" },
+                                                      StringSplitOptions.None
+                                                  );
+                                        }
+                                        @foreach (string itemBreakLine in listItemBreakLine)
+                                        {
+                                            @Html.DisplayFor(modelItem => itemBreakLine)
+                                            <br />
+
+                                        }
+                                        @Html.HiddenFor(model => model.itemContenidoEspecificoR11[i].contenidoEspecifico)
+
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => itemContenidoEspecifico.horasT)
+                                        @Html.HiddenFor(model => model.contenidoEspecifico[i].horasT)
+
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => itemContenidoEspecifico.horasP)
+                                        @Html.HiddenFor(model => model.contenidoEspecifico[i].horasP)
+
+                                    </td>
+
+                                    <td>
+                                        <input type="button" onclick="Remove(this)" value="Quitar" class="btn btn-primary" />
+                                    </td>
+
+                                </tr>
+                                i++;
+                            }
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td width="30%">
+                                <textarea type="text" id="idContenidoEspecifico" class="form-control"></textarea>
+                                <p style="color:red" id="idTextValidContenidoEspecifico"></p>
+                            </td>
+                            <td width="40%">
+                                <textarea type="text" id="idDesarrollo" class="form-control"></textarea>
+                                <p style="color:red" id="idTextValidDesarrollo"></p>
+                            </td>
+                            <td width="10%">
+                                <input type="number" id="idHorasT" class="form-control" />
+                                <p style="color:red" id="idTextValidHorasT"></p>
+                            </td>
+                            <td width="10%">
+                                <input type="number" id="idHorasP" class="form-control" />
+                                <p style="color:red" id="idTextValidHorasP"></p>
+                            </td>
+
+                            <td width="5%"><input type="button" id="idButtonAddRow" value="Agregar" class="btn btn-primary" /></td>
+                        </tr>
+                        <tr><p id="idTextValidContenido" style="color:red"></p></tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-12">
+                <table class="table table-striped table-bordered table-hover dt-responsive">
+                    <thead>
+                        <tr>
+                            <th>Nivel de escolaridad</th>
+                            <th>Años de experiencia minima</th>
+                            <th>Marcar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            @Html.HiddenFor(model => model.escolaridadR11[0].nivel)
+                            <td>Nivel de Enseñanza Media</td>
+                            @Html.HiddenFor(model => model.escolaridadR11[0].experiencia)
+                            <td>Con 10 años de Experiencia</td>
+                            <td>@Html.CheckBoxFor(x => x.escolaridadR11[0].marca)</td>
+                        </tr>
+                        <tr>
+                            @Html.HiddenFor(model => model.escolaridadR11[1].nivel)
+                            <td>Nivel Técnico (Liceo Industrial)</td>
+                            @Html.HiddenFor(model => model.escolaridadR11[1].experiencia)
+                            <td>Con 7 años de Experiencia</td>
+                            <td>@Html.CheckBoxFor(x => x.escolaridadR11[1].marca)</td>
+                        </tr>
+                        <tr>
+                            @Html.HiddenFor(model => model.escolaridadR11[2].nivel)
+                            <td>Nivel Técnico Universitario</td>
+                            @Html.HiddenFor(model => model.escolaridadR11[2].experiencia)
+                            <td>Con 5 años de Experiencia</td>
+                            <td>@Html.CheckBoxFor(x => x.escolaridadR11[2].marca)</td>
+                        </tr>
+                        <tr>
+                            @Html.HiddenFor(model => model.escolaridadR11[3].nivel)
+                            <td>Nivel Universitario o Superior</td>
+                            @Html.HiddenFor(model => model.escolaridadR11[3].nivel)
+                            <td>Con 3 años de Experiencia</td>
+                            <td>@Html.CheckBoxFor(x => x.escolaridadR11[3].marca)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            @*<div class="col-md-6">
+                @Html.LabelFor(model => model.r11Entity.nombreModulo)
+
+                @Html.EditorFor(model => model.r11Entity.nombreModulo, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.r11Entity.nombreModulo, "", new { @class = "text-danger" })
+            </div>*@
+            <div class="col-md-6">
+                @Html.Label("Relator")
+                @Html.DropDownListFor(model => model.r11Entity.relator.idRelator,(SelectList)ViewBag.relatores, "", htmlAttributes: new { @class = "form-control select2" })
+                @Html.ValidationMessageFor(model => model.r11Entity.relator.idRelator, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-3">
+                @Html.LabelFor(model => model.r11Entity.cantPersona)
+
+                @Html.EditorFor(model => model.r11Entity.cantPersona, new { htmlAttributes = new { @class = "form-control", @type = "number", @min = "0", @step = "1" } })
+                @Html.ValidationMessageFor(model => model.r11Entity.cantPersona, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-3">
+                @Html.LabelFor(model => model.r11Entity.horasTeoricas)
+
+                @Html.EditorFor(model => model.r11Entity.horasTeoricas, new { htmlAttributes = new { @class = "form-control", @min = "0", @step = "1", @readonly = "readonly" } })
+                @Html.ValidationMessageFor(model => model.r11Entity.horasTeoricas, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-3">
+                @Html.LabelFor(model => model.r11Entity.horasPracticas)
+
+                @Html.EditorFor(model => model.r11Entity.horasPracticas, new { htmlAttributes = new { @class = "form-control", @min = "0", @step = "1" , @readonly = "readonly" } })
+                @Html.ValidationMessageFor(model => model.r11Entity.horasPracticas, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-3">
+                @Html.LabelFor(model => model.r11Entity.mesesDuracionVigencia)
+
+                @Html.EditorFor(model => model.r11Entity.mesesDuracionVigencia, new { htmlAttributes = new { @class = "form-control", @type = "number", @min = "0", @step = "1", @disabled = "disabled" } })
+                @Html.ValidationMessageFor(model => model.r11Entity.mesesDuracionVigencia, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+
+            <div class="col-md-6">
+                @Html.LabelFor(model => model.r11Entity.fechaCaducidad)
+
+                @Html.EditorFor(model => model.r11Entity.fechaCaducidad, new { htmlAttributes = new { @class = "form-control datepicker", @disabled = "disabled" } })
+                @Html.ValidationMessageFor(model => model.r11Entity.fechaCaducidad, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-6">
+                <input id="idCheckBoxCodigoSENCE" name="cotizacion.tieneCodigoSence" type="checkbox" class="form-control" /> <label style="margin-bottom:4px; padding-top: 0px" class="control-label">Tiene Codigo SENCE:</label><br />
+                @Html.EditorFor(model => model.r11Entity.codigoSence, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+                @Html.ValidationMessageFor(model => model.r11Entity.codigoSence, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-12">
+                @Html.LabelFor(model => model.r11Entity.requisitosTecnicos)
+                @Html.TextAreaFor(model => model.r11Entity.requisitosTecnicos, new { @class = "form-control", rows = "3" })
+
+                @Html.ValidationMessageFor(model => model.r11Entity.requisitosTecnicos, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-12">
+                @Html.LabelFor(model => model.r11Entity.requisitosTecnicosRelatores)
+                @Html.TextAreaFor(model => model.r11Entity.requisitosTecnicosRelatores, new { @class = "form-control", rows = "3" })
+
+                @Html.ValidationMessageFor(model => model.r11Entity.requisitosTecnicosRelatores, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-12">
+                <!--<input type="submit" value="Cancelar" class="btn btn-danger" />-->
+                @Html.ActionLink("Volver", "Index", "Curso", new { }, new { @class = "btn btn-default" })
+
+                <button class="btn btn-primary" style="float:right" id="idButtonModal" type="button">Crear</button>
+
+                <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" id="idModalConfirmR11Crear">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title" id="myModalLabel">Confirmar</h4>
+                            </div>
+                            <div class="modal-body">
+                                <p>¿Esta seguro que desea confirmar la creación del R11?</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary">Aceptar</button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    }
+
+
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+    }
+<script type="text/javascript">
+    var vl_global_horas_t = 0;
+    var vl_global_horas_p = 0;
+
+        @if (Model.contenidoEspecifico != null)
+        {
+            <text>var contadorGeneral = 1
+
+                vl_global_horas_p = @Model.contenidoEspecifico.Select(y => y.horasP).Sum();
+                vl_global_horas_t = @Model.contenidoEspecifico.Select(y => y.horasT).Sum();
+
+            </text>
+
+
+        }
+        else
+        {
+           <text> var contadorGeneral = 0;
+
+                vl_global_horas_p = 0;
+                vl_global_horas_t = 0;
+            </text>
+        }
+        $("#idButtonModal").click(function () {
+            console.log(contadorGeneral);
+            if (contadorGeneral == 0) {
+                $('#idTextValidContenido').html('Debe ingresar al menos un contenido');
+            } else {
+                $('#idTextValidContenido').html('');
+                $('#idModalConfirmR11Crear').modal('show');
+            }
+        });
+
+        $("body").on("click", "#idButtonAddRow", function () {
+            var contenidoEspecifico = $("#idContenidoEspecifico");
+            var Desarrollo = $("#idDesarrollo");
+            var HorasT = $("#idHorasT");
+            var HorasP = $("#idHorasP");
+            var is_valid = true;
+            if (contenidoEspecifico.val() == null || contenidoEspecifico.val() == '') {
+                is_valid = false;
+                $("#idTextValidContenidoEspecifico").html('Este campo es requerido');
+            } else {
+                $("#idTextValidContenidoEspecifico").html('');
+
+            }
+            if (Desarrollo.val() == null || Desarrollo.val() == '') {
+                is_valid = false;
+                $("#idTextValidDesarrollo").html('Este campo es requerido');
+            } else {
+                $("#idTextValidDesarrollo").html('');
+
+            }
+            if (HorasT.val() == null || HorasT.val() == '') {
+                is_valid = false;
+                $("#idTextValidHorasT").html('Este campo es requerido');
+            } else {
+                $("#idTextValidHorasT").html('');
+
+            }
+            if (HorasP.val() == null || HorasP.val() == '') {
+                is_valid = false;
+                $("#idTextValidHorasP").html('Este campo es requerido');
+            } else {
+                $("#idTextValidHorasP").html('');
+
+            }
+
+
+            if (!is_valid) {
+                return;
+
+            }
+            contadorGeneral++;
+            //Get the reference of the Table's TBODY element.
+            var tBody = $("#idTableContenidoEspecifico > TBODY")[0];
+
+            //Add Row.
+            var row = tBody.insertRow(-1);
+            var numIndexList = row.rowIndex - 1;
+            //Add cell.
+            var cell = $(row.insertCell(-1));
+            cell.html('<input  value="' + contenidoEspecifico.val() + '" name="contenidoEspecifico[' + numIndexList + '].nombre" type="hidden"/>' + contenidoEspecifico.val().replace(/(\r\n|\n|\r)/gm, "<br>"));
+            cell = $(row.insertCell(-1));
+            cell.html('<input  value="' + Desarrollo.val() + '"  name="itemContenidoEspecificoR11[' + numIndexList + '].contenidoEspecifico" type="hidden"/>' + Desarrollo.val().replace(/(\r\n|\n|\r)/gm, "<br>"));
+            cell = $(row.insertCell(-1));
+            cell.html('<input  value="' + HorasT.val().replace(".", ",") + '" name="contenidoEspecifico[' + numIndexList + '].horasT" type="hidden"/>' + HorasT.val().replace(".", ","));
+            cell = $(row.insertCell(-1));
+            cell.html('<input  value="' + HorasP.val().replace(".", ",") + '" name="contenidoEspecifico[' + numIndexList + '].horasP" type="hidden"/>' + HorasP.val().replace(".", ","));
+            
+            vl_global_horas_p += Number(HorasP.val());
+            vl_global_horas_t += Number(HorasT.val());
+
+            $("#r11Entity_horasTeoricas").val(String(Math.round((vl_global_horas_t + Number.EPSILON) * 100) / 100).replace(".",","));
+            $("#r11Entity_horasPracticas").val(String(Math.round((vl_global_horas_p + Number.EPSILON) * 100) / 100).replace(".", ","));
+
+            //Add Button cell.
+            cell = $(row.insertCell(-1));
+            var btnRemove = $("<input />");
+            btnRemove.attr("type", "button");
+            btnRemove.attr("onclick", "Remove(this);");
+            btnRemove.val("Quitar");
+            btnRemove.addClass("btn btn-primary")
+            cell.append(btnRemove);
+
+            //Clear the TextBoxes.
+            contenidoEspecifico.val("");
+            Desarrollo.val("");
+            HorasP.val("");
+            HorasT.val("");
+
+        });
+
+        function Remove(button) {
+            //Determine the reference of the Row using the Button.
+            var row = $(button).closest("TR");
+            var name = $("TD", row).eq(0).html();
+            if (confirm("¿Esta seguro que desea eliminar el item? ")) {
+                //Get the reference of the Table.
+                var table = $("#idTableContenidoEspecifico")[0];
+                var cont = 0;
+                //Delete the Table row using it's Index.
+                table.deleteRow(row[0].rowIndex);
+
+                vl_global_horas_p -= Number($("TD", row).eq(3).text().replace(",", "."));
+                vl_global_horas_t -= Number($("TD", row).eq(2).text().replace(",", "."));
+
+                $("#r11Entity_horasTeoricas").val(String(Math.round((vl_global_horas_t + Number.EPSILON) * 100) / 100).replace(".", ","));
+                $("#r11Entity_horasPracticas").val(String(Math.round((vl_global_horas_p + Number.EPSILON) * 100) / 100).replace(".", ","));
+                contadorGeneral--;
+                //Re order name
+                $("#idTableContenidoEspecifico").each(function (i) {
+                    $(this).find(":input").each(function () {
+                        var oldName = $(this).attr('name');
+                        if (oldName == null) {
+                            cont++;
+                        } else {
+                            var newName = oldName.replace(new RegExp("(\\[)\\d*(\\])", "g"), '[' + cont + ']') ;
+                            $(this).attr('name', newName);
+                        }
+
+                    });
+                });
+            }
+        };
+
+    $('#idCheckBoxCodigoSENCE').on('change', function () {
+        if ($(this).is(':checked')) {
+            $('#r11Entity_codigoSence').attr('disabled', false);
+            $('#r11Entity_mesesDuracionVigencia').attr('disabled', false);
+            $('#r11Entity_fechaCaducidad').attr('disabled', false);
+        } else {
+            $('#r11Entity_codigoSence').attr('disabled', true);
+            $('#r11Entity_codigoSence').val('');
+            $('#r11Entity_mesesDuracionVigencia').attr('disabled', true);
+            $('#r11Entity_mesesDuracionVigencia').val('');
+            $('#r11Entity_fechaCaducidad').attr('disabled', true);
+            $('#r11Entity_fechaCaducidad').val('');
+        }
+    });
+</script>

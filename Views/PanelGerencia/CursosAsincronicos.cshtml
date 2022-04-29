@@ -1,0 +1,131 @@
+﻿@model IEnumerable<SGC.Models.ViewModelPostCurso>
+@using SGC.Models;
+@{
+    var data = Model;
+    var sucursales = (List<Sucursal>)ViewBag.sucursales;
+    var totalComercializaciones = 0;
+    var totalConSense = 0;
+    var totalSinSense = 0;
+    var totalAlumnosSense = 0;
+    var totalAlumnosSinSense = 0;
+}
+
+<style>
+    #table-wrapper {position: relative;}
+    #table-scroll {overflow: auto;}
+    #table-wrapper table {width: 100%;}
+    #table-wrapper td {white-space: nowrap;}
+    #table-wrapper th {white-space: nowrap;}
+    th {background-color: yellow;}
+</style>
+
+<table class="table">
+    <tbody>
+        @foreach (var sucursal in sucursales)
+        {
+            var asincronicoAlumnosSense = 0;
+            var recertificacionesAlumnosSense = 0;
+            var asincronicoAlumnosSinSense = 0;
+            var recertificacionesAlumnosSinSense = 0;
+
+            var contComerAsincronicos = data.Where(x => x.comercializacion.cotizacion.sucursal.idSucursal == sucursal.idSucursal)
+            .Where(x => x.comercializacion.cotizacion.curso.tipoEjecucion == TipoEjecucion.Elearning_Asincrono).Count();
+            var contComerAsincronicosConSense = data.Where(x => x.comercializacion.cotizacion.sucursal.idSucursal == sucursal.idSucursal)
+                .Where(x => x.comercializacion.cotizacion.curso.tipoEjecucion == TipoEjecucion.Elearning_Asincrono)
+                .Where(x => x.comercializacion.cotizacion.codigoSence != null && x.comercializacion.cotizacion.codigoSence != "" && x.comercializacion.cotizacion.tieneCodigoSence != "on").Count();
+            var contComerAsincronicosSinSense = contComerAsincronicos - contComerAsincronicosConSense;
+
+            var contComerRecertificacionesAsincronicos = data.Where(x => x.comercializacion.cotizacion.sucursal.idSucursal == sucursal.idSucursal)
+                .Where(x => x.comercializacion.cotizacion.curso.tipoEjecucion == TipoEjecucion.Recertificacion_Asincronica).Count();
+            var contRecertificacionesAsincronicosConSense = data.Where(x => x.comercializacion.cotizacion.sucursal.idSucursal == sucursal.idSucursal)
+                .Where(x => x.comercializacion.cotizacion.curso.tipoEjecucion == TipoEjecucion.Recertificacion_Asincronica)
+                .Where(x => x.comercializacion.cotizacion.codigoSence != null && x.comercializacion.cotizacion.codigoSence != "" && x.comercializacion.cotizacion.tieneCodigoSence != "on").Count();
+            var contRecertificacionesAsincronicosSinSense = contComerRecertificacionesAsincronicos - contRecertificacionesAsincronicosConSense;
+
+            var contComerSucursalTotal = contComerAsincronicos + contComerRecertificacionesAsincronicos;
+            var contTotalSucursalConSense = contComerAsincronicosConSense + contRecertificacionesAsincronicosConSense;
+            var contTotalSucursalSinSense = contComerAsincronicosSinSense + contRecertificacionesAsincronicosSinSense;
+
+            totalComercializaciones = totalComercializaciones + contComerSucursalTotal;
+            totalConSense = totalConSense + contTotalSucursalConSense;
+            totalSinSense = totalSinSense + contTotalSucursalSinSense;
+
+            if (contComerSucursalTotal == 0)
+            {
+                continue;
+            }
+
+            foreach (ViewModelPostCurso comercializacion in data.Where(x => x.comercializacion.cotizacion.sucursal.idSucursal == sucursal.idSucursal))
+            {
+                foreach (Participante participante in comercializacion.comercializacion.participantes.Where(x => x.comercializacion.cotizacion.codigoSence != null && x.comercializacion.cotizacion.codigoSence != "" && x.comercializacion.cotizacion.tieneCodigoSence != "on")
+                    .Where(x => x.comercializacion.cotizacion.curso.tipoEjecucion == TipoEjecucion.Elearning_Asincrono).ToList())
+                {
+                    asincronicoAlumnosSense++;
+                }
+                foreach (Participante participante in comercializacion.comercializacion.participantes.Where(x => x.comercializacion.cotizacion.codigoSence == null || x.comercializacion.cotizacion.codigoSence == "" || x.comercializacion.cotizacion.tieneCodigoSence == "on")
+                    .Where(x => x.comercializacion.cotizacion.curso.tipoEjecucion == TipoEjecucion.Elearning_Asincrono).ToList())
+                {
+                    asincronicoAlumnosSinSense++;
+                }
+                foreach (Participante participante in comercializacion.comercializacion.participantes.Where(x => x.comercializacion.cotizacion.codigoSence != null && x.comercializacion.cotizacion.codigoSence != "" && x.comercializacion.cotizacion.tieneCodigoSence != "on")
+                    .Where(x => x.comercializacion.cotizacion.curso.tipoEjecucion == TipoEjecucion.Recertificacion_Asincronica).ToList())
+                {
+                    recertificacionesAlumnosSense++;
+                }
+                foreach (Participante participante in comercializacion.comercializacion.participantes.Where(x => x.comercializacion.cotizacion.codigoSence == null || x.comercializacion.cotizacion.codigoSence == "" || x.comercializacion.cotizacion.tieneCodigoSence == "on")
+                    .Where(x => x.comercializacion.cotizacion.curso.tipoEjecucion == TipoEjecucion.Recertificacion_Asincronica).ToList())
+                {
+                    recertificacionesAlumnosSinSense++;
+                }
+            }
+            var sucursalAlumnosSense = asincronicoAlumnosSense + recertificacionesAlumnosSense;
+            var sucursalAlumnosSinSense = asincronicoAlumnosSinSense + recertificacionesAlumnosSinSense;
+            totalAlumnosSense = totalAlumnosSense + sucursalAlumnosSense;
+            totalAlumnosSinSense = totalAlumnosSinSense + sucursalAlumnosSinSense;
+
+            <tr>
+                <th colspan="6" style="text-align:center;">@sucursal.nombre</th>
+            </tr>
+            <tr>
+                <th>Tipo Ejecución</th>
+                <th>Comercializaciones</th>
+                <th>Con Sense</th>
+                <th>Sin Sense</th>
+                <th>Alumnos en Cursos Con Sense</th>
+                <th>Alumnos en Cursos Sin Sense</th>
+            </tr>
+            <tr>
+                <td>Elearning ASincronico</td>
+                <td>@string.Format("{0:#,0}", contComerAsincronicos)</td>
+                <td>@string.Format("{0:#,0}", contComerAsincronicosConSense)</td>
+                <td>@string.Format("{0:#,0}", contComerAsincronicosSinSense)</td>
+                <td>@string.Format("{0:#,0}", asincronicoAlumnosSense)</td>
+                <td>@string.Format("{0:#,0}", asincronicoAlumnosSinSense)</td>
+            </tr>
+            <tr>
+                <td>Recertificación ASincronica</td>
+                <td>@string.Format("{0:#,0}", contComerRecertificacionesAsincronicos)</td>
+                <td>@string.Format("{0:#,0}", contRecertificacionesAsincronicosConSense)</td>
+                <td>@string.Format("{0:#,0}", contRecertificacionesAsincronicosSinSense)</td>
+                <td>@string.Format("{0:#,0}", recertificacionesAlumnosSense)</td>
+                <td>@string.Format("{0:#,0}", recertificacionesAlumnosSinSense)</td>
+            </tr>
+            <tr>
+                <th>Total @sucursal.nombre</th>
+                <td>@string.Format("{0:#,0}", contComerSucursalTotal)</td>
+                <td>@string.Format("{0:#,0}", contTotalSucursalConSense)</td>
+                <td>@string.Format("{0:#,0}", contTotalSucursalSinSense)</td>
+                <td>@string.Format("{0:#,0}", sucursalAlumnosSense)</td>
+                <td>@string.Format("{0:#,0}", sucursalAlumnosSinSense)</td>
+            </tr>
+        }
+        <tr>
+            <th> Total Sucursales</th>
+            <th>@string.Format("{0:#,0}", totalComercializaciones)</th>
+            <th>@string.Format("{0:#,0}", totalConSense)</th>
+            <th>@string.Format("{0:#,0}", totalSinSense)</th>
+            <th>@string.Format("{0:#,0}", totalAlumnosSense)</th>
+            <th>@string.Format("{0:#,0}", totalAlumnosSinSense)</th>
+        </tr>
+    </tbody>
+</table>

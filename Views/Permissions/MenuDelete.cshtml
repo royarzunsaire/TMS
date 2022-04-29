@@ -1,0 +1,66 @@
+﻿@model SGC.Models.Menu
+
+@{
+    ViewBag.Title = "Delete";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Borrar</h2>
+
+<h3>¿Esta seguro que desea borrarlo?</h3>
+<div>
+    <h4>Menu</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.DisplayName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DisplayName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ParentMenuID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ParentMenuID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.OrderNumber)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.OrderNumber)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.MenuURL)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.MenuURL)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.MenuIcon)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.MenuIcon)
+        </dd>
+
+    </dl>
+
+   @using (Html.BeginForm("Delete", "Permissions",new { id = Model.MenuID }, FormMethod.Post,  new { @class = "form-horizontal", role = "form" }))
+   {@Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Borrar" class="btn btn-default" />
+           @Html.HiddenFor(model=>model.MenuID) |
+            @Html.ActionLink("Back to List", "MenuIndex")
+        </div>
+    }
+</div>

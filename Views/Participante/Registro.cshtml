@@ -1,0 +1,150 @@
+﻿@model SGC.Models.Comercializacion
+@{
+    ViewBag.Title = "Registro a Curso";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    input:not(input[type=email]) {
+        text-transform: capitalize;
+    }
+
+    body {
+        max-width: 100% !important;
+    }
+
+    h2 {
+        margin-bottom: 2rem;
+    }
+
+    .form-container {
+        width: 100%;
+        max-width: 600px;
+        margin: 20px auto;
+        height: 100%;
+        padding: 0 2rem;
+    }
+
+    .page-bar {
+        display: none;
+    }
+
+    .page-content-white .page-bar, .page-container-bg-solid .page-bar {
+        margin: 0;
+    }
+
+    .form-container h2 {
+        text-align: center;
+    }
+
+    .col-md-2 {
+        float: none;
+        width: 100%;
+    }
+
+    .col-md-10 {
+        float: none;
+    }
+
+    .col-md-6 {
+        width: 0;
+    }
+
+    .text-danger ul {
+        list-style: none;
+        padding: 0;
+    }
+</style>
+
+<div class="form-container">
+    <h2 style="margin-top: 1rem;">Registro</h2>
+    <div class="descripcion-container">
+        <h2 style="margin-bottom: 1rem;">@Model.cotizacion.curso.nombreCurso</h2>
+    </div>
+    @using (Html.BeginForm("Registro", "Participante", FormMethod.Post, new { @id = "form" }))
+    {
+        <div class="form-group">
+            <label for="run" class="control-label col-md-2">RUT</label>
+            <input type="text" id="run" class="run form-control" name="run" autocomplete="off" required />
+        </div>
+
+        <div class="form-group">
+            <label for="nombres" class="control-label col-md-2">Nombre</label>
+            <input type="text" id="nombres" class="nombres form-control" name="nombres" autocomplete="off" required />
+        </div>
+
+        <div class="form-group">
+            <label for="apellidoPaterno" class="control-label col-md-2">Apellido Paterno</label>
+            <input type="text" id="apellidoPaterno" class="apellidoPaterno form-control" name="apellidoPaterno" autocomplete="off" required />
+        </div>
+
+        <div class="form-group">
+            <label for="apellidoMaterno" class="control-label col-md-2">Apellido Materno</label>
+            <input type="text" id="apellidoMaterno" class="apellidoMaterno form-control" name="apellidoMaterno" autocomplete="off" required />
+        </div>
+
+        <div class="form-group">
+            <label for="telefono" class="control-label col-md-2">Telefono</label>
+            <input type="tel" id="telefono" class="telefono form-control" name="telefono" autocomplete="off" required />
+        </div>
+
+        <div class="form-group">
+            <label for="correo" class="control-label col-md-2">Correo Electrónico</label>
+            <input type="email" id="correo" class="correo form-control" name="correo" autocomplete="off" required />
+        </div>
+
+        <div class="portlet-body">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <input type="hidden" name="idComercializacion" value="@Model.idComercializacion" />
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="participantes" id="participantes"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 text-right">
+                    <input type="submit" id="btnGuardar" value="Registrarme" class="btn btn-primary" />
+                </div>
+            </div>
+        </div>
+    }
+<p id="p-mensaje" style="color: green; font-size:40px; text-align: center;">@ViewBag.mensaje</p>
+    @if (ViewBag.mensaje == "Ingreso Exitoso")
+    {
+        <p id="p-mensaje" style="color: forestgreen; text-align: center;">Redirigiendo a la plataforma, por favor espere...</p>
+    }
+    <div class="loader">
+        <p style="padding-top: 120px; text-align:center;">Cargando...</p>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(window).load(function () {
+            if ($("#p-mensaje").text() == "Ingreso Exitoso") {
+                $("div.loader").show();
+                $("#form").hide();
+                setTimeout(function () {
+                    window.location.href = "https://insecap.cl/Elearning/login/index.php";
+                }, 5000);
+            } else {
+                $('div.loader').hide();
+            }
+        });
+
+        $("#form").on("submit", function () {
+            $("div.loader").fadeIn();
+            $("#form").hide();
+        });
+
+        $("#nombres").on({
+            keydown: function (e) {
+                if (e.which === 32)
+                    return false;
+            },
+            change: function () {
+                this.value = this.value.replace(/\s/g, "");
+            }
+        });
+    </script>
+}

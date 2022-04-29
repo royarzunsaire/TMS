@@ -1,0 +1,108 @@
+﻿@model IEnumerable<SGC.Models.Inventario>
+
+@{
+    ViewBag.Title = "Administrar Inventario";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h3 class="page-title">Administrar Inventario</h3>
+<div class="portlet box blue-dark">
+    <div class="portlet-title">
+        <div class="caption">
+            Inventario
+        </div>
+        <div class="tools">
+            <a href="javascript:;" class="collapse"> </a>
+            <a href="javascript:;" class="fullscreen"> </a>
+        </div>
+        <div class="actions">
+            <div class="inputs pull-right">
+                <a href="@Url.Action("Create") " class="btn btn-circle btn-sm btn-default btn-group-lg" style="margin-right:10px; margin-left:10px;">
+                    <i class="fa fa-plus-circle"></i> Nuevo
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="portlet-body">
+        <table class="table table-striped table-bordered table-hover dt-responsive dataTable" id="sys-table" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>
+                        ID
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Codigo)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.idCategoria)
+                    </th>
+                    <th>
+                        Fecha Creación
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.FechaCompra)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Stock)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.PeriodoMantencion)
+                    </th>
+                    <th>
+                        Usuario Creador
+                    </th>
+                    <th>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.idInventario)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Codigo)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.categoria.Nombre)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FechaCreacion)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FechaCompra)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Stock)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PeriodoMantencion)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.usuarioCreador)
+                    </td>
+                    <td class="text-center">
+
+                        @using (Html.BeginForm("Delete", "Inventario", FormMethod.Post, new { @id = "notificationForm_" + @item.idInventario }))
+                        {
+                        <div class="input-group-btn">
+                            @Html.ActionLink(" ", "Edit", new { id = item.idInventario }, htmlAttributes: new { @class = "btn btn-warning btn-sm glyphicon glyphicon-edit", @datatoggle = "tooltip", @title = "Editar" })
+                            @Html.ActionLink(" ", "Details", new { id = item.idInventario }, htmlAttributes: new { @class = "btn btn-info btn-sm glyphicon glyphicon-list", @datatoggle = "tooltip", @title = "Detalles" })
+                            @Html.AntiForgeryToken()
+                            <a class="btn btn-danger btn-sm glyphicon glyphicon-trash" href="javascript:confirmDelete('Delete','@item.idInventario','Inventario')" title="Eliminar"></a>
+                        </div>
+                        }
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section topLevel{
+    @{Html.RenderPartial("_RenderConfirm.Modal"); }
+}
+

@@ -1,0 +1,265 @@
+﻿@{
+
+    ViewBag.Title = "Cursos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div hidden>
+    @using (Html.BeginForm("IndexData", "Curso", FormMethod.Post, new { @id = ("form-ModalCursos") }))
+    {
+        @Html.AntiForgeryToken()
+
+
+    }
+</div>
+
+<h3 class="page-title">
+    Administración de Cursos
+</h3>
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-dark">
+            <div class="portlet-title">
+                <div class="caption">
+                    Cursos
+                </div>
+                <div class="tools">
+                    <a href="javascript:;" class="collapse"> </a>
+                    <a href="javascript:;" class="fullscreen"> </a>
+                </div>
+                <div class="actions">
+                    <div class="inputs pull-right">
+                        <a href="@Url.Action("Create","R51" ) " class="btn btn-circle btn-sm btn-default" style="margin-right:10px;">
+                            <i class="fa fa-plus-circle"></i> Nuevo
+                        </a>
+                    </div>
+                </div>
+                 
+                </div>
+            </div>
+            <div class="portlet-body">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="row">
+                    <div class="col-md-12 text-right" style="margin-bottom:10px">
+                        <div class="form-check form-check-flat pull-right" style="margin-left:25px">
+                            <label class="form-check-label">
+                                <input type="checkbox" class="filter" id="r12No" value="" />
+                                No Tiene R12
+                            </label>
+                        </div>
+                        <div class="form-check form-check-flat pull-right" style="margin-left:25px">
+                            <label class="form-check-label">
+                                <input type="checkbox" class="filter" id="r12Si" value="" />
+                                Tiene R12
+                            </label>
+                        </div>
+                        <div class="form-check form-check-flat pull-right" style="margin-left:25px">
+                            <label class="form-check-label">
+                                <input type="checkbox" class="filter" id="r11No" value="" />
+                                No Tiene R11
+                            </label>
+                        </div>
+                        <div class="form-check form-check-flat pull-right">
+                            <label class="form-check-label">
+                                <input type="checkbox" class="filter" id="r11Si" value="" />
+                                Tiene R11
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row ">
+                    <div class="col-md-12">
+                        <table class="table table-striped table-bordered table-hover dt-responsive dataTable" id="sys-table-comercializacion" cellspacing="0">
+                            <thead>
+                                <tr>
+                                  
+                                    
+                                    <th>
+                                        @Html.DisplayName("Código")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("Nombre")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("Tipo Ejecución")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("Horas")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("Moodle")
+                                    </th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+
+                        </table>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade draggable-modal modalx"
+     id="modalIdMoodle"
+     tabindex="-1"
+     data-backdrop="static"
+     data-keyboard="false"
+     role="dialog"
+     aria-labelledby="deleteLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="row">
+                    <div class="col-md-10">
+                        <h4 class="modal-title">Enlace Moodle</h4>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("AgregarIdMoodle", "Curso", FormMethod.Post, new { }))
+                {
+                    @Html.AntiForgeryToken()
+
+                    <input type="hidden" name="idCurso" id="idCursoIdMoodle" value="" />
+                    <label class="control-label">Id Moodle</label>
+                    <input type="text" class="form-control" name="idMoodle" value="" />
+                    <hr />
+                    <div class="row">
+                        <div class="col-md-6">
+                            <button type="button" id="btnCancelar" class="btn btn-default" data-dissmiss="modal">Cancelar</button>
+                        </div>
+                        <div class="col-md-6">
+                            <button type="submit" class="btn btn-primary pull-right">Guardar</button>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section topLevel{
+    @{Html.RenderPartial("_RenderConfirm.Modal"); }
+}
+
+
+
+
+
+
+@section Scripts{
+
+    <script>
+        var r11 = false;
+        var noR11 = false;
+        var r12 = false;
+        var noR12 = false;
+        $(".filter").on("change", function () {
+            var id = this.id;
+            var value = $('#' + this.id)[0].checked;
+            if (id == "r11Si") {
+                r11 = value;
+            }
+            else if (id == "r11No") {
+                noR11 = value;
+            }
+            else if (id == "r12Si") {
+                r12 = value;
+            }
+            else if (id == "r12No") {
+                noR12 = value;
+            }
+            $("#sys-table-comercializacion").DataTable().destroy();
+            CreateTable();
+
+
+        });
+
+        $(document).ready(function () {
+
+            CreateTable();
+            
+        });
+        function CreateTable() {
+            var form = $('#form-ModalCursos');
+            var url = form.attr('action');
+
+            var table = $("#sys-table-comercializacion").DataTable({
+                destroy: true,
+                autoWidth: false,
+                responsive: true,
+                "lengthMenu": [
+                    [10, 15, 20, 25, -1],
+                    [10, 15, 20, 25, "All"]
+                ],
+                processing: true,
+                serverSide: true,
+                order: [0, "asc"],
+                language: { processing: "Cargando...Por favor espere" },
+                ajax: {
+                    method: "POST",
+                    url: url,
+                    dataType: "json",
+                    data: {
+                        r11: r11
+                        , noR11: noR11
+                        , r12: r12
+                        , noR12: noR12
+                    },
+                    error: function (request, status, error) {
+                        alert(request.responseText);
+                    },
+                },
+                columns: [
+                  
+                    { "data": "codigoCurso" },
+                    { "data": "nombreCurso" },
+                    { "data": "tipoEjecucion" },
+                    { "data": "horas" },
+
+                    { "data": "idCursoMoodle" },
+
+
+                    { "data": "menu" },
+
+                ],
+                "drawComplete": function (settings, json) {
+                    estilo();
+                }
+            });
+            $('#sys-table-comercializacion_filter input').unbind();
+            $('#sys-table-comercializacion_filter input').bind('keyup', function (e) {
+                if (e.keyCode == 13) {
+                    table.search(this.value).draw();
+                   
+                }
+            });
+        }
+
+
+        function mostrarModalIdMoodle(idCurso) {
+            $('#idCursoIdMoodle').val(idCurso);
+            $('#modalIdMoodle').modal({ keyboard: true }, 'show');
+        }
+
+
+
+
+
+    </script>
+}

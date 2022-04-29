@@ -1,0 +1,93 @@
+﻿@model IEnumerable<SGC.Models.Relator>
+
+@{
+    ViewBag.Title = "Relatores";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="page-title">
+    Administrar Relatores
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-dark">
+            <div class="portlet-title">
+                <div class="caption">
+                    Relatores
+                </div>
+                <div class="tools">
+                    <a href="javascript:;" class="collapse"> </a>
+                    <a href="javascript:;" class="fullscreen"> </a>
+                </div>
+                <div class="actions">
+                    <a href="@Url.Action("Create", "Relator") " class="btn btn-circle btn-sm btn-default btn-group-lg" style="margin-right:10px; margin-left:10px;">
+                        <i class="fa fa-plus-circle"></i> Nuevo
+                    </a>
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <table class="table table-striped table-bordered table-hover dt-responsive dataTable" id="sys-table" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.contacto.nombreCompleto)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.contacto.run)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.contacto.correo)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.vinculadoSENCE)
+                                    </th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.contacto.nombreCompleto)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.contacto.run)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.contacto.correo)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.vinculadoSENCE)
+                                        </td>
+                                        <td class="text-center">
+                                            @using (Html.BeginForm("Delete", "Relator", FormMethod.Post, new { @id = "notificationForm_" + @item.idRelator }))
+                                            {
+                                                <div class="input-group-btn">
+                                                    @Html.ActionLink(" ", "R16", new { id = item.idRelator }, htmlAttributes: new { @class = "btn btn-default btn-sm glyphicon glyphicon-list-alt", @datatoggle = "tooltip", @title = "Capacitación Administrativa" })
+                                                    @Html.ActionLink(" ", "CursosHablitados", new { id = item.idRelator }, htmlAttributes: new { @class = "btn btn-default btn-sm glyphicon glyphicon-list", @datatoggle = "tooltip", @title = "Cursos Habilitados" })
+                                                    @Html.ActionLink(" ", "Edit", new { id = item.idRelator }, htmlAttributes: new { @class = "btn btn-warning btn-sm glyphicon glyphicon-edit", @datatoggle = "tooltip", @title = "Editar" })
+                                                    @Html.ActionLink(" ", "Details", new { id = item.idRelator }, htmlAttributes: new { @class = "btn btn-info btn-sm glyphicon glyphicon-list", @datatoggle = "tooltip", @title = "Ver" })
+                                                    @Html.AntiForgeryToken()
+                                                    <a class="btn btn-danger btn-sm glyphicon glyphicon-trash" href="javascript:confirmDelete('Delete','@(item.idRelator)','Relator')" title="Eliminar"></a>
+                                                </div>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section topLevel{
+    @{Html.RenderPartial("_RenderConfirm.Modal"); }
+}

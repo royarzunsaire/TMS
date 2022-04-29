@@ -1,0 +1,36 @@
+﻿
+@model IEnumerable<SGC.Models.MenuTemp>
+@foreach (var menu in Model)
+{
+    if (menu.ParentMenuID == 0)
+    {
+        <li class="nav-item  ">
+            <a href="javascript:;" class="nav-link nav-toggle">
+                <i class="@menu.MenuIcon"></i>
+                <span class="title">@menu.DisplayName</span>
+                <span class="arrow"></span>
+            </a>
+            @foreach (var child in Model.OrderBy(x => x.OrderNumber))
+            {
+                if (child.ParentMenuID == menu.MenuID)
+                {
+
+                    <ul class="sub-menu">
+                        @foreach (var childx in Model.OrderBy(x => x.OrderNumber))
+                        {
+                            if (childx.ParentMenuID == menu.MenuID)
+                            {
+                            <li class="nav-item  ">
+                                <a href="@childx.MenuURL" class="nav-link ">
+                                    <span class="title">@childx.DisplayName</span>
+                                </a>
+                            </li>
+                            }
+                        }
+                    </ul>
+                }
+            }
+           
+        </li>
+    }
+}

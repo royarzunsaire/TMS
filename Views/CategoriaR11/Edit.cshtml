@@ -1,0 +1,105 @@
+﻿@model SGC.Models.CategoriaR11
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    ViewBag.Title = "Edit";
+
+    List<SelectListItem> listItemsIsActivo = new List<SelectListItem>();
+    listItemsIsActivo.Add(new SelectListItem
+    {
+        Text = "Activo",
+        Value = "1"
+    });
+    listItemsIsActivo.Add(new SelectListItem
+    {
+        Text = "Inactivo",
+        Value = "0"
+    });
+
+
+}
+
+<h2>Edit</h2>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Categoria R11</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.idCategoria)
+
+        <div class="form-group">
+            <div class="col-md-6">
+                @Html.LabelFor(model => model.categoria, htmlAttributes: new { @class = "control-label" })
+
+                @Html.EditorFor(model => model.categoria, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.categoria, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-6">
+                @Html.LabelFor(model => model.identificador, htmlAttributes: new { @class = "control-label" })
+
+                @Html.EditorFor(model => model.identificador, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.identificador, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-6">
+                @Html.LabelFor(model => model.vigencia, htmlAttributes: new { @class = "control-label" })
+
+                <select name="vigencia" class="form-control">
+
+                    @foreach (var itemList in listItemsIsActivo)
+                    {
+
+                        if (itemList.Value == Model.vigencia.ToString())
+                        {
+                            <option value="@Html.DisplayFor(modelItem => itemList.Value)" selected>@Html.DisplayFor(modelItem => itemList.Text)</option>
+
+                        }
+                        else
+                        {
+                            <option value="@Html.DisplayFor(modelItem => itemList.Value)">@Html.DisplayFor(modelItem => itemList.Text)</option>
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <div class="col-md-12">
+                <!--<input type="submit" value="Cancelar" class="btn btn-danger" />-->
+                @Html.ActionLink("Volver", "Index", new { }, new { @class = "btn btn-default" })
+
+                <button class="btn btn-primary" style="float:right" data-toggle="modal" data-target="#idModalConfirmCategoria" type="button">Guardar</button>
+
+                <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" id="idModalConfirmCategoria">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title" id="myModalLabel">Confirmar</h4>
+                            </div>
+                            <div class="modal-body">
+                                <p>¿Esta seguro que desea editar la categoria?</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary">Aceptar</button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+}
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

@@ -1,0 +1,62 @@
+﻿@model SGC.Models.RelatorCurso
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Agregar Relator al Curso</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="portlet light bordered col-md-6">
+        <div class="portlet-body">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.idCurso, "Cursos", htmlAttributes: new { @class = "control-label" })
+                        @Html.DropDownListFor(model => model.idCurso, (SelectList)ViewBag.cursos, "", htmlAttributes: new { @class = "form-control select2", id = "cursos" })
+                        @Html.ValidationMessageFor(model => model.idCurso, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.idRelator, "Relatores", htmlAttributes: new { @class = "control-label" })
+                        @Html.DropDownListFor(model => model.idRelator, (SelectList)ViewBag.relatores, "", htmlAttributes: new { @class = "form-control select2", id = "relatores" })
+                        @Html.ValidationMessageFor(model => model.idRelator, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.validoSence, htmlAttributes: new { @class = "control-label" })
+                        <div class="checkbox">
+                            @Html.EditorFor(model => model.validoSence, new { htmlAttributes = new { @style = "margin-left: -10px" } })
+                            @Html.ValidationMessageFor(model => model.validoSence, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.reuf, htmlAttributes: new { @class = "control-label" })
+                        <div class="checkbox">
+                            @Html.EditorFor(model => model.reuf, new { htmlAttributes = new { @style = "margin-left: -10px" } })
+                            @Html.ValidationMessageFor(model => model.reuf, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="row">
+                <div class="col-md-6">
+                    @Html.ActionLink("Volver", "Index", new { id = ViewBag.idCurso }, new { @class = "btn btn-default" })
+                </div>
+                <div class="col-md-6 text-right">
+                    <input type="submit" value="Guardar" class="btn btn-primary" />
+                </div>
+            </div>
+        </div>
+    </div>
+}

@@ -1,0 +1,77 @@
+﻿@model IEnumerable<SGC.Models.Factura>
+
+@{
+    ViewBag.Title = "Listado Factura";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h3 class="page-title">
+    Administrar Facturas
+</h3>
+<div class="portlet box blue-dark">
+    <div class="portlet-title">
+        <div class="caption">
+            Facturas
+        </div>
+        <div class="tools">
+            <a href="javascript:;" class="collapse"> </a>
+            <a href="javascript:;" class="fullscreen"> </a>
+        </div>
+    </div>
+    <div class="portlet-body">
+        <table class="table table-striped table-bordered table-hover dt-responsive dataTable" id="sys-table" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.numero)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.costo)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.valorPagado)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.tipo)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.numero)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.costo)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.valorPagado)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.tipo)
+                        </td>
+                        <td class="text-center">
+                            @using (Html.BeginForm("Delete", "Factura", FormMethod.Post, new { @id = "notificationForm_" + @item.idFactura }))
+                            {
+                            <div class="input-group-btn">
+                                @Html.ActionLink(" ", "Edit", new { id = item.idFactura }, htmlAttributes: new { @class = "btn btn-warning btn-sm glyphicon glyphicon-edit", @datatoggle = "tooltip", @title = "Editar" })
+                                @Html.ActionLink(" ", "Details", new { id = item.idFactura }, htmlAttributes: new { @class = "btn btn-info btn-sm glyphicon glyphicon-list", @datatoggle = "tooltip", @title = "Ver" })
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="idComercializacion" value="" />
+                                <a class="btn btn-danger btn-sm glyphicon glyphicon-trash" href="javascript:confirmDelete('Delete','@(item.idFactura)','Factura')" title="Eliminar"></a>
+                            </div>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section topLevel{
+    @{Html.RenderPartial("_RenderConfirm.Modal"); }
+}

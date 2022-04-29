@@ -1,0 +1,167 @@
+﻿@model SGC.Models.ViewModelPanelGerencia
+
+
+<div class="row">
+    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+        <div class="dashboard-stat2 " style="padding-top:31px">
+            <div class="display">
+                <div class="number">
+                    <h3 class="font-green-sharp">
+                        <small class="font-green-sharp">$</small>
+                        <span data-counter="counterup" data-value="@String.Format("{0:N0}", Model.ventasMesMonto)">@String.Format("{0:N0}", Model.ventasMesMonto)</span>
+
+                    </h3>
+                    <small>Ventas Mes</small>
+                </div>
+            </div>
+            <div class="progress-info">
+                <div class="progress">
+                    <span style="width: 100%;" class="progress-bar progress-bar-success green-sharp">
+                        <span class="sr-only">@Model.ventasMes ventas</span>
+                    </span>
+                </div>
+                <div class="status">
+                    <div class="status-title"> Ventas </div>
+                    <div class="status-number"> @Model.ventasMes </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+        <ul class="nav nav-tabs pull-right ">
+            <li class="active">
+                <a href="#tab_ventas_no_termnadas_mes" data-toggle="tab"> Mes </a>
+            </li>
+            <li>
+                <a href="#tab_ventas_no_terminadas_anio" data-toggle="tab"> Año </a>
+            </li>
+        </ul>
+        <div class="dashboard-stat2 ">
+            <div class="tab-content">
+                <div class="tab-pane active" id="tab_ventas_no_termnadas_mes">
+                    <div class="display">
+                        <div class="number">
+                            <h3 class="font-green-sharp">
+                                <small class="font-green-sharp">$</small>
+                                <span data-counter="counterup" data-value="@String.Format("{0:N0}", Model.valorComercializacionesNoTerminadasMes)">@String.Format("{0:N0}", Model.valorComercializacionesNoTerminadasMes)</span>
+
+                            </h3>
+                            <small>Ventas no Finalizadas</small>
+                        </div>
+                    </div>
+                    <div class="progress-info">
+                        <div class="progress">
+                            <span style="width: 100%;" class="progress-bar progress-bar-success green-sharp">
+                                <span class="sr-only"></span>
+                            </span>
+                        </div>
+                        <div class="status">
+                            <div class="status-title"> Ventas </div>
+                            <div class="status-number"> @Model.ventasComercializacionesNoTerminadasMes </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane" id="tab_ventas_no_terminadas_anio">
+                    <div class="display">
+                        <div class="number">
+                            <h3 class="font-green-sharp">
+                                <small class="font-green-sharp">$</small>
+                                <span data-counter="counterup" data-value="@String.Format("{0:N0}", Model.valorComercializacionesNoTerminadasAnio)">@String.Format("{0:N0}", Model.valorComercializacionesNoTerminadasAnio)</span>
+
+                            </h3>
+                            <small>Ventas no Finalizadas</small>
+                        </div>
+                    </div>
+                    <div class="progress-info">
+                        <div class="progress">
+                            <span style="width: 100%;" class="progress-bar progress-bar-success green-sharp">
+                                <span class="sr-only"></span>
+                            </span>
+                        </div>
+                        <div class="status">
+                            <div class="status-title"> Ventas </div>
+                            <div class="status-number"> @Model.ventasComercializacionesNoTerminadasAnio </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+        <div class="dashboard-stat2 " style="padding-top:31px">
+            <div class="display">
+                <div class="number">
+                    <h3 class="font-green-sharp">
+                        <small class="font-green-sharp">$</small>
+                        <span data-counter="counterup" data-value="@String.Format("{0:N0}", Model.montoFacturadas)">@String.Format("{0:N0}", Model.montoFacturadas)</span>
+
+                    </h3>
+                    <small>Facturadas Mensual</small>
+                </div>
+            </div>
+            <div class="progress-info">
+                <div class="progress">
+                    <span style="width: 100%;" class="progress-bar progress-bar-success green-sharp">
+                        <span class="sr-only"></span>
+                    </span>
+                </div>
+                <div class="status">
+                    <div class="status-title"> Facturas </div>
+                    <div class="status-number"> @String.Format("{0:N0}", Model.facturadas) </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet light ">
+            <div class="portlet-title">
+                <div class="caption caption-md">
+                    <i class="icon-bar-chart font-dark hide"></i>
+                    <span class="caption-subject bold uppercase">Facturadas Mensual</span>
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="table-scrollable table-scrollable-borderless">
+                    <div class="scroll">
+                        <div id="table-wrapper">
+                            <div id="table-scroll">
+                                <table class="table table-hover table-light">
+                                    <thead>
+                                        <tr class="uppercase">
+                                            <th> Sucursal </th>
+                                            <th class="text-right"> Facturas </th>
+                                            <th class="text-right"> Monto </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model.facturadasSucursal)
+                                        {
+                                            <tr>
+                                                <td> @item.nombre </td>
+                                                <td class="text-right"> @item.cantidad </td>
+                                                <td class="text-right"> @String.Format("{0:C}", item.monto) </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>

@@ -1,0 +1,407 @@
+﻿@model  List<SGC.Models.ViewModelComercializacionEstado>
+
+@{
+    ViewBag.Title = "Panel de Gerencia";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles {
+    <link href="~/Content/css/PanelGerencia.css" rel="stylesheet" type="text/css" />
+}
+
+<h2 class="page-title">Panel de Gerencia</h2>
+
+<div class="row">
+    <div class="col-md-9 col-sm-6 col-xs-12">
+        @{ Html.RenderAction("VentasReporte", "PanelGerencia", new { ventas = Model }); }
+        @*Ventas por vendedor*@
+        @{ Html.RenderAction("VentasPorVendedor", "PanelGerencia", new { ventas = Model }); }
+        @*Nuevos clientes*@
+        @{ Html.RenderAction("NuevosClientesResumen", "PanelGerencia", new { ventas = Model }); }
+
+        @*Facturas Mensuales*@
+        @{ Html.RenderAction("FacturasMensuales", "PanelGerencia", new { ventas = Model }); }
+
+    </div>
+    <div class="col-md-3 col-sm-6 col-xs-12">
+
+        @*Nuevos Clientes*@
+        @{ Html.RenderAction("NuevosClientes", "PanelGerencia", new { ventas = Model }); }
+
+        @*VisitasTerreno*@
+        @{ Html.RenderAction("VisitasTerreno", "PanelGerencia", new { ventas = Model }); }
+        @*Nuevos Relatores*@
+        @{ Html.RenderAction("NuevosRelatores", "PanelGerencia"); }
+
+    </div>
+</div>
+
+@*VisitasTerreno*@
+@{ Html.RenderAction("VisitasTerrenoResumen", "PanelGerencia", new { ventas = Model }); }
+@*NuevosRelatoresResumen*@
+@{ Html.RenderAction("NuevosRelatoresResumen", "PanelGerencia", new { ventas = Model }); }
+
+
+
+
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet light">
+            <div class="portlet-title">
+
+                <span class="caption-subject bold uppercase"> Reportes </span>
+            </div>
+            <div class="portlet-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <a href="" onclick="seleccionarFechas('/PanelGerencia/ComercializacionesProceso');return false">Comercializaciones En Proceso</a>
+                            </div>
+                            <div class="col-md-12">
+                                <a href="" onclick="seleccionarFechas('/PanelGerencia/ClientesNuevos');return false">Clientes Nuevos</a>
+                            </div>
+                            <div class="col-md-12">
+                                <a href="" onclick="seleccionarFechas('/PanelGerencia/EfectividadVisitasTerreno');return false">Efectividad Visitas Terreno</a>
+                            </div>
+                            <div class="col-md-12">
+                                <a href="" onclick="seleccionarFechas('/PanelGerencia/FacturadoMes');return false">Facturado (Pagado)</a>
+                            </div>
+                            <div class="col-md-12">
+                                <a href="" onclick="seleccionarFechas('/PanelGerencia/NuevosCursosCompletos');return false">Nuevos Cursos Completos</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <a href="" onclick="seleccionarFechas('/PanelGerencia/NuevosR11');return false">Nuevos R11</a>
+                            </div>
+                            <div class="col-md-12">
+                                <a href="" onclick="seleccionarFechas('/PanelGerencia/NuevosRelatores');return false">Nuevos Relatores</a>
+                            </div>
+                            <div class="col-md-12">
+                                <a href="" onclick="seleccionarFechas('/PanelGerencia/NuevosRelatoresSence');return false">Nuevos Relatores Asociados a SENCE</a>
+                            </div>
+                            <div class="col-md-12">
+                                <a href="" onclick="seleccionarFechas('/PanelGerencia/ReporteR25');return false">Reporte R25</a>
+                            </div>
+                            <div class="col-md-12">
+                                <a href="" onclick="seleccionarFechas('/PanelGerencia/R47', true);return false">Reporte R47</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <a href="" onclick="seleccionarFechas('/PanelGerencia/R53');return false">Reporte R53</a>
+                            </div>
+                            <div class="col-md-12">
+                                <a href="" onclick="seleccionarFechas('/PanelGerencia/R56');return false">reporte R56</a>
+                            </div>
+                            <div class="col-md-12">
+                                <a href="" onclick="seleccionarFechas('/PanelGerencia/VentasMesSucursal');return false">Ventas Sucursal</a>
+                            </div>
+                            <div class="col-md-12">
+                                <a href="" onclick="seleccionarFechas('/PanelGerencia/VentasPorSucursal');return false">Ventas Por Sucursal</a>
+                            </div>
+                            <div class="col-md-12">
+                                <a href="" onclick="seleccionarFechas('/PanelGerencia/Eficacia');return false">Eficacia</a>
+                            </div>
+                            <div class="col-md-12">
+                                <a href="" onclick="seleccionarFechas('/PanelGerencia/Kpi');return false">KPI Cotizaciones</a>
+                            </div>
+                            <div class="col-md-12">
+                                <a href="" onclick="seleccionarFechas('/PanelGerencia/VisitasTerreno');return false">Visitas Terreno</a>
+                            </div>
+                            <div class="col-md-12">
+                                <a href="" onclick="seleccionarFechas('/PanelGerencia/VentasVendedor');return false">Ventas Vendedor</a>
+                            </div>
+                            <div class="col-md-12">
+                                <a href="" onclick="seleccionarFechas('/PanelGerencia/FacturaRealizada');return false">Factura Realizada</a>
+                            </div>
+                            <div class="col-md-12">
+                                <a href="" onclick="seleccionarFechas('/PanelGerencia/FacturaRealizadaCerradasFacturadas');return false">Comercializacion Cerradas Facturadas</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet light">
+            <div class="portlet-title">
+                <span class="caption-subject bold uppercase"> Exportar </span>
+            </div>
+            <div class="portlet-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <a href="@Url.Action("DescargarR04Excel", "PanelGerencia")" style="width:100%">
+                                    R04 Contactos de Clientes
+                                </a>
+                            </div>
+                            <div class="col-md-12">
+                                <a href="" id="btnSeleccionarCliente" onclick="return false"> Participantes de un Cliente </a>
+                            </div>
+                            <div class="col-md-12">
+                                <a href="@Url.Action("ComercializacionesFacturacionExcel", "PanelGerencia")" style="width:100%">
+                                    Listado de Comercializaciones en Facturación
+                                </a>
+                            </div>
+                            <div class="col-md-12">
+                                <a href="@Url.Action("ReporteCotizaciones", "PanelGerencia")" style="width:100%">
+                                    Listado de Cotizaciones
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade draggable-modal modalx"
+     id="modalSeleccionarFechas"
+     tabindex="false"
+     data-backdrop="static"
+     data-keyboard="false"
+     role="dialog"
+     aria-labelledby="deleteLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="row">
+                    <div class="col-md-10">
+                        <h4 class="modal-title">Seleccionar rango de fechas del reporte <span id="reporte"></span></h4>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        @using (Html.BeginForm("", "", FormMethod.Post, new { @id = "formSeleccionarFechas" }))
+                        {
+                            @Html.AntiForgeryToken()
+
+                            <input type="hidden" id="action" value="" />
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label">Fecha Inicio</label>
+                                        <input type="text" id="fechaInicio" name="fechaInicio" class="form-control datepicker" placeholder="00/00/0000" />
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label">Fecha Término</label>
+                                        <input type="text" id="fechaTermino" name="fechaTermino" class="form-control datepicker" placeholder="00/00/0000" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="divFechaInvalida" hidden class="validation-summary-errors text-danger"> La fecha ingresada es invalida.</div>
+                            <div class="row" id="sucursalesForm" hidden>
+                                <div class="col-md-12">
+                                    @Html.Label("idSucursal", "Sucursal", htmlAttributes: new { @class = "control-label" })
+                                    @Html.DropDownList("idSucursal", (SelectList)ViewBag.sucursales, "Seleccionar", htmlAttributes: new { @class = "form-control", @id = "idSucursal" })
+                                </div>
+                            </div>
+                            <div id="divSucursalInvalida" hidden class="validation-summary-errors text-danger"> Se debe seleccionar una sucursal.</div>
+                            <div id="divFechaSuperiorAUnAnio" hidden class="validation-summary-errors text-danger"> El rango de fechas seleccionados no puede ser superior a un año.</div>
+                        }
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-md-6 text-left">
+                        <button type="button" id="btnCancelarSeleccionarFechas" class="btn btn-default" data-dissmiss="modal">Cancelar</button>
+                    </div>
+                    <div class="col-md-6">
+                        <button type="submit" id="btnEnviarSeleccionarFechas" class="btn btn-primary">Generar Reporte</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade draggable-modal modalx"
+     id="modalSeleccionarCliente"
+     tabindex="false"
+     data-backdrop="static"
+     data-keyboard="false"
+     role="dialog"
+     aria-labelledby="deleteLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="row">
+                    <div class="col-md-10">
+                        <h4 class="modal-title">Exportar Participantes del Cliente</h4>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("ParticipantesClienteExcel", "PanelGerencia", FormMethod.Post, new { @id = "form" }))
+                {
+                    @Html.AntiForgeryToken()
+
+                    @Html.Label("Cliente", htmlAttributes: new { @class = "control-label" })
+                    @Html.DropDownList("idCliente", (SelectList)ViewBag.clientes, htmlAttributes: new { @class = "form-control select2", id = "idCliente" })
+                }
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-md-6 text-left">
+                        <button type="button" id="btnCancelar" class="btn btn-primary" data-dissmiss="modal">Cancelar</button>
+                    </div>
+                    <div class="col-md-6">
+                        <button type="submit" id="btnEnviar" class="btn btn-danger">Generar Reporte</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+          
+     $("#yourContainer").load('@Url.Action("FooterLatestBlogPosts", "Common")')
+
+
+
+
+            $('#btn-detalles-tipos-ventas').click(function () {
+                $('.tipos-ventas').show();
+                $('#tipos-ventas').attr('class', 'col-md-12')
+                $('#btn-detalles-tipos-ventas').hide();
+                $('#btn-ocultar-tipos-ventas').show();
+            });
+            $('#btn-ocultar-tipos-ventas').click(function () {
+                $('.tipos-ventas').hide();
+                $('#tipos-ventas').attr('class', 'col-md-6')
+                $('#btn-ocultar-tipos-ventas').hide();
+                $('#btn-detalles-tipos-ventas').show();
+            });
+            // seleccionar cliente
+            $('#btnSeleccionarCliente').click(function () {
+                $('#modalSeleccionarCliente').modal({ keyboard: true }, 'show');
+            });
+            $('#btnEnviar').click(function () {
+                $('#modalSeleccionarCliente').modal('hide');
+                $('#form').submit();
+            });
+            $('#btnCancelar').click(function () {
+                $('#modalSeleccionarCliente').modal('hide');
+            });
+            // seleccionar fechas
+            $('#btnEnviarSeleccionarFechas').click(function () {
+                if (!fechasValidas($('#fechaInicio').val(), $('#fechaTermino').val())) {
+                    $('#divFechaInvalida').show();
+                    return;
+                }
+                if ($('#sucursalesForm').attr('sucursal') === "true" && $('#idSucursal').val() === "") {
+                    $('#divSucursalInvalida').show();
+                    return;
+                }
+                if ($('#sucursalesForm').attr('sucursal') === "true" && fechasMayorAUnAnio($('#fechaInicio').val(), $('#fechaTermino').val())) {
+                    $('#divFechaSuperiorAUnAnio').show();
+                    return;
+                }
+                $('#modalSeleccionarFechas').modal('hide');
+                $('#formSeleccionarFechas').attr('action', $('#action').val()).submit();
+            });
+            $('#btnCancelarSeleccionarFechas').click(function () {
+                $('#modalSeleccionarFechas').modal('hide');
+            });
+        });
+
+        function seleccionarFechas(action, requiereSucursal) {
+            $('#divFechaInvalida').hide();
+            $('#divSucursalInvalida').hide();
+            $('#divFechaSuperiorAUnAnio').hide();
+            $('#action').val(action);
+            //$('#fechaInicio').val(null);
+            //$('#fechaTermino').val(null);
+
+            if (requiereSucursal) {
+                $('#sucursalesForm').attr('sucursal', true);
+                $('#sucursalesForm').show();
+            } else {
+                $('#sucursalesForm').attr('sucursal', false);
+                $('#sucursalesForm').hide();
+            }
+
+            $('#modalSeleccionarFechas').modal({ keyboard: true }, 'show');
+        }
+
+        function fechasValidas(inicio, termino) {
+            if (inicio === '' || termino === '') {
+                return false;
+            }
+            hoy = Date.parse(JSON.parse($("#hoy").val()));
+            fechaInicio = Date.parse(ordenarFecha(inicio));
+            fechaTermino = Date.parse(ordenarFecha(termino));
+            if (fechaInicio > hoy) {
+                return false;
+            }
+            if (fechaTermino > hoy) {
+                return false;
+            }
+            if (fechaInicio > fechaTermino) {
+                return false;
+            }
+            return true;
+        }
+
+        function fechasMayorAUnAnio(inicio, termino) {
+            if (inicio === '' || termino === '') {
+                return true;
+            }
+            fechaInicio = Date.parse(ordenarFecha(inicio));
+            fechaTermino = Date.parse(ordenarFecha(termino));
+            var i = moment(fechaInicio).add(1, 'd');
+            var f = moment(fechaTermino);
+            if (f.diff(i, 'months') > 10) {
+                return true;
+            }
+            return false;
+        }
+
+        function ordenarFecha(fecha) {
+            arrayFecha = fecha.split('/');
+            return arrayFecha[1] + '/' + arrayFecha[0] + '/' + arrayFecha[2];
+        }
+    </script>
+}

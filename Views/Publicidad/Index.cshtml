@@ -1,0 +1,140 @@
+﻿@model IEnumerable<SGC.Models.Publicidad>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Publicidades</h2>
+
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet light bordered">
+            <div class="portlet-title">
+                <div class="caption">
+                    Publicidades
+                </div>
+                <div class="row col-md-11">
+                    <div class="col-md-offset-10 col-md-1">
+                        <p>
+                            @Html.ActionLink("Crear", "Create", new { }, new { @class = "btn btn-default" })
+                        </p>
+                    </div>
+                    <div class="col-md-1">
+                        <p>
+                            @Html.ActionLink("Vista previa", "DetailsSlider", new { }, new { @class = "btn btn-default" })
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+            <div class="portlet-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-horizontal">
+                            
+                                <div class="form-group">
+                                 
+                                  
+                               
+                                    <div class="col-md-12" style="margin-top: 20px">
+
+                                        <table class="table">
+                                            <tr>
+                                                <th>
+                                                    @Html.DisplayNameFor(model => model.foto)
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayNameFor(model => model.nombre)
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayNameFor(model => model.titulo)
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayNameFor(model => model.descripcion)
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayNameFor(model => model.tipo)
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayNameFor(model => model.vigencia)
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayNameFor(model => model.fechaCreacion)
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayNameFor(model => model.fechaActualizacion)
+                                                </th>
+                                                <th></th>
+                                            </tr>
+
+                                            @foreach (var item in Model)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        @if (item.foto != null)
+                                                        {
+                                                            <img src="@Url.Content(item.foto.urlArchivo)" alt="FOTO" style="max-height:50px;max-width:50px" />
+                                                        }
+                                                        else
+                                                        {
+                                                            <img src="" alt="FOTO" />
+                                                        }
+
+                                                    </td>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.nombre)
+                                                    </td>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.titulo)
+                                                    </td>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.descripcion)
+                                                    </td>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.tipo)
+                                                    </td>
+
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.vigencia)
+                                                    </td>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.fechaCreacion)
+                                                    </td>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.fechaActualizacion)
+                                                    </td>
+                                                    <td>
+                                                        @Html.ActionLink("Editar", "Create", new { id = item.idPublicidad }) |
+                                                        @Html.ActionLink("Detalles", "Details", new { id = item.idPublicidad }) |
+                                                        @Html.ActionLink("Eliminar", "Delete", new { id = item.idPublicidad }, new { onclick = "return confirm('Seguro que desea eliminar el elemento " + item.nombre + "?');" })
+                                                    </td>
+                                                </tr>
+                                            }
+
+                                        </table>
+
+                                    </div>
+                                       
+                                   
+                                </div>
+                            
+                        </div>
+                    </div>
+                </div>
+                <hr />
+                <div class="row">
+                    <div class="form-group">
+                        <div class="col-md-6">
+                            <button type="button" class="btn btn-default" onclick="javascript:history.back()">Volver</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

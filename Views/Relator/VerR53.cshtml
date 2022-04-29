@@ -1,0 +1,144 @@
+﻿@model SGC.Models.R53
+
+@{
+    ViewBag.Title = "Encuesta de Metología";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="page-title" style="margin-bottom: 0">
+    <div class="row">
+        <div class="col-md-12">
+            Encuesta de Metología
+        </div>
+        <div class="col-md-2">
+            <small>@Model.comercializacion.cotizacion.codigoCotizacion</small>
+        </div>
+        <div class="col-md-5">
+            <small>Curso: @Model.comercializacion.cotizacion.curso.nombreCurso</small>
+        </div>
+        <div class="col-md-3">
+            <small>Relator: @Model.relator.contacto.nombreCompleto</small>
+        </div>
+        <div class="col-md-2">
+            <small>RUN Relator: @Model.relator.contacto.run</small>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet light bordered">
+            <div class="portlet-body">
+                @{
+                    var cont = 0;
+                }
+                @foreach (var seccionEncuesta in Model.encuesta.seccionEncuesta.OrderBy(f => f.posicion))
+                {
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h3>@seccionEncuesta.formulario.nombre</h3>
+                            <hr />
+                        </div>
+                        <div class="col-md-12">
+                            <h4>@seccionEncuesta.formulario.descripcion</h4>
+                            <hr />
+                        </div>
+                        <div class="col-md-12">
+                            @*<hr />*@
+                            @foreach (var pregunta in seccionEncuesta.formulario.preguntasFormularios.OrderBy(p => p.orden))
+                            {
+                                var idPregunta = "pregunta" + cont;
+                                var idObligatoria = "obligatoria" + cont;
+                                var idTipo = "tipo" + cont;
+                                var idRespuesta = "respuesta" + cont;
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            @if (pregunta.obligatoria)
+                                            {
+                                                <label id="@idPregunta" class="control-label">@pregunta.pregunta *</label>
+                                            }
+                                            else
+                                            {
+                                                <label id="@idPregunta" class="control-label">@pregunta.pregunta</label>
+                                            }
+                                            @if (pregunta.tipo == SGC.Models.TipoPregunta.Abierta)
+                                            {
+                                                if (Model.encuesta.respuestas.Where(r => r.pregunta.idPreguntasFormulario == pregunta.idPreguntasFormulario).FirstOrDefault() != null)
+                                                {
+                                                    <textarea id="@idRespuesta" class="form-control ver" name="@pregunta.idPreguntasFormulario" disabled>@Model.encuesta.respuestas.Where(r => r.pregunta.idPreguntasFormulario == pregunta.idPreguntasFormulario).FirstOrDefault().respuesta</textarea>
+                                                }
+                                                else
+                                                {
+                                                    <textarea id="@idRespuesta" class="form-control ver" name="@pregunta.idPreguntasFormulario" disabled></textarea>
+                                                }
+                                            }
+                                            @if (pregunta.tipo == SGC.Models.TipoPregunta.Corta)
+                                            {
+                                                if (Model.encuesta.respuestas.Where(r => r.pregunta.idPreguntasFormulario == pregunta.idPreguntasFormulario).FirstOrDefault() != null)
+                                                {
+                                                    <input id="@idRespuesta" class="form-control" name="@pregunta.idPreguntasFormulario" value="@Model.encuesta.respuestas.Where(r => r.pregunta.idPreguntasFormulario == pregunta.idPreguntasFormulario).FirstOrDefault().respuesta" disabled>
+                                                }
+                                                else
+                                                {
+                                                    <input id="@idRespuesta" class="form-control" name="@pregunta.idPreguntasFormulario" value="" disabled>
+                                                }
+                                            }
+                                            @if (pregunta.tipo == SGC.Models.TipoPregunta.Alternativa)
+                                            {
+                                                var contAlternativa = 0;
+                                                var idContAlternativas = "contAlternativas" + cont;
+                                                <div id="@idRespuesta" class="form-group">
+                                                    @foreach (var respuesta in pregunta.respuestaFormulario)
+                                                    {
+                                                        var idAlternativa = "alternativa" + cont + contAlternativa;
+                                                        <div class="form-check" id="@pregunta.idPreguntasFormulario">
+                                                            <label class="form-check-label">
+                                                                @if (Model.encuesta.respuestas.Where(r => r.pregunta.idPreguntasFormulario == pregunta.idPreguntasFormulario).FirstOrDefault() != null)
+                                                                {
+                                                                    if (Model.encuesta.respuestas.Where(r => r.pregunta.idPreguntasFormulario == pregunta.idPreguntasFormulario).FirstOrDefault().respuestaFormulario != null)
+                                                                    {
+                                                                        if (Model.encuesta.respuestas.Where(r => r.pregunta.idPreguntasFormulario == pregunta.idPreguntasFormulario).Where(r => r.respuestaFormulario.idRespuestasFormulario == respuesta.idRespuestasFormulario).FirstOrDefault() != null)
+                                                                        {
+                                                                            <input class="form-check-input" type="radio" id="@idAlternativa" name="@pregunta.idPreguntasFormulario" value="@respuesta.idRespuestasFormulario" checked disabled />
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <input class="form-check-input" type="radio" id="@idAlternativa" name="@pregunta.idPreguntasFormulario" value="@respuesta.idRespuestasFormulario" disabled />
+                                                                        }
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <input class="form-check-input" type="radio" id="@idAlternativa" name="@pregunta.idPreguntasFormulario" value="@respuesta.idRespuestasFormulario" disabled />
+                                                                    }
+                                                                }
+                                                                else
+                                                                {
+                                                                    <input class="form-check-input" type="radio" id="@idAlternativa" name="@pregunta.idPreguntasFormulario" value="@respuesta.idRespuestasFormulario" disabled />
+                                                                }
+                                                                @respuesta.respuesta
+                                                            </label>
+                                                        </div>
+                                                        contAlternativa++;
+                                                    }
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                                cont++;
+                            }
+                            <hr />
+                        </div>
+                    </div>
+                }
+                <div class="row">
+                    <div class="col-md-6">
+                        <button type="button" class="btn btn-default" onclick="javascript:history.back()">Volver</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
